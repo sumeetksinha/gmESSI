@@ -26,10 +26,10 @@ class Node{
 		void setZcord(const double& Z_cord);
 		void setCord(const double& X_cord, const double& Y_cord, const double& Z_cord);
 		void setNode(const int& id,const double& X_cord, const double& Y_cord, const double& Z_cord);
-		void getId();
-		void getXcord();
-		void getYcord();
-		void getZcord();
+		int getId();
+		double getXcord();
+		double getYcord();
+		double getZcord();
 		
 	private:
 

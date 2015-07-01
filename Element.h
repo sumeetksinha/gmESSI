@@ -16,7 +16,7 @@ class Element{
 	public:
 
 		Element();
-		Semantics(const int& Id, const int& Type, const int& NofTag, vector<int> TagList, vector<Node> NodeList);
+		Element(const int& id, const int& type, const int& nofTag, vector<int> tagList, vector<Node> nodeList);
 		~Element();
 		void setId(const int& id);
 		void setType(const int& type);
@@ -25,11 +25,11 @@ class Element{
 		void setNodeList(vector<Node> nodeList);
 		void addTag(int tag);
 		void addNode(Node node);
-		void getId();
-		void getType();
-		void getNofTag();
-		void getTagList();
-		void getNodeList();
+		int getId();
+		int getType();
+		int getNofTag();
+		vector<int> getTagList();
+		vector<Node> getNodeList();
 		
 	private:
 
