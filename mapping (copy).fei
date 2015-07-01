@@ -1,0 +1,148 @@
+// Declaring Damping
+
+	1 add damping #{} type Rayleigh with a0 = {}  a1 = {}  stiffness_to_use = {} ;
+	2 add damping #{} type Caughey3rd with a0 = {} a1 = {} a2 = {} stiffness_to_use = {} ;
+	3 add damping #{} type Caughey4th with a0 = {} a1 = {} a2 = {} a3 = {} stiffness_to_use = {} ;
+
+// Declaring Materials
+
+
+
+//Element Derived Semantics
+
+1 2-node line.
+
+	1 add element #{} type beam_elastic_lumped_mass with nodes ({},{}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}   xz_plane_vector = ({},{},{}) joint_1_offset = ({},{},{}) 	joint_2_offset = ({},{},{});
+	2 add element #{} type truss with nodes ({},{}) use material #{} cross_section = {} mass_density= {} ; 
+	3 add element #{} type contact with nodes ({},{}) 	normal_stiffness = {} tangential_stiffness = {} friction_ratio = {} maximum_gap = {} contact_plane_vector = ({},{},{});
+	4 add element #{} type beam_elastic with nodes ({},{}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx ={} bending_Iy ={} bending_Iz ={} mass_density ={}   xz_plane_vector = ({},{},{}) joint_1_offset = ({},{},{}) joint_2_offset = ({},{},{});
+	5 add element #{} type penalty with nodes ({},{}) stiffness ={}  dof to constrain {};
+	6 add element #{} type beam_displacement_based with nodes ({},{}) with #{} integration_points use section #{} mass_density ={} IntegrationRule = {} xz_plane_vector = ({},{},{}) joint_1_offset = ({},{},{}) joint_2_offset = ({},{},{});	
+	7 add element #{} type beam_9dof_elastic with nodes ({},{}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}  xz_plane_vector = ({},{},{}) joint_1_offset = ({},{},{}) joint_2_offset = ({},{},{});
+	8 add element #{} type contact with nodes ({},{}) normal_stiffness = {} tangential_stiffness = {} friction_ratio = {} maximum_gap = {} contact_plane_vector = ({},{},{});
+	9 add load #{} to element #{} type self_weight use acceleration field #{} ;
+	10 add damping #{} to element #{};
+	11 add penalty displacement #{} to element #{} dof {} type path_time_series scale_factor = {} series_file = {};
+	
+2 3-node triangle.
+	
+	1 add element #{} type 3NodeShell_ANDES with nodes ({},{},{}) use material #{} thickness = {} ;	
+	2 add load #{} to element #{} type self_weight use acceleration field #{} ;
+	3 add damping #{} to element #{};
+	4 add penalty displacement #{} to element #{} dof {} type path_time_series scale_factor = {} series_file = {};
+
+3 4-node quadrangle.
+
+	1 add element #{} type 4NodeShell_ANDES with nodes ({},{},{}) use material #{} thickness = {} ;
+	2 add element #{} type 4NodeShell_MITC4 with nodes ({},{},{}) use material #{} thickness = {} ;
+	3 add element #{} type 4NodeShell_NewMITC4 with nodes ({},{},{}) use material #{} thickness = {} ;
+	4 add load #{} to element #{} type self_weight use acceleration field #{} ;
+	5 add damping #{} to element #{};
+	6 add penalty displacement #{} to element #{} dof {} type path_time_series scale_factor = {} series_file = {};
+
+4 4-node tetrahedron.
+
+5 8-node hexahedron.
+
+	1 add element #{} type 8NodeBrick with nodes ({},{},{},{},{},{},{},{}) use material #{} ;
+	2 add element #{} type 8NodeBrick using  Gauss points each direction with nodes ({},{},{},{},{},{},{},{}) use material #{} ;
+	3 add element #{} type 8NodeBrickLT with nodes ({},{},{},{},{},{},{},{}) use material #{} ;
+	4 add element #{} type 8NodeBrick_elastic with nodes ({},{},{},{},{},{},{},{}) use material #{} ;
+	5 add element #{} type 8NodeBrick_up with nodes ({},{},{},{},{},{},{},{}) use material #{} porosity = {} alpha = {} rho_s = {} rho_f = {} k_x = {} k_y = {} k_z = {} K_s = {} K_f = {} ;
+	6 add element #{} type 8NodeBrick_elastic with nodes ({},{},{},{},{},{},{},{}) use material #{} ;
+	7 add element #{} type 8NodeBrick_upU with nodes ({},{},{},{},{},{},{},{}) use material #{} porosity = {} alpha = {} rho_s = {} rho_f = { k_x = {} k_y = {} k_z = {} K_s = {} K_f = {} ;
+	8 add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{}) with magnitude ({});
+	9 add load #{} to element #{} type surface at odes ({},{},{},{},{},{},{},{}) with magnitudes ({},{},{},{});
+	10 add load #{} to element #{} type self_weight use acceleration field #{} ;
+	11 add damping #{} to element #{};
+	12 add penalty displacement #{} to element #{} dof {} type path_time_series scale_factor = {} series_file = {};
+
+6 6-node prism.
+
+7 5-node pyramid.
+
+8 3-node second order line (2 nodes associated with the vertices and 1 with the edge).
+
+9 6-node second order triangle (3 nodes associated with the vertices and 3 with the edges).
+
+10 9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face).
+
+11 10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).
+
+12 27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
+
+	1 add element #{} type 27NodeBrick with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
+	2 add element #{} type 27NodeBrick using  Gauss points each direction with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
+	3 add element #{} type 27NodeBrickLT with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
+	4 add element #{} type 27NodeBrick_elastic with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
+	5 add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) with magnitude ({});
+	6 add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) with magnitudes ({},{},{},{},{},{},{},{});
+	7 add load #{} to element #{} type self_weight use acceleration field #{} ;
+	8 add damping #{} to element #{};
+	9 add penalty displacement #{} to element #{} dof {} type path_time_series scale_factor = {} series_file = {};
+
+13 18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces).
+
+14 14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
+
+15 1-node point.
+
+	1 add mass to node #{} mx ={} my ={} mz ={} ;
+	2 add mass to node #{} mx ={} my ={} mz ={} Imx ={} Imy ={} Imz ={};
+	3 add element #{} type penalty_for_applying_generalized_displacement with node ({}) stiffness = {} dof {};
+	5 add damping #{} to node #{};
+	6 fix node #{} dofs [{},{},{},{},{},{},{},{},{}];
+	7 free node #{} dofs [{},{},{},{},{},{},{},{},{}];
+	8 add constraint equal dof with master node #{} and slave node #{}  dof to constrain {} ;
+	9 remove constraint equal dof with master node #{} and slave node #{}  dof to constrain {} ;
+	10 add single point constraint to node #{}  dof to constrain {} constraint value of {};
+	11 add load #{} to node #{} type linear {} = {}; 
+	12 add load #{} to node #{} type path_series {} = {} series_file = {};
+	13 add load #{} to node #{} type path_time_series {} = {} time_step = {} series_file = {};
+	14 add imposed motion #{} to node #{} dof {} time_step = {} displacement_scale_unit = {} displacement_file = {} velocity_scale_unit = {} velocity_file = {} acceleration_scale_unit = {} acceleration_file = {};	
+		
+16 8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
+
+17 20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
+
+	1 add element #{} type 20NodeBrick using  Gauss points each direction with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material # ;
+	2 add element #{} type 20NodeBrick with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
+	3 add element #{} type 20NodeBrick_elastic with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
+	4 add element #{} type 20NodeBrick_upU with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} and porosity = {} alpha = {} rho_s = {} rho_f = {} k_x = {} k_y = {} k_z = {} K_s = {}	K_f = {};
+	5 add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) with magnitude ({});
+	6 add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) with magnitudes ({},{},{},{},{},{},{},{});
+	7 add load #{} to element #{} type self_weight use acceleration field #{} ;
+	8 add damping #{} to element #{};
+	9 add penalty displacement #{} to element #{} dof {} type path_time_series scale_factor = {} series_file = {};
+
+18 15-node second order prism (6 nodes associated with the vertices and 9 with the edges).
+
+19 13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges).
+
+20 9-node third order incomplete triangle (3 nodes associated with the vertices, 6 with the edges)
+
+21 10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)
+
+22 12-node fourth order incomplete triangle (3 nodes associated with the vertices, 9 with the edges)
+
+23 15-node fourth order triangle (3 nodes associated with the vertices, 9 with the edges, 3 with the face)
+
+24 15-node fifth order incomplete triangle (3 nodes associated with the vertices, 12 with the edges)
+
+25 21-node fifth order complete triangle (3 nodes associated with the vertices, 12 with the edges, 6 with the face)
+
+26 4-node third order edge (2 nodes associated with the vertices, 2 internal to the edge)
+
+27 5-node fourth order edge (2 nodes associated with the vertices, 3 internal to the edge)
+
+28 6-node fifth order edge (2 nodes associated with the vertices, 4 internal to the edge)
+
+29 20-node third order tetrahedron (4 nodes associated with the vertices, 12 with the edges, 4 with the faces)
+
+30 35-node fourth order tetrahedron (4 nodes associated with the vertices, 18 with the edges, 12 with the faces, 1 in the volume)
+
+31 56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)
+
+92 64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)
+
+93 125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)
