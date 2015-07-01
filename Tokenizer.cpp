@@ -151,6 +151,7 @@ string Tokenizer::prevToken(){
 	      
 	    for(string::iterator i=temp.end();i>=temp.begin();i--)
 	    		this->Token =this->Token + *(i);
+	    this->Token = this->Token.substr(1,this->getString().length()-1);
 	}
 	else
 	{

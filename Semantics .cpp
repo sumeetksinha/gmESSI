@@ -8,20 +8,33 @@
 
 #include "Semantics.h"
 #include <iostream>
+#include <algorithm>
 
 /******************************************************************************
 ****************************** Constructor ************************************
 ******************************************************************************/
 
-Semantics::Semantics(){}
+Semantics::Semantics(){
+
+	this->EssiTagList.insert("element");this->EssiTagList.insert("damping");this->EssiTagList.insert("displacement");
+	this->EssiTagList.insert("field");this->EssiTagList.insert("load");this->EssiTagList.insert("material");
+	this->EssiTagList.insert("motion");this->EssiTagList.insert("node");this->EssiTagList.insert("nodes");
+}
 
 Semantics::Semantics(const string& Gmsh, const string& Essi){
 
+	this->EssiTagList.insert("element");this->EssiTagList.insert("damping");this->EssiTagList.insert("displacement");
+	this->EssiTagList.insert("field");this->EssiTagList.insert("load");this->EssiTagList.insert("material");
+	this->EssiTagList.insert("motion");this->EssiTagList.insert("node");this->EssiTagList.insert("nodes");
 	this->setSemantics(Gmsh, Essi);
+
 }
 
 Semantics::Semantics(const string& Gmsh, const string& Essi, const int& id){
 
+	this->EssiTagList.insert("element");this->EssiTagList.insert("damping");this->EssiTagList.insert("displacement");
+	this->EssiTagList.insert("field");this->EssiTagList.insert("load");this->EssiTagList.insert("material");
+	this->EssiTagList.insert("motion");this->EssiTagList.insert("node");this->EssiTagList.insert("nodes");
 	this->setSemantics(Gmsh, Essi);
 	this->setSemanticsId(id);
 }
@@ -34,8 +47,8 @@ Semantics::~Semantics(){}
 
 void Semantics::setSemantics(const string& Gmsh, const string& Essi){
 
-	this->setGmshCommand(Gmsh);
 	this->setEssiCommand(Essi);
+	this->setGmshCommand(Gmsh);
 }
 
 void Semantics::setElementId(const string& id){
@@ -99,7 +112,7 @@ vector<string> Semantics::getTagList(){
 	return this->TagList;
 }
 
-queue<string> Semantics::getVarList(){
+vector<string> Semantics::getVarList(){
 
 	return this->VarList;
 }
@@ -122,8 +135,9 @@ void Semantics::setEssiCommand(const string& Command){
 	int nofTokens = 0;
 	string Ecommand = "";
 	Tokenizer inpString = Tokenizer(Command," ") ;
-	while( inpString.hasMoreTokens())
+	while( inpString.hasMoreTokens()){
 		Ecommand = Ecommand + inpString.nextToken()+" ";
+	}
 	
 	this->EssiCommand = Command;
 	
@@ -134,6 +148,7 @@ void Semantics::setEssiCommand(const string& Command){
 
 		string variable;
 		Tokenizer Var = Tokenizer(inpString.nextToken()," ,");
+
 		Var.setMode(1);
 		Var.setcurrPos(inpString.currToken().length()-1);
 		Tokenizer temp = Tokenizer(Var.nextToken()," ;");
@@ -142,23 +157,16 @@ void Semantics::setEssiCommand(const string& Command){
 			variable = prevTag;  		
 		else{
 			variable = temp.currToken();
-			// // variable.resize(variable.length());
-			// // cout << variable << "  "<<variable.length() << endl;
-			// string t = variable.substr(1,variable.size());
-			// for(string::iterator it = t.begin(); it != t.end(); ++it) {
-			//     cout<<*it; cout << ";";
-			// }
-			// cout <<endl;
-			// // cout << variable.substr(1,variable.length()).compare("element") << endl;
-			// cout << *this->EssiTagList.find(variable.data())<< endl;
-			// if (this->EssiTagList.find(variable.substr(1,variable.length()))!=this->EssiTagList.end()) {
-			// 	this->TagList.push_back(variable);
-			// 	cout << "hello";
-			// }
+
+			set<string>::iterator it = this->EssiTagList.find(variable);
+			if (it != this->EssiTagList.end()) {
+				this->TagList.push_back(*it);
+			}
+
 			prevTag= temp.currToken();
 		}
 		
-		this->VarList.push(variable);
+		this->VarList.push_back(variable);
 	}
 
 	this->nofEssiVariables = this->VarList.size();
@@ -176,7 +184,16 @@ void Semantics::setGmshCommand(const string& Command){
 	Gcommand = Gcommand + inpString.currToken() + "{";
 	
 	for( int i=0 ;i<nofTokens-1; i++){
+
 		inpString.nextToken();
+		set<string>::iterator it = this->EssiTagList.find(inpString.currToken());
+		if (it != this->EssiTagList.end()) {
+			vector<string>::iterator it;
+			it = find(this->VarList.begin(),this->VarList.end(),inpString.currToken());
+			if (it != this->VarList.end())
+				*it = "variable";
+		}
+
 		Gcommand = Gcommand +" ,";
 	}
 

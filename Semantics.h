@@ -9,7 +9,6 @@
 #define SEMANTICS_H
 
 #include <vector>
-#include <queue>
 #include <set>
 
 #include "Tokenizer.h"
@@ -35,7 +34,7 @@ class Semantics{
 		string getElementId();
 		bool getMatchMode();
 		vector<string> getTagList();
-		queue<string> getVarList();
+		vector<string> getVarList();
 		
 	private:
 
@@ -51,8 +50,9 @@ class Semantics{
 		int nofEssiVariables=0;
 		int nofGmshVariables=0;
 		vector<string> TagList;
-		queue<string> VarList;
-		set<string> EssiTagList = {"element", "damping", "displacement", "field", "load", "material", "motion", "node", "nodes" };
+		vector<string> VarList;
+		set<string> EssiTagList;
+		// string init[]= {"element", "damping", "displacement", "field", "load", "material", "motion", "node", "nodes" };
 };
 
 #endif //SEMANTICS_H
