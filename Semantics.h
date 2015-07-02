@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <set>
+#include <map>
 
 #include "Tokenizer.h"
 
@@ -24,35 +25,40 @@ class Semantics{
 		void setSemantics(const string& Gmsh, const string& Essi);
 		void setElementId(const string& id);
 		void setSemanticsId(const int& id);
-		void setEssiTag(const string& tag);
 		void setEssiTagList(set<string> TagList);
-		string getEssiTag();
 		set<string> getEssiTagList();
 		int getNofEssiVariables();
 		int getNofGmshVariables();
+		int getNofTagVariables();
 		int getSemanticsId();
 		string getElementId();
+		string getEssiTag();
 		bool getMatchMode();
-		vector<string> getTagList();
+		map<string,int> getTagList();
 		vector<string> getVarList();
+		string getEssiCommand();
+		string getGmshCommand();
 		
 	private:
 
+		void setEssiTag(const string& tag);
 		void setMatchMode();
 		void setEssiCommand(const string& Command);
 		void setGmshCommand(const string& Command);
+		void setNofTagVariables();
+		string delSpaces(string str);
 		string ElementId ="";
 		int SemanticsId=0;
 		bool MatchMode=true;
 		string EssiTag ="";
 		string EssiCommand="";
 		string GmshCommand="";
-		int nofEssiVariables=0;
-		int nofGmshVariables=0;
-		vector<string> TagList;
+		int NofEssiVariables=0;
+		int NofGmshVariables=0;
+		int NofTagVariables=0;
+		map<string, int> TagList;
 		vector<string> VarList;
 		set<string> EssiTagList;
-		// string init[]= {"element", "damping", "displacement", "field", "load", "material", "motion", "node", "nodes" };
 };
 
 #endif //SEMANTICS_H

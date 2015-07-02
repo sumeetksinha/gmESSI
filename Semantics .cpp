@@ -62,11 +62,6 @@ void Semantics::setSemanticsId(const int& id){
 	this->SemanticsId = id;
 }
 
-void  Semantics::setEssiTag(const string& tag){
-
-	this->EssiTag = tag;
-}
-
 void  Semantics::setEssiTagList(set<string> TagList){
 
 	this->EssiTagList =TagList;
@@ -84,12 +79,17 @@ set<string> Semantics::getEssiTagList(){
 
 int Semantics::getNofEssiVariables(){
 
-	return this-> nofEssiVariables;
+	return this-> NofEssiVariables;
 }
 
 int Semantics::getNofGmshVariables(){
 
-	return this-> nofGmshVariables;
+	return this-> NofGmshVariables;
+}
+
+int Semantics::getNofTagVariables(){
+
+	return this-> NofTagVariables;
 }
 
 int Semantics::getSemanticsId(){
@@ -107,7 +107,7 @@ bool Semantics::getMatchMode(){
 	return this->MatchMode;
 }
 
-vector<string> Semantics::getTagList(){
+map<string,int> Semantics::getTagList(){
 
 	return this->TagList;
 }
@@ -117,9 +117,24 @@ vector<string> Semantics::getVarList(){
 	return this->VarList;
 }
 
+string Semantics::getEssiCommand(){
+
+	return this->EssiCommand;
+}
+
+string Semantics::getGmshCommand(){
+
+	return this->GmshCommand;
+}
+
 /******************************************************************************
 ****************************** Private Function********************************
 ******************************************************************************/
+
+void  Semantics::setEssiTag(const string& tag){
+
+	this->EssiTag = tag;
+}
 
 void Semantics::setMatchMode(){
 
@@ -138,7 +153,6 @@ void Semantics::setEssiCommand(const string& Command){
 	while( inpString.hasMoreTokens()){
 		Ecommand = Ecommand + inpString.nextToken()+" ";
 	}
-	
 	this->EssiCommand = Command;
 	
 	inpString.set(Command,"{}#()=");
@@ -149,54 +163,91 @@ void Semantics::setEssiCommand(const string& Command){
 		string variable;
 		Tokenizer Var = Tokenizer(inpString.nextToken()," ,");
 
+		if(!inpString.currToken().compare(";")) break;                        // Termination Condition with ";"
+
 		Var.setMode(1);
 		Var.setcurrPos(inpString.currToken().length()-1);
-		Tokenizer temp = Tokenizer(Var.nextToken()," ;");
+		string currTag = this->delSpaces(Var.nextToken());
 
-		if (temp.nextToken().length()<=1) 
-			variable = prevTag;  		
+		if (currTag.length()<=1)
+			variable = prevTag; 		
 		else{
-			variable = temp.currToken();
+			variable = currTag;
+			prevTag= currTag;
+		}
 
-			set<string>::iterator it = this->EssiTagList.find(variable);
-			if (it != this->EssiTagList.end()) {
-				this->TagList.push_back(*it);
+		set<string>::iterator it = this->EssiTagList.find(variable);
+		if (it != this->EssiTagList.end()) {
+
+			map<string,int>::iterator it = this->TagList.find(variable);
+
+			if (it != this->TagList.end()){
+				it->second=it->second+1;
+				variable = variable + "#" +to_string(it->second);
+			}
+			else{
+				this->TagList.insert(pair<string,int>(variable,1));
+				variable = variable + "#1";
 			}
 
-			prevTag= temp.currToken();
+			this->NofTagVariables++;
 		}
 		
 		this->VarList.push_back(variable);
 	}
 
-	this->nofEssiVariables = this->VarList.size();
-
+	this->NofEssiVariables = this->VarList.size();
 }
 
 void Semantics::setGmshCommand(const string& Command){
 
 	int nofTokens = 0;
-	string Gcommand = "";
-	Tokenizer inpString = Tokenizer(Command," {,;}()") ;
-	nofTokens = inpString.countTokens()-2;
-	this->nofGmshVariables = nofTokens;
-	this->setEssiTag(inpString.nextToken());
-	Gcommand = Gcommand + inpString.currToken() + "{";
+	string Gcommand = "", essiTag="";
+	Tokenizer inpString = Tokenizer(Command," {,;}()");
+	nofTokens = inpString.countTokens()-1;
+	this->NofGmshVariables = nofTokens-1;
+	Gcommand = Gcommand + inpString.nextToken() + "{ ";
+	essiTag = essiTag + inpString.currToken() + "{";
 	
 	for( int i=0 ;i<nofTokens-1; i++){
 
-		inpString.nextToken();
-		set<string>::iterator it = this->EssiTagList.find(inpString.currToken());
-		if (it != this->EssiTagList.end()) {
-			vector<string>::iterator it;
-			it = find(this->VarList.begin(),this->VarList.end(),inpString.currToken());
-			if (it != this->VarList.end())
-				*it = "variable";
-		}
+		string variable= this->delSpaces(inpString.nextToken());
+		
+		vector<string>::iterator it;
+		it = find(this->VarList.begin(),this->VarList.end(),variable);
+		
+		if (it != this->VarList.end()) 
+ 			*it = "variable";
 
-		Gcommand = Gcommand +" ,";
+		Gcommand = Gcommand +variable+" ,";
+		essiTag = essiTag + " ,";
 	}
 
-	Gcommand = Gcommand +" }";
+	string variable= this->delSpaces(inpString.nextToken());
+
+	if(variable.compare("")){
+		this->NofGmshVariables++;
+	}
+
+	vector<string>::iterator it;
+	it = find(this->VarList.begin(),this->VarList.end(),variable);
+	if (it != this->VarList.end()) 
+ 		*it = "variable";
+ 	
+	Gcommand = Gcommand +variable + " }";
+	essiTag = essiTag + " }"+to_string(this->NofGmshVariables);
+	
 	this->GmshCommand= Gcommand;
+	this->setEssiTag(essiTag);
+
+	// if( this->NofTagVariables+this->NofGmshVariables < this->NofEssiVariables){ 
+	// 	cout << "ERROR:: Less no of variables defined for Gmsh_essi Semantics "<< endl; 
+	// 	cout<< this->GmshCommand << endl;
+	// 	exit;
+	// }
+}
+
+string Semantics::delSpaces(string str){
+   str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+   return str;
 }

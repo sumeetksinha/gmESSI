@@ -2,24 +2,36 @@
 
 #include "Tokenizer.h"
 #include "Semantics.h"
+#include "PhysicalGroup.h"
 #include <iostream>
 
 int main(int argc, char* argv[]){
 
-    Semantics comm = Semantics("BeamElasticLumpedMass{element,nodes,c,d,e }","add element #{} type beam_elastic_lumped_mass with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} beding_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});", 10);
+    Semantics comm = Semantics("BeamElasticLumpedMass{}","add element #{} type beam_elastic_lumped_mass with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} beding_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});", 10);
+    PhysicalGroup Phy = PhysicalGroup("2 1 \" $Bar_1$ < sumeet{dsfsdfsd,sd ,f,f f,f e} >, <dferfer{}>, <gahd{}>\"");
     
-    cout << comm.getEssiTag() << endl;;
+    // cout << comm.getEssiTag() << endl;;
     cout << comm.getNofEssiVariables() << endl;
     cout << comm.getNofGmshVariables() << endl;
+    cout << comm.getNofTagVariables() << endl;
+    cout << comm.getEssiTag() << endl;
+    cout << comm.getEssiCommand() << endl;
+    cout << comm.getGmshCommand() << endl;
+    // cout << comm.getNofTagVariables() << endl;
 
-    cout << comm.getTagList().size();
-     for (unsigned i=0; i<comm.getVarList().size(); i++)
+    // // cout << comm.getTagList().size();
+    for (unsigned i=0; i<comm.getVarList().size(); i++)
     	cout << " " <<comm.getVarList().at(i)<< endl;
-    cout << endl;
-    cout << "EssiTagList" << comm.getEssiTagList().size()<<endl;
-    for (set<string>::iterator i = comm.getEssiTagList().begin() ; i!=comm.getEssiTagList().end(); ++i)
-            cout << *i << ";  ";
-    cout << endl;
+
+    // cout << comm.getEssiCommand() << endl;
+    // cout << comm.getGmshCommand() << endl;
+    //   for (std::map<string,int>::iterator it=comm.getTagList().begin(); it!=comm.getTagList().end(); ++it)
+    // std::cout << it->first << " => " << it->second << '\n';
+    // cout << endl;
+    // cout << "EssiTagList" << comm.getEssiTagList().size()<<endl;
+    // for (set<string>::iterator i = comm.getEssiTagList().begin() ; i!=comm.getEssiTagList().end(); ++i)
+    //         cout << *i << ";  ";
+    // cout << endl;
 
     // queue<string> s = comm.getVarList();
     // while(!s.empty())

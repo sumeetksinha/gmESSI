@@ -61,7 +61,6 @@ void Tokenizer::setString(const string& str){
 void Tokenizer::setDelimiter(const string& delm){
 
 	this->strDelim = delm;
-	this->currPos=this->inpString.begin();
 }
 
 void Tokenizer::setcurrPos(int pos){
@@ -118,7 +117,9 @@ string Tokenizer::nextToken(){
 
 	    	this->Token =this->Token + *(this->currPos);
 	        this->currPos=this->currPos+1;
-	    } 
+	    }
+
+	    this->currPos=this->currPos+1;
 	}
 	else
 	{
@@ -145,6 +146,8 @@ string Tokenizer::prevToken(){
 	    	this->Token =this->Token + *(this->currPos);
 	        this->currPos=this->currPos-1;
 	    }
+
+	    this->currPos=this->currPos-1;
 
 	    string temp = this->Token;
 	    this->Token="";
