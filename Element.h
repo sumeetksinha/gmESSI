@@ -17,7 +17,9 @@ class Element{
 
 		Element();
 		Element(const int& id, const int& type, const int& nofTag, vector<int> tagList, vector<Node> nodeList);
+		Element(const string ElementDes);
 		~Element();
+		void setElement(const string Element);
 		void setId(const int& id);
 		void setType(const int& type);
 		void setNofTag(const int& nofTag);

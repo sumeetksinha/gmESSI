@@ -23,68 +23,78 @@ Element::Element(const int& id, const int& type, const int& nofTag, vector<int> 
 	this->NodeList = nodeList;
 }
 
+Element::Element(const string ElementDes){
+
+	this->setElement(ElementDes);
+}
+
 Element::~Element(){}
 
 /******************************************************************************
 ****************************** Public Function*********************************
 ******************************************************************************/
 
-	void Element::setId(const int& id){
+void Element::setElement(const string ElementDes){
 
-		this->Id=id;
-	}
 
-	void Element::setType(const int& type){
+}
 
-		this->Type = type;
-	}
+void Element::setId(const int& id){
 
-	void Element::setNofTag(const int& nofTag){
+	this->Id=id;
+}
 
-		this->NofTag = nofTag;
-	}
+void Element::setType(const int& type){
 
-	void Element::setTagList(vector<int> tagList){
+	this->Type = type;
+}
 
-		this->TagList = tagList;
-	}
+void Element::setNofTag(const int& nofTag){
 
-	void Element::setNodeList(vector<Node> nodeList){
+	this->NofTag = nofTag;
+}
 
-		this->NodeList  = nodeList;
-	}
+void Element::setTagList(vector<int> tagList){
 
-	void Element::addTag(int tag){
+	this->TagList = tagList;
+}
 
-		this->TagList.push_back(tag);
-	}
+void Element::setNodeList(vector<Node> nodeList){
 
-	void Element::addNode(Node node){
+	this->NodeList  = nodeList;
+}
 
-		this->NodeList.push_back(node);
-	}
+void Element::addTag(int tag){
 
-	int Element::getId(){
+	this->TagList.push_back(tag);
+}
 
-		return this->Id;
-	}
+void Element::addNode(Node node){
 
-	int Element::getType(){
+	this->NodeList.push_back(node);
+}
 
-		return this->Type;
-	}
+int Element::getId(){
 
-	int Element::getNofTag(){
+	return this->Id;
+}
 
-		return this->NofTag;
-	}
+int Element::getType(){
 
-	vector<int> Element::getTagList(){
+	return this->Type;
+}
 
-		return this->TagList;
-	}
+int Element::getNofTag(){
 
-	vector<Node> Element::getNodeList(){
+	return this->NofTag;
+}
 
-		return this->NodeList;
-	}
+vector<int> Element::getTagList(){
+
+	return this->TagList;
+}
+
+vector<Node> Element::getNodeList(){
+
+	return this->NodeList;
+}

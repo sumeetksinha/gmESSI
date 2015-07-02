@@ -9,8 +9,6 @@
 #define MAPPING_H
 
 #include <map>
-#include <list>
-#include <queue>
 #include <set>
 
 #include "Tokenizer.h"
@@ -23,11 +21,20 @@ class Mapping{
 	public:
 
 		Mapping();
-		Mapping(const string &str=DEFAULTMAPFILE);
+		Mapping(const string& FileName=DEFAULTMAPFILE);
 		~Mapping();
+		void addElementId(string id, string des);
+		void addEssiTag(string EssiTag);
+		void addFunction(string GmshCommand, Semantics semantic);
+		map<string,string> getElementMap();
+		set<string> getEssitagList();
+		map<string,Semantics> getFunction();
 
 	private:
 
+		void mapFile();
+		string FileName;
+		map<string,string> ElementMap;
 		map<string,Semantics> Function;
 		set<string> EssiTagList;
 };

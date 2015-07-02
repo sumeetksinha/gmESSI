@@ -22,55 +22,77 @@ Node::Node(const int& id, const double& X_cord, const double& Y_cord, const doub
 	this->Zcord = Z_cord;
 }
 
+Node::Node(const string GmshNodeRep){
+
+	this->setNode(GmshNodeRep);
+}
+
 Node::~Node(){}
 
 /******************************************************************************
 ****************************** Public Function*********************************
 ******************************************************************************/
 
-	void Node::setId(const int& id){
+void Node::setId(const int& id){
 
-		this->Id=id;
-	}
+	this->Id=id;
+}
 
-	void Node::setXcord(const double& X_cord){
+void Node::setXcord(const double& X_cord){
 
-		this->Xcord = X_cord;
-	}
+	this->Xcord = X_cord;
+}
 
-	void Node::setYcord(const double& Y_cord){
+void Node::setYcord(const double& Y_cord){
 
-		this->Ycord = Y_cord;
-	}
+	this->Ycord = Y_cord;
+}
 
-	void Node::setZcord(const double& Z_cord){
+void Node::setZcord(const double& Z_cord){
 
-		this->Zcord = Z_cord;
-	}
+	this->Zcord = Z_cord;
+}
 
-	void Node::setCord(const double& X_cord, const double& Y_cord, const double& Z_cord){
+void Node::setCord(const double& X_cord, const double& Y_cord, const double& Z_cord){
 
-		this->Xcord = X_cord;
-		this->Ycord = Y_cord;
-		this->Zcord = Z_cord;
-	}
+	this->Xcord = X_cord;
+	this->Ycord = Y_cord;
+	this->Zcord = Z_cord;
+}
 
-	int Node::getId(){
+void Node::setNode(const int& id,const double& X_cord, const double& Y_cord, const double& Z_cord){
 
-		return this->Id;
-	}
+	this->Id = id;
+	this->Xcord = X_cord;
+	this->Ycord = Y_cord;
+	this->Zcord = Z_cord;
+}
 
-	double Node::getXcord(){
+void Node::setNode(const string GmshNodeRep){
 
-		return this->Xcord;
-	}
+	Tokenizer str = Tokenizer(GmshNodeRep," ");
+	this->Id = stoi(str.nextToken()); 
+	this->Xcord = stod(str.nextToken()); 
+	this->Ycord = stod(str.nextToken()); 
+	this->Zcord = stod(str.nextToken()); 
+}
 
-	double Node::getYcord(){
+int Node::getId(){
 
-		return this->Ycord;
-	}
+	return this->Id;
+}
 
-	double Node::getZcord(){
+double Node::getXcord(){
 
-		return this->Zcord;
-	}
+	return this->Xcord;
+}
+
+double Node::getYcord(){
+
+	return this->Ycord;
+}
+
+double Node::getZcord(){
+
+	return this->Zcord;
+}

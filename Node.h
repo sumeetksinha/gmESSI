@@ -19,6 +19,7 @@ class Node{
 
 		Node();
 		Node(const int& id, const double& X_cord, const double& Y_cord, const double& Z_cord );
+		Node(const string GmshNodeRep);
 		~Node();
 		void setId(const int& id);
 		void setXcord(const double& X_cord);
@@ -26,6 +27,7 @@ class Node{
 		void setZcord(const double& Z_cord);
 		void setCord(const double& X_cord, const double& Y_cord, const double& Z_cord);
 		void setNode(const int& id,const double& X_cord, const double& Y_cord, const double& Z_cord);
+		void setNode(const string GmshNodeRep);
 		int getId();
 		double getXcord();
 		double getYcord();

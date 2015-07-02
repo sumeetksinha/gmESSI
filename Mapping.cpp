@@ -1,35 +1,68 @@
-// ****************************************************************************
-// * 								Mapping.cpp
-// * 								=============
-// *
-// * AUTHOR: Sumeet Kumar Sinha (sumeet.kumar507@gmail.com)
-// * CREATED: 28-06-2015
-// *******************************************************************************/
+/****************************************************************************
+* 								Mapping.cpp
+* 								=============
+*
+* AUTHOR: Sumeet Kumar Sinha (sumeet.kumar507@gmail.com)
+* CREATED: 28-06-2015
+*******************************************************************************/
 
-// #include "Semantics.h"
-// #include "Mapping.h"
-// #include "Tokenizer.h"
-// #include <iostream>
+#include "Semantics.h"
+#include "Mapping.h"
+#include "Tokenizer.h"
+#include <iostream>
 
-// *****************************************************************************
-// ****************************** Constructor ************************************
-// *****************************************************************************
+/******************************************************************************
+****************************** Constructor ************************************
+******************************************************************************/
 
-// Semantics::Semantics(){ }
+Mapping::Mapping(){ }
 
-// Semantics::Semantics(const string& Gmsh, const string& Essi){
+Mapping::Mapping(const string& fileName){
 
-// 	this->setSemantics(Gmsh, Essi);
-// }
+	this->FileName=fileName;
+}
 
-// Semantics::Semantics(const string& Gmsh, const string& Essi, const int& id){
+Mapping::~Mapping(){}
 
-// 	this->setSemantics(Gmsh, Essi);
-// 	this->setSemanticsId(id);
-// }
+/******************************************************************************
+****************************** Public Function*********************************
+******************************************************************************/
 
-// Semantics::~Semantics(){}
+void Mapping::addElementId(string id, string des){
 
-// /******************************************************************************
-// ****************************** Public Function*********************************
-// *****************************************************************************
+	this->ElementMap.insert(pair<string,string>(id,des));
+}
+
+void Mapping::addEssiTag(string EssiTag){
+
+	this->EssiTagList.insert(EssiTag);
+}
+
+void Mapping::addFunction(string GmshCommand, Semantics semantic){
+
+	this->Function.insert(pair<string,Semantics>(GmshCommand,semantic));
+}
+
+map<string,string> Mapping::getElementMap(){
+
+	return this->ElementMap;
+}
+
+set<string> Mapping::getEssitagList(){
+
+	return this->EssiTagList;
+}
+
+map<string,Semantics> Mapping::getFunction(){
+
+	return this->Function;
+}
+
+/******************************************************************************
+****************************** Purivate Function*********************************
+******************************************************************************/
+
+void Mapping::mapFile(){
+
+	
+}
