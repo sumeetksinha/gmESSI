@@ -10,6 +10,7 @@
 #include "Mapping.h"
 #include "Tokenizer.h"
 #include <iostream>
+#include <fstream>
 
 /******************************************************************************
 ****************************** Constructor ************************************
@@ -28,19 +29,14 @@ Mapping::~Mapping(){}
 ****************************** Public Function*********************************
 ******************************************************************************/
 
-void Mapping::addElementId(string id, string des){
+void Mapping::setFileName(string fileName){
 
-	this->ElementMap.insert(pair<string,string>(id,des));
+	this->FileName=fileName;
 }
 
-void Mapping::addEssiTag(string EssiTag){
+void Mapping::createMapping(){
 
-	this->EssiTagList.insert(EssiTag);
-}
-
-void Mapping::addFunction(string GmshCommand, Semantics semantic){
-
-	this->Function.insert(pair<string,Semantics>(GmshCommand,semantic));
+	this->mapFile();
 }
 
 map<string,string> Mapping::getElementMap(){
@@ -64,5 +60,24 @@ map<string,Semantics> Mapping::getFunction(){
 
 void Mapping::mapFile(){
 
-	
+	fstream mapFile(this->FileName, fstream::in);
+
+	// content goes here
+
+	mapFile.close();
+}
+
+void Mapping::addElementId(string id, string des){
+
+	this->ElementMap.insert(pair<string,string>(id,des));
+}
+
+void Mapping::addEssiTag(string EssiTag){
+
+	this->EssiTagList.insert(EssiTag);
+}
+
+void Mapping::addFunction(string GmshCommand, Semantics semantic){
+
+	this->Function.insert(pair<string,Semantics>(GmshCommand,semantic));
 }

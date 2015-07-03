@@ -16,7 +16,7 @@ class Element{
 	public:
 
 		Element();
-		Element(const int& id, const int& type, const int& nofTag, vector<int> tagList, vector<Node> nodeList);
+		Element(const int& id, const int& type, const int& nofTag, vector<int> tagList, vector<int> nodeList);
 		Element(const string ElementDes);
 		~Element();
 		void setElement(const string Element);
@@ -24,14 +24,14 @@ class Element{
 		void setType(const int& type);
 		void setNofTag(const int& nofTag);
 		void setTagList(vector<int> tagList);
-		void setNodeList(vector<Node> nodeList);
+		void setNodeList(vector<int> nodeList);
 		void addTag(int tag);
-		void addNode(Node node);
+		void addNode(int node);
 		int getId();
 		int getType();
 		int getNofTag();
 		vector<int> getTagList();
-		vector<Node> getNodeList();
+		vector<int> getNodeList();
 		
 	private:
 
@@ -39,7 +39,7 @@ class Element{
 		int Type;
 		int NofTag;
 		vector<int>   TagList;
-		vector<Node> NodeList;
+		vector<int> NodeList;
 };
 
 

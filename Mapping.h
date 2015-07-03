@@ -23,9 +23,9 @@ class Mapping{
 		Mapping();
 		Mapping(const string& FileName=DEFAULTMAPFILE);
 		~Mapping();
-		void addElementId(string id, string des);
-		void addEssiTag(string EssiTag);
-		void addFunction(string GmshCommand, Semantics semantic);
+
+		void setFileName(string filename);
+		void createMapping();
 		map<string,string> getElementMap();
 		set<string> getEssitagList();
 		map<string,Semantics> getFunction();
@@ -33,7 +33,10 @@ class Mapping{
 	private:
 
 		void mapFile();
-		string FileName;
+		void addElementId(string id, string des);
+		void addEssiTag(string EssiTag);
+		void addFunction(string GmshCommand, Semantics semantic);
+		string FileName = DEFAULTMAPFILE;
 		map<string,string> ElementMap;
 		map<string,Semantics> Function;
 		set<string> EssiTagList;
