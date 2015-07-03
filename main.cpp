@@ -8,62 +8,51 @@
 int main(int argc, char* argv[]){
 
     Semantics comm = Semantics("BeamElasticLumpedMass{}","add element #{} type beam_elastic_lumped_mass with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} beding_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});", 10);
-    PhysicalGroup Phy = PhysicalGroup("2 1 \" $Bar_1$ < sumeet{dsfsdfsd,sd ,f,f f,f e} >, <dferfer{}>, <gahd{}>\"");
+    PhysicalGroup Phy = PhysicalGroup("2 1 \" $ Bar_1 $ < sumeet{dsfsdfsd,sd ,(f,f),f e} >, <dferfer{}>, <gahd{3}>\"");
+
+
+// /**PhysicalGroup**/
+
+    cout << "Id " << Phy.getId() << endl;
+    cout << "Type " << Phy.getType() << endl;
+    cout << "PhysicaTag " << Phy.getPhysicTag() << endl;
     
-    // cout << comm.getEssiTag() << endl;;
-    cout << comm.getNofEssiVariables() << endl;
+    cout << "command List " << Phy.getCommandList().size()<< endl << endl;
+    for (unsigned i=0; i<Phy.getCommandList().size(); i++)
+        cout << " " <<Phy.getCommandList().at(i)<< endl;
+    cout << endl;
+    cout << "NofVariables List " << Phy.getNofVariables().size()<< endl << endl;
+    for (unsigned i=0; i<Phy.getNofVariables().size(); i++)
+        cout << " " <<Phy.getNofVariables().at(i)<< endl;
+    cout << endl;
+    cout << "variable List " << Phy.getVariableList().size()<< endl << endl;
+    for (unsigned i=0; i<Phy.getVariableList().size(); i++)
+        for (unsigned j=0; j<Phy.getNofVariables().at(i); j++)
+            cout << " " <<Phy.getVariableList().at(i).at(j)<< endl;
+
+
+
+
+
+    
+
+
+// /**Semantics**/
+
+    /*cout << comm.getNofEssiVariables() << endl;
     cout << comm.getNofGmshVariables() << endl;
     cout << comm.getNofTagVariables() << endl;
     cout << comm.getEssiTag() << endl;
     cout << comm.getEssiCommand() << endl;
     cout << comm.getGmshCommand() << endl;
-    // cout << comm.getNofTagVariables() << endl;
 
     // // cout << comm.getTagList().size();
     for (unsigned i=0; i<comm.getVarList().size(); i++)
-    	cout << " " <<comm.getVarList().at(i)<< endl;
-
-    // cout << comm.getEssiCommand() << endl;
-    // cout << comm.getGmshCommand() << endl;
-    //   for (std::map<string,int>::iterator it=comm.getTagList().begin(); it!=comm.getTagList().end(); ++it)
-    // std::cout << it->first << " => " << it->second << '\n';
-    // cout << endl;
-    // cout << "EssiTagList" << comm.getEssiTagList().size()<<endl;
-    // for (set<string>::iterator i = comm.getEssiTagList().begin() ; i!=comm.getEssiTagList().end(); ++i)
-    //         cout << *i << ";  ";
-    // cout << endl;
-
-    // queue<string> s = comm.getVarList();
-    // while(!s.empty())
-    // {
-    //     string top = s.front();
-    //     cout << top << endl;
-    //     s.pop();
-    // }
-    // // if(comm.getMatchMode())
-    // //     cout << "true" << endl;
-    // // else
-    // //      cout << "false" << endl;;
+     cout << " " <<comm.getVarList().at(i)<< endl;*/
 
     
-    // Tokenizer str= Tokenizer("!sumeet","!");
-    // cout << str.nextToken() << endl;;
-    // // string token;
-    // vector<string> strList;
-    // int counter = 0;
 
-    // str.set("This is a class work sample");
-    // string::iterator i = str.getString().begin() ;
-    
-    // str.setMode(1);
-    // str.setcurrPos(str.getString().length()-1);
-    // strList=str.split();
-    // cout <<strList.size();
-
-    // for(vector<string>::iterator i=strList.begin();i<strList.end();i++)
-    //         cout<< *i << endl;
-    // cout << endl;
-
+// /**Semantics**/
 
    /* Tokenizer str;
     string token;
@@ -102,11 +91,12 @@ int main(int argc, char* argv[]){
     {
         ++counter;
         cout << counter << ": " << token << endl;
-    }
-
-    return 0;*/
-    
+    }*/
+   
 
     return 0;
 }
+
+
+
 

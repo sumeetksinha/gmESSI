@@ -46,8 +46,7 @@ void PhysicalGroup::setPhysicTag(const string& physicTag){
 
 	this->PhysicTag = physicTag;
 }
-// void setCommandList(vector<string> commandList);
-// void setVariableList(vector<vector<string>> variableList);
+
 int PhysicalGroup::getId(){
 
 	return this->Id;
@@ -66,7 +65,12 @@ vector<string> PhysicalGroup::PhysicalGroup::getCommandList(){
 }
 vector<vector<string>> PhysicalGroup::getVariableList(){
 
+	return this->VariableList;
+}
 
+vector<int> PhysicalGroup::getNofVariables(){
+
+	return this->NofVariables;
 }
 
 /******************************************************************************
@@ -77,55 +81,51 @@ void PhysicalGroup::setContents(const string& PhysicDes){
 
 	Tokenizer str = Tokenizer(PhysicDes," \"$");
 	this->Type = stoi(str.nextToken());
-	// cout << "Type " << str.currToken() << endl;
 	this->Id = stoi(str.nextToken());
-	// cout << "Id " << str.currToken() << endl;
 	this->PhysicTag = str.nextToken();
-	// cout << "PhysicTag " << str.currToken() << endl;
 
 	while(str.hasMoreTokens()){
 
-		str.setDelimiter("<");
-		str.nextToken();
-		str.setDelimiter(">");
-		if(!str.hasMoreTokens()){break;}
-		string Command = str.nextToken();
-		// cout<<delSpaces(Command)<<endl;
-		this->Process(delSpaces(Command));
+		str.setDelimiter("<>");
+		if(! this->delSpaces(str.nextToken()).compare("\""))
+			break;
+		this->Process(this->delSpaces(str.nextToken()));
 	}
 
 }
 
 void PhysicalGroup::Process(const string& Command ){
 
-	int nofTokens = 0;
-	string Gcommand = "";
-	Tokenizer inpString = Tokenizer(Command," {,;}()") ;
-	nofTokens = inpString.countTokens()-2;
-	// cout << nofTokens << endl;
-	Gcommand = Gcommand + inpString.nextToken() + "{";
+	int nofTokens = 0, nofVariables=0; 
+	vector<string> varList;
+	string essiTag="";
+	Tokenizer inpString = Tokenizer(Command," {,;}()");
+	nofTokens = inpString.countTokens()-1;
+	nofVariables = nofTokens-1;
+	essiTag = essiTag + inpString.nextToken() + "{";
 	
 	for( int i=0 ;i<nofTokens-1; i++){
 
-		inpString.nextToken();
-		// cout <<  inpString.currToken()<<  " " ;
-		// set<string>::iterator it = this->EssiTagList.find(inpString.currToken());
-		// if (it != this->EssiTagList.end()) {
-		// 	vector<string>::iterator it;
-		// 	it = find(this->VarList.begin(),this->VarList.end(),inpString.currToken());
-		// 	if (it != this->VarList.end())
-		// 		*it = "variable";
-		// }
-
-		Gcommand = Gcommand +" ,";
+		string variable= this->delSpaces(inpString.nextToken());
+		varList.push_back(variable);
+		essiTag = essiTag + " ,";
 	}
-	// cout <<  inpString.nextToken()<<  " " ;
-	Gcommand = Gcommand +" }";
-	// cout<< Gcommand << endl;
-	// this->GmshCommand= Gcommand;
+
+	string variable= this->delSpaces(inpString.nextToken());
+	varList.push_back(variable);
+
+	if(variable.compare("")){
+		nofVariables++;
+	}
+
+	essiTag = essiTag + " }"+to_string(nofVariables);
+	this->VariableList.push_back(varList);
+	this->CommandList.push_back(essiTag);
+	this->NofVariables.push_back(nofVariables);
+
 }
 
-string PhysicalGroup::delSpaces(string& str){
+string PhysicalGroup::delSpaces(string str){
    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
    return str;
 }

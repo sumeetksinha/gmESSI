@@ -22,24 +22,24 @@ class PhysicalGroup{
 		void setId(const int& id);
 		void setType(const int& type);
 		void setPhysicTag(const string& physicTag);
-		// void setCommandList(vector<string> commandList);
-		// void setVariableList(vector<vector<string>> variableList);
 		int getId();
 		int getType();
 		string getPhysicTag();
 		vector<string> getCommandList();
 		vector<vector<string>> getVariableList();
-		
+		vector<int> getNofVariables();
+
 	private:
 
 		void setContents(const string& PhysicDes);
 		void Process(const string& Command);
-		string delSpaces( string& str);
+		string delSpaces( string str);
 		int Id;
 		int Type;
 		string PhysicTag;
 		vector<string>   CommandList;
 		vector<vector<string>> VariableList;
+		vector<int> NofVariables;
 };
 
 
