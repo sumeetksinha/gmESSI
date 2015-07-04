@@ -79,7 +79,7 @@ vector<int> PhysicalGroup::getNofVariables(){
 
 void PhysicalGroup::setContents(const string& PhysicDes){
 
-	Tokenizer str = Tokenizer(PhysicDes," \"$");
+	Tokenizer str = Tokenizer(PhysicDes,"  \t\v\n\r\f\"$");
 	this->Type = stoi(str.nextToken());
 	this->Id = stoi(str.nextToken());
 	this->PhysicTag = str.nextToken();
@@ -89,6 +89,9 @@ void PhysicalGroup::setContents(const string& PhysicDes){
 		str.setDelimiter("<>");
 		if(! this->delSpaces(str.nextToken()).compare("\""))
 			break;
+		if(!str.hasMoreTokens())
+			break;
+
 		this->Process(this->delSpaces(str.nextToken()));
 	}
 

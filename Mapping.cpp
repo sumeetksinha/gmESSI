@@ -6,9 +6,7 @@
 * CREATED: 28-06-2015
 *******************************************************************************/
 
-#include "Semantics.h"
 #include "Mapping.h"
-#include "Tokenizer.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -62,8 +60,6 @@ void Mapping::mapFile(){
 
 	fstream mapFile(this->FileName, fstream::in);
 	string line;
-
-	cout << "Started Reading" << endl;
 
 	while(getline(mapFile,line)){
 

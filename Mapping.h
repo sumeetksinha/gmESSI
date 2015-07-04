@@ -37,7 +37,6 @@ class Mapping{
 		void addFunction(string GmshCommand, Semantics& semantic);
 		void makeFunction(string Id, string GmshCommandList, string EssiCommand);
 		string delSpaces(string str);
-		string skipComments(string& str);
 		string FileName = DEFAULTMAPFILE;
 		map<string,string> ElementMap;
 		map<string,Semantics> Function;
