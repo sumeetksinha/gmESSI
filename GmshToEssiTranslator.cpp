@@ -14,6 +14,9 @@ int main(int argc, char* argv[]){
     // PhysicalGroup Phy = PhysicalGroup("2 1 \" $ Bar_1  $ \"");
     // Node Nd = Node("10 0.02 0 -0.26");
     // Element Elm = Element("2647 3 2 3 14 2564 2588 2589 2565");
+    
+    cout<< "Hello"<< endl;
+
     Mapping Map = Mapping("mapping1.fei");
     Map.createMapping();
     GmshParser GmshParse = GmshParser("Bar_1.msh");
@@ -49,28 +52,28 @@ int main(int argc, char* argv[]){
 
 
 
+// /**GmshParser**/
 
+    // cout << "NewNode " << GmshParse.getNewNode() << endl;
+    // cout << "NewElement " << GmshParse.getNewElement() << endl;
+    // cout << "NewPhysicalgroup " << GmshParse.getNewPhysicalGroup() << endl;
+    // cout << "NodeList " << GmshParse.getNodeList().size()<< endl << endl;
+    // for (unsigned i=0; i<GmshParse.getNodeList().size()-1; i++)
+    //     cout << " " <<GmshParse.getNodeList().at(i).getId() << " " << GmshParse.getNodeList().at(i).getXcord() << " " << GmshParse.getNodeList().at(i).getYcord() << " " << GmshParse.getNodeList().at(i).getZcord() << endl;
+    // cout << endl;
 
+    // cout << "ElementList " << GmshParse.getElementList().size()<< endl << endl;
+    // for (unsigned i=0; i<GmshParse.getElementList().size(); i++)
+    //     cout << " " <<GmshParse.getElementList().at(i).getId() << " " << GmshParse.getElementList().at(i).getType() << " " << GmshParse.getElementList().at(i).getNofTag() << endl;
 
+    // cout << "PhysicalGroupList " << GmshParse.getPhysicalGroupList().size()<< endl << endl;
+    // for (unsigned i=0; i<GmshParse.getPhysicalGroupList().size(); i++)
+    //     cout << " " <<GmshParse.getPhysicalGroupList().at(i).getPhysicTag() << endl;
 
+    // cout << "PhysicalGroupMap" << GmshParse.getPhysicalGroupMap().size() << endl << endl;
+    //  for (auto& x: GmshParse.getPhysicalGroupMap())
+    //     cout << x.first << '\n';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 
 // /**PhysicalGroup**/
 
@@ -90,25 +93,7 @@ int main(int argc, char* argv[]){
     for (unsigned i=0; i<Phy.getVariableList().size(); i++)
         for (unsigned j=0; j<Phy.getNofVariables().at(i); j++)
             cout << " " <<Phy.getVariableList().at(i).at(j)<< endl;*/
-
-// /**GmshParser**/
-
-    // cout << "NewNode " << GmshParse.getNewNode() << endl;
-    // cout << "NewElement " << GmshParse.getNewElement() << endl;
-    // cout << "NewPhysicalgroup " << GmshParse.getNewPhysicalGroup() << endl;
-    // cout << "NodeList " << GmshParse.getNodeList().size()<< endl << endl;
-    // for (unsigned i=0; i<GmshParse.getNodeList().size()-1; i++)
-    //     cout << " " <<GmshParse.getNodeList().at(i).getId() << " " << GmshParse.getNodeList().at(i).getXcord() << " " << GmshParse.getNodeList().at(i).getYcord() << " " << GmshParse.getNodeList().at(i).getZcord() << endl;
-    // cout << endl;
-
-    // cout << "ElementList " << GmshParse.getElementList().size()<< endl << endl;
-    // for (unsigned i=0; i<GmshParse.getElementList().size(); i++)
-    //     cout << " " <<GmshParse.getElementList().at(i).getId() << " " << GmshParse.getElementList().at(i).getType() << " " << GmshParse.getElementList().at(i).getNofTag() << endl;
-
-    // cout << "PhysicalGroupList " << GmshParse.getPhysicalGroupList().size()<< endl << endl;
-    // for (unsigned i=0; i<GmshParse.getPhysicalGroupList().size(); i++)
-    //     cout << " " <<GmshParse.getPhysicalGroupList().at(i).getPhysicTag() << endl;
-    
+  
 // /**Mapping**/
 
     /*cout << "ElementMap " << Map.getEssiTagList().size()<< endl << endl;

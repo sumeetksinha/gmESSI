@@ -10,11 +10,19 @@
 #define GMSHPARSER_H
 
 #include <map>
+#include <vector>
 
 #include "Tokenizer.h"
 #include "PhysicalGroup.h"
 #include "Element.h"
 #include "Node.h"
+
+struct NodeElement
+{
+   vector<Element> ElementList;
+   map<int, int> NodeList;
+
+};
 
 class GmshParser{
 
@@ -26,6 +34,7 @@ class GmshParser{
 		void setFileName(string filename);
 		void Parse();
 		map<int,Node> getNodeMap();
+		map<int,NodeElement> getPhysicalGroupMap();
 		vector<Node> getNodeList();
 		vector<Element> getElementList();
 		vector<PhysicalGroup> getPhysicalGroupList();
@@ -39,6 +48,7 @@ class GmshParser{
 		string delSpaces(string str);
 		string FileName;
 		map<int,Node>  NodeMap;
+		map<int,NodeElement> PhysicalGroupMap;
 		vector<Node> NodeList;
 		vector<Element> ElementList;
 		vector<PhysicalGroup> PhysicalGroupList;

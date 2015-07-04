@@ -41,6 +41,11 @@ map<int,Node> GmshParser::getNodeMap(){
 	return this->NodeMap;
 }
 
+map<int,NodeElement> GmshParser::getPhysicalGroupMap(){
+
+	return this->PhysicalGroupMap;
+}
+		
 vector<Node> GmshParser::getNodeList(){
 
 	return this->NodeList;
@@ -136,6 +141,45 @@ void GmshParser::parseGmshFile(){
 			break;
 		Element elm = Element(line);
 		this->ElementList.push_back(elm);
+
+		int nofTag = elm.getNofTag();
+		vector<int> TagList = elm.getTagList();
+
+		for(int i = 0 ; i <nofTag ; i++){
+
+			map<int,NodeElement>::iterator it = this->PhysicalGroupMap.find(TagList.at(i));
+
+			if (it != this->PhysicalGroupMap.end()){
+
+				it->second.ElementList.push_back(elm);
+				int nofNode = elm.getNodeList().size();
+
+				for(int j = 0 ; j <nofNode ; j++){
+
+					int node = elm.getNodeList().at(j);
+					map<int,int>::iterator find= it->second.NodeList.find(node);
+					if (!(find != it->second.NodeList.end()))
+						it->second.NodeList.insert(pair<int,int>(node,node));
+				}
+			}
+
+			else{
+				struct NodeElement newNodeElement;
+
+				newNodeElement.ElementList.push_back(elm);
+				int nofNode = elm.getNodeList().size();
+
+				for(int j = 0 ; j <nofNode ; j++){
+
+					int node = elm.getNodeList().at(j);
+					newNodeElement.NodeList.insert(pair<int,int>(node,node));
+				}
+
+				this->PhysicalGroupMap.insert(pair<int,NodeElement>(TagList.at(i),newNodeElement));
+			}
+
+		}
+
 	}
 
 	parseFile.close();
