@@ -4,6 +4,7 @@
 #include "Semantics.h"
 #include "PhysicalGroup.h"
 #include "Element.h"
+#include "Mapping.h"
 #include <iostream>
 
 int main(int argc, char* argv[]){
@@ -12,11 +13,25 @@ int main(int argc, char* argv[]){
     PhysicalGroup Phy = PhysicalGroup("2 1 \" $ Bar_1 $ < sumeet{dsfsdfsd,sd ,(f,f),f e} >, <dferfer{}>, <gahd{3}>\"");
     Node Nd = Node("10 0.02 0 -0.26");
     Element Elm = Element("2647 3 2 3 14 2564 2588 2589 2565");
+    Mapping Map = Mapping("mapping1.fei");
+    Map.createMapping();
 
+// /**Mapping**/
 
+    /*cout << "ElementMap " << Map.getEssiTagList().size()<< endl << endl;
+    for (unsigned i=0; i<Map.getEssiTagList().size(); i++)
+        cout << " " <<Map.getEssiTagList().at(i)<< endl;
+    cout << endl;
 
+    cout << "ElementMap " << Map.getElementMap().size()<< endl << endl;
+    for (auto& x: Map.getElementMap())
+        cout << " " <<x.first << " " << x.second<< endl;
+    cout << endl;
 
-
+    cout << "Function " << Map.getFunction().size()<< endl << endl;
+   for (auto& x: Map.getFunction())
+        cout << " " <<x.first << " " << x.second.getEssiCommand()<< endl;
+    cout << endl;*/
 
 // /**Element**/
 

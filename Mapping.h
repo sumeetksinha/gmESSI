@@ -14,20 +14,19 @@
 #include "Tokenizer.h"
 #include "Semantics.h"
 
-const string DEFAULTMAPFILE = "Mapping.fei";
+const string DEFAULTMAPFILE = "mapping.fei";
 
 class Mapping{
 
 	public:
 
-		Mapping();
 		Mapping(const string& FileName=DEFAULTMAPFILE);
 		~Mapping();
 
 		void setFileName(string filename);
 		void createMapping();
 		map<string,string> getElementMap();
-		set<string> getEssitagList();
+		set<string> getEssiTagList();
 		map<string,Semantics> getFunction();
 
 	private:
@@ -35,7 +34,10 @@ class Mapping{
 		void mapFile();
 		void addElementId(string id, string des);
 		void addEssiTag(string EssiTag);
-		void addFunction(string GmshCommand, Semantics semantic);
+		void addFunction(string GmshCommand, Semantics& semantic);
+		void makeFunction(string Id, string GmshCommandList, string EssiCommand);
+		string delSpaces(string str);
+		string skipComments(string& str);
 		string FileName = DEFAULTMAPFILE;
 		map<string,string> ElementMap;
 		map<string,Semantics> Function;
