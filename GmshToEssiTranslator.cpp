@@ -25,14 +25,13 @@ int main(int argc, char* argv[]){
     GmshParser GmshParse = GmshParser("Bar_1.msh");
     GmshParse.Parse();
 
-    // vector<Node> NodeList = GmshParse.getNodeList();
     vector<PhysicalGroup> PhysicalGroupList = GmshParse.getPhysicalGroupList();
-    // map<string,string> ElementMap = Map.getElementMap();
     map<string,Semantics> FunctionMap = Map.getFunction();
     set<string> EssiTagList = Map.getEssiTagList();
     map<string,Semantics>::iterator FunctionIter;
-    map<int,NodeElement> NodeElementMap = GmshParse.getPhysicalGroupMap();
-    // map<int,Node> NodeMap = GmshParse.getNodeMap();
+    map<int,NodeElement>PhysicalGroupMap = GmshParse.getPhysicalGroupMap();
+    map<int,NodeElement> EntityMap = GmshParse.getEntityMap();
+    map<int,Node> NodeMap = GmshParse.getNodeMap();
 
     EssiTagVariableMap.insert(pair<string,int>("element",GmshParse.getNewElement()));
     EssiTagVariableMap.insert(pair<string,int>("node",GmshParse.getNewNode()));
@@ -49,7 +48,7 @@ int main(int argc, char* argv[]){
 
     for (unsigned i=0; i<PhysicalGroupListSize; i++){
 
-        vector<string>   CommandList = PhysicalGroupList.at(i).getCommandList();
+        vector<string> CommandList = PhysicalGroupList.at(i).getCommandList();
         vector<vector<string>> VariableList = PhysicalGroupList.at(i).getVariableList();
         vector<int> NofVariablesList = PhysicalGroupList.at(i).getNofVariables();
         int CommandListSize = CommandList.size();
@@ -67,16 +66,23 @@ int main(int argc, char* argv[]){
                 if(FunctionIter->second.getMatchMode()){
                     
                     cout<< "Elemental Command" ;
-                    map<int,NodeElement>::iterator NodeElementMapIter = NodeElementMap.find(PhysicalGroupList.at(i).getId());
-                    vector<Element> ElementList = NodeElementMapIter->second.ElementList;
-                    map<int,int>  NodeList = NodeElementMapIter->second.NodeList;
+                    map<int,NodeElement>::iterator PhysicalGroupMapIter =PhysicalGroupMap.find(PhysicalGroupList.at(i).getId());
+                    vector<Element> ElementList =PhysicalGroupMapIter->second.ElementList;
+                    map<int,int>  NodeList =PhysicalGroupMapIter->second.NodeList;
                     vector<string> Variables = VariableList.at(j);
                     vector<string> EssiVariables= FunctionIter->second.getVarList();
                     int NofVariables = NofVariablesList.at(j);
                     int ElementListSize = ElementList.size();
                     int NofEssiVariables = FunctionIter->second.getNofEssiVariables();
 
-                    if (!(FunctionIter->second.getSemanticsId().compare("c"))){
+                    if (!(FunctionIter->second.getSemanticsId().compare("c"))){   // meaning Elemental Compound Commands
+
+                        Tokenizer tkr = Tokenizer(Variables.at(0),"#");
+                        string type = delSpaces(tkr.nextToken());
+                        int tag = stoi(delSpaces(tkr.nextToken()));
+
+                        map<int,NodeElement>::iterator EntityMapIter = EntityMap.find(tag);
+                        map<int,NodeElement>::iterator PhysicalMapIter =PhysicalGroupMap.find(tag);
 
                         for(int k =0;k<ElementListSize ; k++){
 
@@ -94,24 +100,38 @@ int main(int argc, char* argv[]){
                                     }
                                     else if(!var.compare("node") || !var.compare("nodes")){
 
-                                        bool loop= false;
-                                        
-                                        while(!loop){
+                                        bool loop=true;
 
-                                            map<int,int>::iterator NodeIter = NodeList.find(ElementList.at(k).getNodeList().at(m));
+                                        while(loop){
+                                             
+                                            if(!type.compare("Phy")){
 
-                                            if(NodeIter!=NodeList.end()){
+                                                map<int,int>::iterator NodeIter = EntityMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+                                                map<int,int>::iterator NodeIterEnd = EntityMapIter->second.NodeList.end();
 
-                                                loop=true;
-                                                TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+                                                if(NodeIter!= NodeIterEnd){
+
+                                                TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
+                                                loop = false;
+                                                }
+
+                                                m++;
                                             }
-                                            else{
 
-                                                m=m+1;
+                                            else if (!type.compare("Enty")){
+
+                                                map<int,int>::iterator NodeIter = PhysicalMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+                                                map<int,int>::iterator NodeIterEnd = PhysicalMapIter->second.NodeList.end();
+
+                                                if(NodeIter!= NodeIterEnd){
+
+                                                TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
+                                                loop = false;
+                                                }
+                                                
+                                                m++;
                                             }
-
                                         }
-
                                     }
                                     else if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
                                         TempVariable.push(getVariable(var)); 
@@ -168,8 +188,8 @@ int main(int argc, char* argv[]){
                     
                     cout<< "Node Commands ";
 
-                    map<int,NodeElement>::iterator NodeElementMapIter = NodeElementMap.find(PhysicalGroupList.at(i).getId());
-                    map<int,int> NodeList = NodeElementMapIter->second.NodeList;
+                    map<int,NodeElement>::iterator PhysicalGroupMapIter =PhysicalGroupMap.find(PhysicalGroupList.at(i).getId());
+                    map<int,int> NodeList =PhysicalGroupMapIter->second.NodeList;
                     vector<string> Variables = VariableList.at(j);
                     vector<string> EssiVariables= FunctionIter->second.getVarList();
                     int NofVariables = NofVariablesList.at(j);
@@ -207,8 +227,8 @@ int main(int argc, char* argv[]){
                     
                     cout<< "General Elemental Commands";
 
-                    map<int,NodeElement>::iterator NodeElementMapIter = NodeElementMap.find(PhysicalGroupList.at(i).getId());
-                    vector<Element> ElementList = NodeElementMapIter->second.ElementList;
+                    map<int,NodeElement>::iterator PhysicalGroupMapIter =PhysicalGroupMap.find(PhysicalGroupList.at(i).getId());
+                    vector<Element> ElementList =PhysicalGroupMapIter->second.ElementList;
                     vector<string> Variables = VariableList.at(j);
                     vector<string> EssiVariables= FunctionIter->second.getVarList();
                     int NofVariables = NofVariablesList.at(j);
