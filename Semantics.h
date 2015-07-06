@@ -20,17 +20,17 @@ class Semantics{
 
 		Semantics();
 		Semantics(const string& Gmsh, const string& Essi);
-		Semantics(const string& Gmsh, const string& Essi, const int& id);
+		Semantics(const string& Gmsh, const string& Essi, const string& id);
 		~Semantics();
 		void setSemantics(const string& Gmsh, const string& Essi);
 		void setElementId(const string& id);
-		void setSemanticsId(const int& id);
+		void setSemanticsId(const string& id);
 		void setEssiTagList(set<string> TagList);
 		set<string> getEssiTagList();
 		int getNofEssiVariables();
 		int getNofGmshVariables();
 		int getNofTagVariables();
-		int getSemanticsId();
+		string getSemanticsId();
 		string getElementId();
 		string getEssiTag();
 		bool getMatchMode();
@@ -48,7 +48,7 @@ class Semantics{
 		void setNofTagVariables();
 		string delSpaces(string str);
 		string ElementId ="";
-		int SemanticsId=0;
+		string SemanticsId="";
 		bool MatchMode=true;
 		string EssiTag ="";
 		string EssiCommand="";

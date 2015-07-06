@@ -30,7 +30,7 @@ Semantics::Semantics(const string& Gmsh, const string& Essi){
 
 }
 
-Semantics::Semantics(const string& Gmsh, const string& Essi, const int& id){
+Semantics::Semantics(const string& Gmsh, const string& Essi, const string& id){
 
 	this->EssiTagList.insert("element");this->EssiTagList.insert("damping");this->EssiTagList.insert("displacement");
 	this->EssiTagList.insert("field");this->EssiTagList.insert("load");this->EssiTagList.insert("material");
@@ -57,7 +57,7 @@ void Semantics::setElementId(const string& id){
 	this->setMatchMode();
 }
 
-void Semantics::setSemanticsId(const int& id){
+void Semantics::setSemanticsId(const string& id){
 
 	this->SemanticsId = id;
 }
@@ -92,7 +92,7 @@ int Semantics::getNofTagVariables(){
 	return this-> NofTagVariables;
 }
 
-int Semantics::getSemanticsId(){
+string Semantics::getSemanticsId(){
 
 	return this->SemanticsId;
 }
@@ -138,11 +138,19 @@ void  Semantics::setEssiTag(const string& tag){
 
 void Semantics::setMatchMode(){
 
-	string str= this->ElementId;
+	Tokenizer tknzr = Tokenizer(this->ElementId,"-");
+	this->ElementId = tknzr.nextToken();
+	string str= tknzr.currToken();
 	if(str.empty() || ((!isdigit(str[0])) && (str[0] != '-') && (str[0] != '+'))) this->MatchMode=false ;
    	char * p ;
    	strtol(str.c_str(), &p, 10) ;
    	this->MatchMode = (*p == 0) ;
+
+   	while(tknzr.hasMoreTokens()){
+   		this->SemanticsId = tknzr.nextToken();
+   		// cout << this->GmshCommand << "  " << tknzr.currToken() << " " << to_string(this->getMatchMode()) << endl;
+   		break;
+   	}
 }
 
 void Semantics::setEssiCommand(const string& Command){

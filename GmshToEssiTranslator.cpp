@@ -78,6 +78,7 @@ int main(int argc, char* argv[]){
                     for(int k =0;k<ElementListSize ; k++){
 
                         int m =0, n=0 ;
+                        // if (!(FunctionIter->second.getSemanticsId().compare("c"))) n=1;
 
                         if( !(FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
 
