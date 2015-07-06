@@ -8,23 +8,17 @@
 #include "GmshParser.h"
 #include <iostream>
 #include <queue>
+#include <algorithm>
 
 
 map<string,int> EssiTagVariableMap;
 queue<string> TempVariable;
 
 string getVariable(string& var);
-void changeVariable();
+string delSpaces(string str);
 void PrintEssiCommand(string Command);
 
 int main(int argc, char* argv[]){
-
-    // Semantics comm = Semantics("BeamElasticLumpedMass{}","add element #{} type beam_elastic_lumped_mass with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} beding_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});", 10);
-    // PhysicalGroup Phy = PhysicalGroup("2 1 \" $ Bar_1  $ \"");
-    // Node Nd = Node("10 0.02 0 -0.26");
-    // Element Elm = Element("2647 3 2 3 14 2564 2588 2589 2565");
-    
-    cout<< "Hello"<< endl;
 
     Mapping Map = Mapping("mapping1.fei");
     Map.createMapping();
@@ -154,15 +148,71 @@ int main(int argc, char* argv[]){
 
                 else if (!FunctionIter->second.getElementId().compare("ec")){
                     
-                    cout<< "General2 Commands";
+                    cout<< "General Elemental Commands";
+
+                    map<int,NodeElement>::iterator NodeElementMapIter = NodeElementMap.find(PhysicalGroupList.at(i).getId());
+                    vector<Element> ElementList = NodeElementMapIter->second.ElementList;
+                    vector<string> Variables = VariableList.at(j);
+                    vector<string> EssiVariables= FunctionIter->second.getVarList();
+                    int NofVariables = NofVariablesList.at(j);
+                    int ElementListSize = ElementList.size();
+                    int NofEssiVariables = FunctionIter->second.getNofEssiVariables();
+
+                    for(int k =0;k<ElementListSize ; k++){
+
+                        int m =0, n=0 ;
+
+                        for(int l=0 ; l<NofEssiVariables ;l++ ){
+    
+                            Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+                            string var = tknzr.nextToken();
+                           
+                            if(!var.compare("element")){
+                                TempVariable.push(to_string(ElementList.at(k).getId()));
+                            }
+                            else if(!var.compare("node") || !var.compare("nodes")){
+                                TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+                            }
+                            else if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
+                                TempVariable.push(getVariable(var)); 
+                            }
+                            else {
+                                TempVariable.push(Variables.at(n++));   
+                            }
+                        }
+
+                        PrintEssiCommand(FunctionIter->second.getEssiCommand());
+                        cout << endl;
+
+                    }
                 }
 
-                // Changing Tag Variables Value
+                else if (!FunctionIter->second.getElementId().compare("sc")){
 
-                // void changeVariable();
+                    cout<< "General Elemental Commands";
 
-                // Tag Variables Value Changed
+                    vector<string> Variables = VariableList.at(j);
+                    vector<string> EssiVariables= FunctionIter->second.getVarList();
+                    int NofVariables = NofVariablesList.at(j);
+                    int NofEssiVariables = FunctionIter->second.getNofEssiVariables();
 
+                    int n=0;
+                    for(int l=0 ; l<NofEssiVariables ;l++ ){
+    
+                        Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+                        string var = tknzr.nextToken();
+                       
+                        if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
+                            TempVariable.push(getVariable(var)); 
+                        }
+                        else {
+                            TempVariable.push(Variables.at(n++));   
+                        }
+                    }
+
+                    PrintEssiCommand(FunctionIter->second.getEssiCommand());
+                    cout << endl;
+                }
             }
         }
 
@@ -191,12 +241,6 @@ string getVariable(string& var){
     return  to_string(EssiTagIter->second++);
 }
 
-void changeVariable(){
-
-    for(map<string,int>::iterator it=EssiTagVariableMap.begin(); it!=EssiTagVariableMap.end(); ++it)
-        it->second++;
-}
-
 void PrintEssiCommand(string Command){
 
     int nofTokens = 0;
@@ -207,12 +251,18 @@ void PrintEssiCommand(string Command){
 
         Tokenizer Var = Tokenizer(inpString.nextToken()," ,");
 
-        if(!inpString.currToken().compare(";")) break;                        // Termination Condition with ";"
+        if(!delSpaces(inpString.currToken()).compare(";")) break;                        // Termination Condition with ";"
 
         cout << inpString.currToken() << " ";
         cout << TempVariable.front();
         TempVariable.pop();
     }
     cout << " ;" << endl;
+}
+
+
+string delSpaces(string str){
+   str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+   return str;
 }
 

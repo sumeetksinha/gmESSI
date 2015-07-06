@@ -155,15 +155,18 @@ void Semantics::setEssiCommand(const string& Command){
 	}
 	this->EssiCommand = Command;
 	
+	inpString.set(Command,"{}");
+	nofTokens = inpString.countTokens()-1;
+
 	inpString.set(Command,"{}#()=");
 	string prevTag = "variable";
 
-	while(inpString.hasMoreTokens()){
+	while(inpString.hasMoreTokens() && nofTokens-->0){
 
 		string variable;
 		Tokenizer Var = Tokenizer(inpString.nextToken()," ,");
 
-		if(!inpString.currToken().compare(";")) break;                        // Termination Condition with ";"
+		if(!this->delSpaces(inpString.currToken()).compare(";")) break;                        // Termination Condition with ";"
 
 		Var.setMode(1);
 		Var.setcurrPos(inpString.currToken().length()-1);
@@ -240,11 +243,6 @@ void Semantics::setGmshCommand(const string& Command){
 	this->GmshCommand= Gcommand;
 	this->setEssiTag(essiTag);
 
-	// if( this->NofTagVariables+this->NofGmshVariables < this->NofEssiVariables){ 
-	// 	cout << "ERROR:: Less no of variables defined for Gmsh_essi Semantics "<< endl; 
-	// 	cout<< this->GmshCommand << endl;
-	// 	exit;
-	// }
 }
 
 string Semantics::delSpaces(string str){
