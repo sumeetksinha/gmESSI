@@ -14,12 +14,13 @@
 
 Element::Element(){}
 
-Element::Element(const int& id, const int& type, const int& nofTag, vector<int> tagList, vector<int> nodeList){
+Element::Element(const int& id, const int& type, const int& nofTag, const int& physicalTag, const int& entityTag, vector<int> nodeList){
 
 	this->Id = id;
 	this->Type = type;
 	this->NofTag = nofTag;
-	this->TagList = tagList;
+	this->PhysicalTag = physicalTag;
+	this->EntityTag = entityTag;
 	this->NodeList = nodeList;
 }
 
@@ -44,8 +45,11 @@ void Element::setElement(const string ElementDes){
 	nofTag= stoi(str.nextToken());
 	this->NofTag = nofTag; 
 
-	for (int i=0; i<nofTag; i++)
-		this->TagList.push_back(stoi(str.nextToken())); 
+	this->PhysicalTag = stoi(str.nextToken());
+	this->EntityTag = stoi(str.nextToken());
+
+	for (int i=0; i<nofTag-2; i++)
+		str.nextToken(); 
 
 	while(str.hasMoreTokens()){
 		
@@ -68,19 +72,19 @@ void Element::setNofTag(const int& nofTag){
 	this->NofTag = nofTag;
 }
 
-void Element::setTagList(vector<int> tagList){
+void Element::setPhysicalTag(const int& physicalTag){
 
-	this->TagList = tagList;
+	this->PhysicalTag = physicalTag;
+}
+
+void Element::setEntityTag(const int& entityTag){
+
+	this->EntityTag = entityTag;
 }
 
 void Element::setNodeList(vector<int> nodeList){
 
 	this->NodeList  = nodeList;
-}
-
-void Element::addTag(int tag){
-
-	this->TagList.push_back(tag);
 }
 
 void Element::addNode(int node){
@@ -103,9 +107,14 @@ int Element::getNofTag(){
 	return this->NofTag;
 }
 
-vector<int> Element::getTagList(){
+int Element::getPhysicalTag(){
 
-	return this->TagList;
+	return this->PhysicalTag;
+}
+
+int Element::getEntityTag(){
+
+	return this->EntityTag;
 }
 
 vector<int> Element::getNodeList(){

@@ -35,6 +35,7 @@ class GmshParser{
 		void Parse();
 		map<int,Node> getNodeMap();
 		map<int,NodeElement> getPhysicalGroupMap();
+		map<int,NodeElement> getEntityMap();
 		vector<Node> getNodeList();
 		vector<Element> getElementList();
 		vector<PhysicalGroup> getPhysicalGroupList();
@@ -49,6 +50,7 @@ class GmshParser{
 		string FileName;
 		map<int,Node>  NodeMap;
 		map<int,NodeElement> PhysicalGroupMap;
+		map<int,NodeElement> EntityMap;
 		vector<Node> NodeList;
 		vector<Element> ElementList;
 		vector<PhysicalGroup> PhysicalGroupList;
