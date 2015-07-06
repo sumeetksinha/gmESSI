@@ -69,40 +69,96 @@ int main(int argc, char* argv[]){
                     cout<< "Elemental Command" ;
                     map<int,NodeElement>::iterator NodeElementMapIter = NodeElementMap.find(PhysicalGroupList.at(i).getId());
                     vector<Element> ElementList = NodeElementMapIter->second.ElementList;
+                    map<int,int>  NodeList = NodeElementMapIter->second.NodeList;
                     vector<string> Variables = VariableList.at(j);
                     vector<string> EssiVariables= FunctionIter->second.getVarList();
                     int NofVariables = NofVariablesList.at(j);
                     int ElementListSize = ElementList.size();
                     int NofEssiVariables = FunctionIter->second.getNofEssiVariables();
 
-                    for(int k =0;k<ElementListSize ; k++){
+                    if (!(FunctionIter->second.getSemanticsId().compare("c"))){
 
-                        int m =0, n=0 ;
-                        // if (!(FunctionIter->second.getSemanticsId().compare("c"))) n=1;
+                        for(int k =0;k<ElementListSize ; k++){
 
-                        if( !(FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+                            int m =0, n=1 ;
 
-                            for(int l=0 ; l<NofEssiVariables ;l++ ){
+                            if( !(FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
 
-                                Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
-                                string var = tknzr.nextToken();
-                             
-                                if(!var.compare("element")){
-                                    TempVariable.push(to_string(ElementList.at(k).getId()));
+                                for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+                                    Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+                                    string var = tknzr.nextToken();
+                                 
+                                    if(!var.compare("element")){
+                                        TempVariable.push(to_string(ElementList.at(k).getId()));
+                                    }
+                                    else if(!var.compare("node") || !var.compare("nodes")){
+
+                                        bool loop= false;
+                                        
+                                        while(!loop){
+
+                                            map<int,int>::iterator NodeIter = NodeList.find(ElementList.at(k).getNodeList().at(m));
+
+                                            if(NodeIter!=NodeList.end()){
+
+                                                loop=true;
+                                                TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+                                            }
+                                            else{
+
+                                                m=m+1;
+                                            }
+
+                                        }
+
+                                    }
+                                    else if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
+                                        TempVariable.push(getVariable(var)); 
+                                    }
+                                    else {
+                                        TempVariable.push(Variables.at(n++));   
+                                    }
                                 }
-                                else if(!var.compare("node") || !var.compare("nodes")){
-                                    TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
-                                }
-                                else if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
-                                    TempVariable.push(getVariable(var)); 
-                                }
-                                else {
-                                    TempVariable.push(Variables.at(n++));   
-                                }
+
+                                PrintEssiCommand(FunctionIter->second.getEssiCommand());
+                                cout << endl;
                             }
 
-                            PrintEssiCommand(FunctionIter->second.getEssiCommand());
-                            cout << endl;
+                        }
+                    }
+
+                    else{
+
+                        for(int k =0;k<ElementListSize ; k++){
+
+                            int m =0, n=0 ;
+
+                            if( !(FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+
+                                for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+                                    Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+                                    string var = tknzr.nextToken();
+                                 
+                                    if(!var.compare("element")){
+                                        TempVariable.push(to_string(ElementList.at(k).getId()));
+                                    }
+                                    else if(!var.compare("node") || !var.compare("nodes")){
+                                        TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+                                    }
+                                    else if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
+                                        TempVariable.push(getVariable(var)); 
+                                    }
+                                    else {
+                                        TempVariable.push(Variables.at(n++));   
+                                    }
+                                }
+
+                                PrintEssiCommand(FunctionIter->second.getEssiCommand());
+                                cout << endl;
+                            }
+
                         }
 
                     }
