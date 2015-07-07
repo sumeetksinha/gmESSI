@@ -5,14 +5,16 @@
 #include "Element.h"
 #include "Mapping.h"
 #include "GmshParser.h"
+#include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <queue>
 #include <algorithm>
 
 
 map<string,int> EssiTagVariableMap;
 queue<string> TempVariable;
-// fstream InputFile(), MainFile(), NodeFile(), ElementFile(), LoadFile();
+fstream MainFile(), NodeFile(), ElementFile(), LoadFile();
 
 string getVariable(string& var);
 void clear( queue<string> &q );
@@ -21,9 +23,11 @@ void PrintEssiCommand(string Command, int NofEssiVariables);
 
 int main(int argc, char* argv[]){
 
-    // if( argc == 0 ){ cout << "Please Enter the Gmsh File "<< endl; exit;}
-    // string file = argv[1];
-    // fs.open(file,fstream::out) { cout << "Invalid File : Please Enter the Correct File" << endl; exit;}
+    if( argc == 0 ){ cout << "Please Enter the Gmsh File "<< endl; exit(0);}
+    string file = argv[1];
+    fstream InputFile(file,fstream::in);
+    if(!InputFile.is_open())
+        cout << "ERROR:: The program failed to open the file" << endl; 
 
     Mapping Map = Mapping("mapping.fei");
     Map.createMapping();
