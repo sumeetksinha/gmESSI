@@ -70,7 +70,9 @@ class GmshTranslator{
 
         map<string,int> EssiTagVariableMap;
         queue<string> TempVariable;
-        fstream MainFile(), NodeFile(), ElementFile(), LoadFile();
+        fstream MainFile();
+        fstream GeometryFile();
+        fstream LoadFile();
 };
 
 #endif //GMSHTRANSLATOR_H
