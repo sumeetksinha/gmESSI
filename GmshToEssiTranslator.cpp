@@ -12,6 +12,7 @@
 
 map<string,int> EssiTagVariableMap;
 queue<string> TempVariable;
+// fstream InputFile(), MainFile(), NodeFile(), ElementFile(), LoadFile();
 
 string getVariable(string& var);
 void clear( queue<string> &q );
@@ -19,6 +20,10 @@ string delSpaces(string str);
 void PrintEssiCommand(string Command, int NofEssiVariables);
 
 int main(int argc, char* argv[]){
+
+    // if( argc == 0 ){ cout << "Please Enter the Gmsh File "<< endl; exit;}
+    // string file = argv[1];
+    // fs.open(file,fstream::out) { cout << "Invalid File : Please Enter the Correct File" << endl; exit;}
 
     Mapping Map = Mapping("mapping.fei");
     Map.createMapping();
@@ -227,7 +232,7 @@ int main(int argc, char* argv[]){
                                 TempVariable.push(Variables.at(n++));   
                             }
                         }
-                        
+
                         PrintEssiCommand(FunctionIter->second.getEssiCommand(),FunctionIter->second.getNofEssiVariables());
                     }
                 }
