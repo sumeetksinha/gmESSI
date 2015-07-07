@@ -15,6 +15,10 @@
 ****************************** Constructor ************************************
 ******************************************************************************/
 
+GmshParser::GmshParser(){
+
+}
+
 GmshParser::GmshParser(const string& filename){
 
 	this->FileName = filename;

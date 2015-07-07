@@ -28,6 +28,7 @@ class GmshParser{
 
 	public:
 
+		GmshParser();
 		GmshParser(const string& FileName);
 		~GmshParser();
 
