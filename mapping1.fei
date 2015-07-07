@@ -1,9 +1,7 @@
 #ELEMENT_ID
 	 nc "Nodal Command" 
 	 ec "General Elemental Commands"
-	 sc "Singular Commands"
-	 sp "Special Commands"
-	 0 "Element-cum-physicalgroup commands"     //Hybrid of Element and Node Commands
+	 sc "Singular commands"
 	 1 "2-node line."
 	 2 "3-node triangle."
 	 3 "4-node quadrangle."
@@ -117,28 +115,28 @@
 		!sc <mass{node#1,mx,my,mz,Imx,Imy,Imz}>										            	add mass to node #{} mx ={} my ={} mz ={} Imx ={} Imy ={} Imz ={};
 		!sc <PenaltyNode{node#1,stiffness, dof}>									            	add element #{} type penalty_for_applying_generalized_displacement with node ({}) stiffness = {} dof {};
 		!sc <NodeDamping{damping#1,node#1}>										            		add damping #{} to node #{};
-		!sc <FixNode{node#1,r1}>							            							fix node #{} dofs {};
-		!sc <FixNode{node#1,r1,r2}>							            							fix node #{} dofs {} {};
-		!sc <FixNode{node#1,r1,r2,r3}>							            						fix node #{} dofs {} {} {} 
-		!sc <FixNode{node#1,r1,r2,r3,r4}>							            					fix node #{} dofs {} {} {} {};
-		!sc <FixNode{node#1,r1,r2,r3,r4,r5}>							            				fix node #{} dofs {} {} {} {} {};
-		!sc <FixNode{node#1,r1,r2,r3,r4,r5,r6}>							            				fix node #{} dofs {} {} {} {} {} {};
-		!sc <FixNode{node#1,r1,r2,r3,r4,r5,r6,r7}>							            			fix node #{} dofs {} {} {} {} {} {} {};
-		!sc <FixNode{node#1,r1,r2,r3,r4,r5,r6,r7,r8}>							            		fix node #{} dofs {} {} {} {} {} {} {} {};
-		!sc <FreeNode{node#1,r1}>							            							free node #{} dofs {};
-		!sc <FreeNode{node#1,r1,r2}>							            						free node #{} dofs {} {};
-		!sc <FreeNode{node#1,r1,r2,r3}>							            						free node #{} dofs {} {} {};
-		!sc <FreeNode{node#1,r1,r2,r3,r4}>							            					free node #{} dofs {} {} {} {};
-		!sc <FreeNode{node#1,r1,r2,r3,r4,r5}>							            				free node #{} dofs {} {} {} {} {};
-		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6}>							            			free node #{} dofs {} {} {} {} {} {};
-		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6,r7}>							            			free node #{} dofs {} {} {} {} {} {} {};
-		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6,r7,r8}>							            		free node #{} dofs {} {} {} {} {} {} {} {};
-		!sc <MasterSlave{node#1,node#2,dof}>										            	add constraint equal dof with master node #{} and slave node #{}  dof to constrain {};
+		!sc <FixNode{node#1,r1}>							            							fix node #{} dofs ({});
+		!sc <FixNode{node#1,r1,r2}>							            							fix node #{} dofs ({},{});
+		!sc <FixNode{node#1,r1,r2,r3}>							            						fix node #{} dofs ({},{},{});
+		!sc <FixNode{node#1,r1,r2,r3,r4}>							            					fix node #{} dofs ({},{},{},{});
+		!sc <FixNode{node#1,r1,r2,r3,r4,r5}>							            				fix node #{} dofs ({},{},{},{},{});
+		!sc <FixNode{node#1,r1,r2,r3,r4,r5,r6}>							            				fix node #{} dofs ({},{},{},{},{},{});
+		!sc <FixNode{node#1,r1,r2,r3,r4,r5,r6,r7}>							            			fix node #{} dofs ({},{},{},{},{},{},{});
+		!sc <FixNode{node#1,r1,r2,r3,r4,r5,r6,r7,r8}>							            		fix node #{} dofs ({},{},{},{},{},{},{},{});
+		!sc <FreeNode{node#1,r1}>							            							free node #{} dofs ({});
+		!sc <FreeNode{node#1,r1,r2}>							            						free node #{} dofs ({},{});
+		!sc <FreeNode{node#1,r1,r2,r3}>							            						free node #{} dofs ({},{},{});
+		!sc <FreeNode{node#1,r1,r2,r3,r4}>							            					free node #{} dofs ({},{},{},{});
+		!sc <FreeNode{node#1,r1,r2,r3,r4,r5}>							            				free node #{} dofs ({},{},{},{},{});
+		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6}>							            			free node #{} dofs ({},{},{},{},{},{});
+		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6,r7}>							            			free node #{} dofs ({},{},{},{},{},{},{});
+		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6,r7,r8}>							            		free node #{} dofs ({},{},{},{},{},{},{},{});
+		!sc <MasterSlave{node#1,node#2dof}>										            		add constraint equal dof with master node #{} and slave node #{}  dof to constrain {};
 		!sc <RemoveMasterSlave{node#1,node#2,dof}>									            	remove constraint equal dof with master node #{} and slave node #{}  dof to constrain {};
 		!sc <SinglePointConstraint{node#1,dof,val}>									            	add single point constraint to node #{}  dof to constrain {} constraint value of {};
 		!sc <NodeLoad{node#1,dir,mag}>												            	add load #{} to node #{} type linear {} = {}; 
-		!sc <NodeLoad{node#1,path_series,dir,mag,seriesfile}>						            	add load #{} to node #{} type path_series {} = {} series_file ={};
-		!sc <NodeLoad{node#1,path_time_series,dir,mag,time_step,seriesfile}>			            add load #{} to node #{} type path_time_series {} = {} time_step = {} series_file ={};
+		!sc <NodeLoad{node#1,path_series,dir,mag,seriesfile>						            	add load #{} to node #{} type path_series {} = {} series_file ={};
+		!sc <NodeLoad{node#1,path_time_series,dir,mag,time_step,seriesfile>			            	add load #{} to node #{} type path_time_series {} = {} time_step = {} series_file ={};
 		!sc <ImposedMotion{node#1,dof,time_step,dis_scl,dis_fl,vel_scl,vel_fl,acc_scl,acc_fl}> 		add imposed motion #{} to node #{} dof {} time_step = {} displacement_scale_unit = {} displacement_file = {} velocity_scale_unit = {} velocity_file = {} acceleration_scale_unit = {} acceleration_file ={};	
 		!sc <RemoveLoad{node#1}>																	remove load #{};
 		!sc <RemoveImposedMotion{node#1}>															remove imposed motion #{};
@@ -146,7 +144,7 @@
 
 	//Variables in ESSI 
 
-		!sc <Var{variable,value}>																	{} {} = {};
+		!sc <Var{var,value}>																		var = value;
 
 	//Elemental Derived Commands  --- 16 8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
 	//Elemental Derived Commands  --- 17 20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
@@ -180,7 +178,7 @@
 
 // General Elemental Commands
 
-	!ec <SelfWeight{field#1}|SelfWeight{load#1,element#1,field#1}>							    																														add load #{} to element #{} type self_weight use acceleration field #{} ;
+	!ec <SelfWeight{field}|SelfWeight{load#1,element#1,field}>							    																														add load #{} to element #{} type self_weight use acceleration field #{} ;
 	!ec <ElementDamping{damping#1}|ElementDamping{damping#1,element#1}>				    																															add damping #{} to element #{};
 	!ec <Penalty_Displacement{displacement#1,element#1,dof,scalefactor,seriesfile}|Penalty_Displacement{dof,scalefactor,seriesfile}>		    																	add penalty displacement #{} to element #{} dof {} type path_time_series scale_factor = {} series_file = {};
 
@@ -208,14 +206,14 @@
 
 //Elemental Commands  --- 5 8-node hexahedron.
 
-	!5 <8NodeBrick{material#1}> 																add element #{} type 8NodeBrick with nodes ({},{},{},{},{},{},{},{}) use material #{};
-	!5 <8NodeBrick_gauss_points{material#1}> 													add element #{} type 8NodeBrick using  Gauss points each direction with nodes ({},{},{},{},{},{},{},{}) use material #{};
-	!5 <8NodeBrickLT{material#1}>																add element #{} type 8NodeBrickLT with nodes ({},{},{},{},{},{},{},{}) use material #{};
-	!5 <8NodeBrick_elastic{material#1}>															add element #{} type 8NodeBrick_elastic with nodes ({},{},{},{},{},{},{},{}) use material #{};
-	!5 <8NodeBrick_up{material#1}>																add element #{} type 8NodeBrick_up with nodes ({},{},{},{},{},{},{},{}) use material #{} porosity = {} alpha = {} rho_s = {} rho_f = {} k_x = {} k_y = {} k_z = {} K_s = {} K_f= {};
-	!5 <8NodeBrick_upU{material#1}>																add element #{} type 8NodeBrick_upU with nodes ({},{},{},{},{},{},{},{}) use material #{} porosity = {} alpha = {} rho_s = {} rho_f = { k_x = {} k_y = {} k_z = {} K_s = {} K_f= {};
-	!5-c <8NodeBrick_SurfaceLoad{PhyEntTag,m1}>													add load #{} to element #{} type surface at nodes ({},{},{},{}) with magnitude ({});
-	!5-c <8NodeBrick_SurfaceLoad{PhyEntTag,m1,m2,m3,m4}>									    add load #{} to element #{} type surface at nodes ({},{},{},{}) with magnitudes ({},{},{},{});
+	!5 <8NodeBrick{material#1}|8NodeBrick{element#1,nodes#1,nodes#2,nodes#3,nodes#4,nodes#5,nodes#6,nodes#7,nodes#8,material#1}> 																					add element #{} type 8NodeBrick with nodes ({},{},{},{},{},{},{},{}) use material #{};
+	!5 <8NodeBrick_gauss_points{material#1}|8NodeBrick_gauss_points{element#1,nodes#1,nodes#2,nodes#3,nodes#4,nodes#5,nodes#6,nodes#7,nodes#8,material#1}> 															add element #{} type 8NodeBrick using  Gauss points each direction with nodes ({},{},{},{},{},{},{},{}) use material #{};
+	!5 <8NodeBrickLT{material#1}|8NodeBrickLT{element#1,nodes#1,nodes#2,nodes#3,nodes#4,nodes#5,nodes#6,nodes#7,nodes#8,material#1}>																				add element #{} type 8NodeBrickLT with nodes ({},{},{},{},{},{},{},{}) use material #{};
+	!5 <8NodeBrick_elastic{material#1}|8NodeBrick_elastic{element#1,nodes#1,nodes#2,nodes#3,nodes#4,nodes#5,nodes#6,nodes#7,nodes#8,material#1}>																	add element #{} type 8NodeBrick_elastic with nodes ({},{},{},{},{},{},{},{}) use material #{};
+	!5 <8NodeBrick_up{material#1}|8NodeBrick_u{element#1,nodes#1,nodes#2,nodes#3,nodes#4,nodes#5,nodes#6,nodes#7,nodes#8,material#1}>																				add element #{} type 8NodeBrick_up with nodes ({},{},{},{},{},{},{},{}) use material #{} porosity = {} alpha = {} rho_s = {} rho_f = {} k_x = {} k_y = {} k_z = {} K_s = {} K_f= {};
+	!5 <8NodeBrick_upU{material#1}|8NodeBrick_upU{element#1,nodes#1,nodes#2,nodes#3,nodes#4,nodes#5,nodes#6,nodes#7,nodes#8,material#1}>																			add element #{} type 8NodeBrick_upU with nodes ({},{},{},{},{},{},{},{}) use material #{} porosity = {} alpha = {} rho_s = {} rho_f = { k_x = {} k_y = {} k_z = {} K_s = {} K_f= {};
+	!5-c <8NodeBrick_SurfaceLoad{PhyEntTag,magnitude}>																																								add load #{} to element #{} type surface at nodes ({},{},{},{}) with magnitude ({});
+	!5-c <8NodeBrick_SurfaceLoad{PhyEntTag,m1,m2,m3,m4}>																																							add load #{} to element #{} type surface at nodes ({},{},{},{}) with magnitudes ({},{},{},{});
 	
 //Elemental Commands  --- 6 6-node prism.
 //Elemental Commands  --- 7 5-node pyramid.
@@ -240,28 +238,28 @@
 	!nc <mass{mx,my,mz,Imx,Imy,Imz}>										            		add mass to node #{} mx ={} my ={} mz ={} Imx ={} Imy ={} Imz ={};
 	!nc <PenaltyNode{stiffness, dof}>									            			add element #{} type penalty_for_applying_generalized_displacement with node ({}) stiffness = {} dof {};
 	!nc <NodeDamping{damping#1}>										            			add damping #{} to node #{};
-	!nc <Fix{r1}>							            										fix node #{} dofs {};
-	!nc <Fix{r1,r2}>							            									fix node #{} dofs {} {};
-	!nc <Fix{r1,r2,r3}>							            									fix node #{} dofs {} {} {};
-	!nc <Fix{r1,r2,r3,r4}>							            								fix node #{} dofs {} {} {} {};
-	!nc <Fix{r1,r2,r3,r4,r5}>							            							fix node #{} dofs {} {} {} {} {};
-	!nc <Fix{r1,r2,r3,r4,r5,r6}>							            						fix node #{} dofs {} {} {} {} {} {};
-	!nc <Fix{r1,r2,r3,r4,r5,r6,r7}>							            						fix node #{} dofs {} {} {} {} {} {} {};
-	!nc <Fix{r1,r2,r3,r4,r5,r6,r7,r8}>							            					fix node #{} dofs {} {} {} {} {} {} {} {};
-	!nc <Free{r1}>							            										free node #{} dofs {};
-	!nc <Free{r1,r2}>							            									free node #{} dofs {} {}; 
-	!nc <Free{r1,r2,r3}>							            								free node #{} dofs {} {} {}; 
-	!nc <Free{r1,r2,r3,r4}>							            								free node #{} dofs {} {} {} {}; 
-	!nc <Free{r1,r2,r3,r4,r5}>							            							free node #{} dofs {} {} {} {} {}; 
-	!nc <Free{r1,r2,r3,r4,r5,r6}>							            						free node #{} dofs {} {} {} {} {} {}; 
-	!nc <Free{r1,r2,r3,r4,r5,r6,r7}>							            					free node #{} dofs {} {} {} {} {} {} {}; 
-	!nc <Free{r1,r2,r3,r4,r5,r6,r7,r8}>							            					free node #{} dofs {} {} {} {} {} {} {} {};
+	!nc <FixNode{r1}>							            									fix node #{} dofs ({});
+	!nc <FixNode{r1,r2}>							            								fix node #{} dofs ({},{});
+	!nc <FixNode{r1,r2,r3}>							            								fix node #{} dofs ({},{},{});
+	!nc <FixNode{r1,r2,r3,r4}>							            							fix node #{} dofs ({},{},{},{});
+	!nc <FixNode{r1,r2,r3,r4,r5}>							            						fix node #{} dofs ({},{},{},{},{});
+	!nc <FixNode{r1,r2,r3,r4,r5,r6}>							            					fix node #{} dofs ({},{},{},{},{},{});
+	!nc <FixNode{r1,r2,r3,r4,r5,r6,r7}>							            					fix node #{} dofs ({},{},{},{},{},{},{});
+	!nc <FixNode{r1,r2,r3,r4,r5,r6,r7,r8}>							            				fix node #{} dofs ({},{},{},{},{},{},{},{});
+	!nc <FreeNode{r1}>							            									free node #{} dofs ({});
+	!nc <FreeNode{r1,r2}>							            								free node #{} dofs ({},{});
+	!nc <FreeNode{r1,r2,r3}>							            							free node #{} dofs ({},{},{});
+	!nc <FreeNode{r1,r2,r3,r4}>							            							free node #{} dofs ({},{},{},{});
+	!nc <FreeNode{r1,r2,r3,r4,r5}>							            						free node #{} dofs ({},{},{},{},{});
+	!nc <FreeNode{r1,r2,r3,r4,r5,r6}>							            					free node #{} dofs ({},{},{},{},{},{});
+	!nc <FreeNode{r1,r2,r3,r4,r5,r6,r7}>							            				free node #{} dofs ({},{},{},{},{},{},{});
+	!nc <FreeNode{r1,r2,r3,r4,r5,r6,r7,r8}>							            				free node #{} dofs ({},{},{},{},{},{},{},{});
 	!nc <MasterSlave{node#1,dof}>										            			add constraint equal dof with master node #{} and slave node #{}  dof to constrain {};
 	!nc <RemoveMasterSlave{node#1,dof}>									            			remove constraint equal dof with master node #{} and slave node #{}  dof to constrain {};
 	!nc <SinglePointConstraint{dof,val}>									            		add single point constraint to node #{}  dof to constrain {} constraint value of {};
-	!nc <NodeLoad{Dir,mag}>												            			add load #{} to node #{} type linear {}= {}; 
-	!nc <NodeLoad{path_series,dir,mag,seriesfile}>						            			add load #{} to node #{} type path_series {} = {} series_file ={};
-	!nc <NodeLoad{path_time_series,dir,mag,time_step,seriesfile}>			            		add load #{} to node #{} type path_time_series {} = {} time_step = {} series_file ={};
+	!nc <NodeLoad{Dir,mag}>												            			add load #{} to node #{} type linear {} = {}; 
+	!nc <NodeLoad{path_series,dir,mag,seriesfile>						            			add load #{} to node #{} type path_series {} = {} series_file ={};
+	!nc <NodeLoad{path_time_series,dir,mag,time_step,seriesfile>			            		add load #{} to node #{} type path_time_series {} = {} time_step = {} series_file ={};
 	!nc <ImposedMotion{dof,time_step,dis_scl,dis_fl,vel_scl,vel_fl,acc_scl,acc_fl}> 			add imposed motion #{} to node #{} dof {} time_step = {} displacement_scale_unit = {} displacement_file = {} velocity_scale_unit = {} velocity_file = {} acceleration_scale_unit = {} acceleration_file ={};	
 		
 //Elemental Commands  --- 16 8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
