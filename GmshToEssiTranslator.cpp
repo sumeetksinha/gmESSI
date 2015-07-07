@@ -283,8 +283,8 @@ int main(int argc, char* argv[]){
                     // // cout<< type << " " << tag << endl; 
                     // // cout << "EntityMap Size = " << EntityMap.size() << endl;
                     // // cout << "PhysicalmapSize = " << PhysicalGroupMap.size() << endl;
-                    // cout << "No. of Essi Variables= " << FunctionIter->second.getNofEssiVariables() << endl;
-                    // cout << "No. of EVariables= " << NofVariables<< endl;
+                    cout << "No. of Essi Variables= " << FunctionIter->second.getNofEssiVariables() << endl;
+                    cout << "No. of EVariables= " << NofVariables<< endl;
 
                     int n=0;
 

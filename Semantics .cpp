@@ -148,7 +148,6 @@ void Semantics::setMatchMode(){
 
    	while(tknzr.hasMoreTokens()){
    		this->SemanticsId = tknzr.nextToken();
-   		// cout << this->GmshCommand << "  " << tknzr.currToken() << " " << to_string(this->getMatchMode()) << endl;
    		break;
    	}
 }
@@ -205,6 +204,7 @@ void Semantics::setEssiCommand(const string& Command){
 		}
 		
 		this->VarList.push_back(variable);
+		// inpString.setDelimiter("{}#()=");
 	}
 
 	this->NofEssiVariables = this->VarList.size();
