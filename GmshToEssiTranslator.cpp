@@ -1,4 +1,3 @@
-// testing Tokenizer class
 
 #include "Tokenizer.h"
 #include "Semantics.h"
@@ -15,12 +14,13 @@ map<string,int> EssiTagVariableMap;
 queue<string> TempVariable;
 
 string getVariable(string& var);
+void clear( queue<string> &q );
 string delSpaces(string str);
-void PrintEssiCommand(string Command);
+void PrintEssiCommand(string Command, int NofEssiVariables);
 
 int main(int argc, char* argv[]){
 
-    Mapping Map = Mapping("mapping1.fei");
+    Mapping Map = Mapping("mapping.fei");
     Map.createMapping();
     GmshParser GmshParse = GmshParser("Bar_1.msh");
     GmshParse.Parse();
@@ -65,7 +65,6 @@ int main(int argc, char* argv[]){
 
                 if(FunctionIter->second.getMatchMode()){
                     
-                    cout<< "Elemental Command" ;
                     map<int,NodeElement>::iterator PhysicalGroupMapIter =PhysicalGroupMap.find(PhysicalGroupList.at(i).getId());
                     vector<Element> ElementList =PhysicalGroupMapIter->second.ElementList;
                     map<int,int>  NodeList =PhysicalGroupMapIter->second.NodeList;
@@ -77,9 +76,15 @@ int main(int argc, char* argv[]){
 
                     if (!(FunctionIter->second.getSemanticsId().compare("c"))){   // meaning Elemental Compound Commands
 
+                        cout<< "Elemental Compound Command" ;
                         Tokenizer tkr = Tokenizer(Variables.at(0),"#");
                         string type = delSpaces(tkr.nextToken());
                         int tag = stoi(delSpaces(tkr.nextToken()));
+
+                        // cout<< type << " " << tag << endl; 
+                        // cout << "EntityMap Size = " << EntityMap.size() << endl;
+                        // cout << "PhysicalmapSize = " << PhysicalGroupMap.size() << endl;
+                        // cout << "No. of Essi Variables= " << FunctionIter->second.getNofEssiVariables() << endl;
 
                         map<int,NodeElement>::iterator EntityMapIter = EntityMap.find(tag);
                         map<int,NodeElement>::iterator PhysicalMapIter =PhysicalGroupMap.find(tag);
@@ -97,17 +102,18 @@ int main(int argc, char* argv[]){
                                  
                                     if(!var.compare("element")){
                                         TempVariable.push(to_string(ElementList.at(k).getId()));
+  
                                     }
                                     else if(!var.compare("node") || !var.compare("nodes")){
 
-                                        bool loop=true;
+                                        bool loop=true; int loopMax =  ElementList.at(k).getNodeList().size();
 
-                                        while(loop){
+                                        while(loop && m<loopMax){
                                              
                                             if(!type.compare("Phy")){
 
-                                                map<int,int>::iterator NodeIter = EntityMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
-                                                map<int,int>::iterator NodeIterEnd = EntityMapIter->second.NodeList.end();
+                                                map<int,int>::iterator NodeIter = PhysicalMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+                                                map<int,int>::iterator NodeIterEnd = PhysicalMapIter->second.NodeList.end();
 
                                                 if(NodeIter!= NodeIterEnd){
 
@@ -120,8 +126,8 @@ int main(int argc, char* argv[]){
 
                                             else if (!type.compare("Enty")){
 
-                                                map<int,int>::iterator NodeIter = PhysicalMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
-                                                map<int,int>::iterator NodeIterEnd = PhysicalMapIter->second.NodeList.end();
+                                                map<int,int>::iterator NodeIter = EntityMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+                                                map<int,int>::iterator NodeIterEnd = EntityMapIter->second.NodeList.end();
 
                                                 if(NodeIter!= NodeIterEnd){
 
@@ -135,20 +141,26 @@ int main(int argc, char* argv[]){
                                     }
                                     else if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
                                         TempVariable.push(getVariable(var)); 
+
                                     }
                                     else {
-                                        TempVariable.push(Variables.at(n++));   
-                                    }
+                                        TempVariable.push(Variables.at(n++)); 
+
+                                   }
                                 }
 
-                                PrintEssiCommand(FunctionIter->second.getEssiCommand());
-                                cout << endl;
+                                if (TempVariable.size() == FunctionIter->second.getNofEssiVariables())  
+                                    PrintEssiCommand(FunctionIter->second.getEssiCommand(),FunctionIter->second.getNofEssiVariables());
+                                else
+                                    clear(TempVariable);
                             }
 
                         }
                     }
 
                     else{
+
+                        cout<< "Elemental Command" ;
 
                         for(int k =0;k<ElementListSize ; k++){
 
@@ -175,8 +187,7 @@ int main(int argc, char* argv[]){
                                     }
                                 }
 
-                                PrintEssiCommand(FunctionIter->second.getEssiCommand());
-                                cout << endl;
+                                PrintEssiCommand(FunctionIter->second.getEssiCommand(),FunctionIter->second.getNofEssiVariables());
                             }
 
                         }
@@ -184,9 +195,9 @@ int main(int argc, char* argv[]){
                     }
                 }
 
-                else if (!FunctionIter->second.getElementId().compare("n")){
+                else if (!FunctionIter->second.getElementId().compare("nc")){
                     
-                    cout<< "Node Commands ";
+                    cout<< "Nodal Commands ";
 
                     map<int,NodeElement>::iterator PhysicalGroupMapIter =PhysicalGroupMap.find(PhysicalGroupList.at(i).getId());
                     map<int,int> NodeList =PhysicalGroupMapIter->second.NodeList;
@@ -196,8 +207,6 @@ int main(int argc, char* argv[]){
                     map<int,int> ::iterator NodeListBegin = NodeList.begin();
                     map<int,int> ::iterator NodeListEnd = NodeList.end();
                     int NofEssiVariables = FunctionIter->second.getNofEssiVariables();
-
-                    cout << NofEssiVariables << endl;
 
                     for(map<int,int>::iterator it=NodeListBegin; it!=NodeListEnd; ++it){
 
@@ -218,8 +227,8 @@ int main(int argc, char* argv[]){
                                 TempVariable.push(Variables.at(n++));   
                             }
                         }
-                        PrintEssiCommand(FunctionIter->second.getEssiCommand());
-                        cout << endl;
+                        
+                        PrintEssiCommand(FunctionIter->second.getEssiCommand(),FunctionIter->second.getNofEssiVariables());
                     }
                 }
 
@@ -258,42 +267,48 @@ int main(int argc, char* argv[]){
                             }
                         }
 
-                        PrintEssiCommand(FunctionIter->second.getEssiCommand());
-                        cout << endl;
-
+                        PrintEssiCommand(FunctionIter->second.getEssiCommand(),FunctionIter->second.getNofEssiVariables());
                     }
                 }
 
                 else if (!FunctionIter->second.getElementId().compare("sc")){
 
-                    cout<< "General Elemental Commands";
+                    cout<< "Singular Commands";
 
                     vector<string> Variables = VariableList.at(j);
                     vector<string> EssiVariables= FunctionIter->second.getVarList();
                     int NofVariables = NofVariablesList.at(j);
                     int NofEssiVariables = FunctionIter->second.getNofEssiVariables();
 
+                    // // cout<< type << " " << tag << endl; 
+                    // // cout << "EntityMap Size = " << EntityMap.size() << endl;
+                    // // cout << "PhysicalmapSize = " << PhysicalGroupMap.size() << endl;
+                    // cout << "No. of Essi Variables= " << FunctionIter->second.getNofEssiVariables() << endl;
+                    // cout << "No. of EVariables= " << NofVariables<< endl;
+
                     int n=0;
+
                     for(int l=0 ; l<NofEssiVariables ;l++ ){
     
                         Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
                         string var = tknzr.nextToken();
-                       
+                    
                         if (EssiTagVariableMap.find(var) != EssiTagVariableMap.end()){
-                            TempVariable.push(getVariable(var)); 
+
+                            TempVariable.push(getVariable(var));
                         }
                         else {
+
                             TempVariable.push(Variables.at(n++));   
                         }
                     }
 
-                    PrintEssiCommand(FunctionIter->second.getEssiCommand());
-                    cout << endl;
+                    PrintEssiCommand(FunctionIter->second.getEssiCommand(),FunctionIter->second.getNofEssiVariables());
                 }
             }
         }
 
-        cout<< PhysicalGroupList.at(i).getId() << endl;
+        // cout<< PhysicalGroupList.at(i).getId() << endl;
     }
 
     return 0;
@@ -318,28 +333,30 @@ string getVariable(string& var){
     return  to_string(EssiTagIter->second++);
 }
 
-void PrintEssiCommand(string Command){
+void PrintEssiCommand(string Command, int NofEssiVariables){
 
     int nofTokens = 0;
     string Ecommand = "";
     Tokenizer inpString = Tokenizer(Command,"{}") ;
     
-    while(inpString.hasMoreTokens()){
+    while(inpString.hasMoreTokens() && nofTokens++<NofEssiVariables){
 
-        Tokenizer Var = Tokenizer(inpString.nextToken()," ,");
-
-        if(!delSpaces(inpString.currToken()).compare(";")) break;                        // Termination Condition with ";"
-
-        cout << inpString.currToken() << " ";
+        cout << inpString.nextToken() << " ";
         cout << TempVariable.front();
         TempVariable.pop();
     }
-    cout << " ;" << endl;
+    cout << " " <<inpString.nextToken() << endl;
 }
 
 
 string delSpaces(string str){
+
    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
    return str;
 }
 
+void clear( queue<string> &q ){
+
+   queue<string> empty;
+   swap( q, empty );
+}

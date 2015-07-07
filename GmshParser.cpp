@@ -184,7 +184,7 @@ void GmshParser::parseGmshFile(){
 
 		}
 
-		if(EntityTag=0){
+		if(EntityTag!=0){
 
 			map<int,NodeElement>::iterator it = this->EntityMap.find(EntityTag);
 
