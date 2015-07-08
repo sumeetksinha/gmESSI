@@ -130,6 +130,8 @@ void GmshTranslator::GmshToEssi(){
                     this->GeneralElementalCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("sc"))
                     this->SingularCommand(i,j);
+                else if (!this->FunctionIter->second.getElementId().compare("an"))
+                    this->AddNodeCommand(i,j);
             }
             else{
                 
@@ -138,6 +140,77 @@ void GmshTranslator::GmshToEssi(){
             }
         }
     }
+}
+
+void GmshTranslator::AddNodeCommand(const int&i, const int& j){
+
+    // Add Node Command
+
+    int nofRun=0;
+    ofstream GeometryFile(geometryFile,ios::app); 
+
+    if(!(this->UserCommandList.at(j).substr(3,3).compare("All"))){
+
+        map<int,Node> ::iterator AllNodeBegin = this->NodeMap.begin();
+        map<int,Node> ::iterator AllNodeEnd = this->NodeMap.end();
+
+        for(map<int,Node>::iterator it=AllNodeBegin; it!=AllNodeEnd; ++it){
+        
+            this->TempVariable.push(to_string(it->second.getId()));
+            this->TempVariable.push(to_string(it->second.getXcord())); 
+            this->TempVariable.push(to_string(it->second.getYcord()));
+            this->TempVariable.push(to_string(it->second.getZcord())); 
+            this->TempVariable.push(this->VariableList.at(j).at(0)); 
+
+            GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+        
+        }
+
+        cout << "Sucessfully Converted" << endl;
+
+        GeometryFile.close();
+        return;
+    }
+
+    map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.NodeList.size()==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    map<int,int> NodeList =PhysicalGroupMapIter->second.NodeList;
+    vector<string> Variables = this->VariableList.at(j);
+    int NofVariables = NofVariablesList.at(j);
+    map<int,int> ::iterator NodeListBegin = NodeList.begin();
+    map<int,int> ::iterator NodeListEnd = NodeList.end();
+
+    for(map<int,int>::iterator it=NodeListBegin; it!=NodeListEnd; ++it){
+        
+        nofRun++;
+        map<int,Node>::iterator NodeInfo = this->NodeMap.find(it->second);
+
+        this->TempVariable.push(to_string(it->second));
+        this->TempVariable.push(to_string(NodeInfo->second.getXcord())); 
+        this->TempVariable.push(to_string(NodeInfo->second.getYcord()));
+        this->TempVariable.push(to_string(NodeInfo->second.getZcord())); 
+        this->TempVariable.push(Variables.at(0)); 
+
+        GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+    }
+
+    if(nofRun==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
+    GeometryFile.close();
 }
 
 void GmshTranslator::ElementalCommand(const int& i, const int& j){
@@ -536,6 +609,7 @@ string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, in
         string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has more than required variables" + " \033[0m\n" ; 
         throw msg.c_str();
     }
+
     if(this->TempVariable.size() < NofEssiVariables) {
         
         string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has less than required variables" + " \033[0m\n" ; 

@@ -48,6 +48,7 @@ class GmshTranslator{
         string PrintEssiCommand(string Command, int NofEssiVariables, int j);
         string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
 
+        void AddNodeCommand(const int&i, const int& j);
         void ElementalCommand(const int& i, const int& j);
         void ElementalCompoundCommand(const int& i, const int& j);
         void NodalCommand(const int& i, const int& j);
