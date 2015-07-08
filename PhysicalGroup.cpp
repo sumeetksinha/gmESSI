@@ -38,6 +38,7 @@ void PhysicalGroup::setId(const int& id){
 
 	this->Id=id;
 }
+
 void PhysicalGroup::setType(const int& type){
 
 	this->Type = type;
@@ -51,18 +52,27 @@ int PhysicalGroup::getId(){
 
 	return this->Id;
 }
+
 int PhysicalGroup::getType(){
 
 	return this->Type;
 }
+
 string PhysicalGroup::getPhysicTag(){
 
 	return this->PhysicTag;
 }
-vector<string> PhysicalGroup::PhysicalGroup::getCommandList(){
+
+vector<string> PhysicalGroup::getCommandList(){
 
 	return this->CommandList;
 }
+
+vector<string> PhysicalGroup::getUserCommandList(){
+
+	return this->UserCommandList;
+}
+
 vector<vector<string>> PhysicalGroup::getVariableList(){
 
 	return this->VariableList;
@@ -125,7 +135,7 @@ void PhysicalGroup::Process(const string& Command ){
 	this->VariableList.push_back(varList);
 	this->CommandList.push_back(essiTag);
 	this->NofVariables.push_back(nofVariables);
-
+	this->UserCommandList.push_back(Command);
 }
 
 string PhysicalGroup::delSpaces(string str){

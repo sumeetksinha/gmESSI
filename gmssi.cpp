@@ -1,31 +1,91 @@
 #include "GmshTranslator.h"
 #include <iostream>
 #include <fstream>
-#include <direct.h>
+#include <sys/stat.h>
+#include <string>
+
+#ifdef _WIN32 
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+    #define slash "\\"
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+	#define slash "/"
+#endif
+
+string getFilePath();
 
 int main(int argc, char* argv[]){
 
-	cout << argv[0]<< endl;
-	if( argc == 1){ cout << "ERROR:: Please Enter the Gmsh File "<< endl; exit(0);}
+	try{
 
-	for (int i =1 ;i <argc ; i++){
+		if( argc <= 1){ 
 
-	    string file = argv[i];
-	    fstream InputFile(file,fstream::in);
+		    string msg = "\033[1;31m ERROR:: Please Enter the Gmsh File \033[0m\n" ; 
+		    throw msg.c_str();		
+		}
 
-	    if(!InputFile.is_open()){ cout << "ERROR:: The program failed to open the file = " <<  file << endl; exit(0);}
 
-	    ofstream MainFile("/GmshFile/text.txt", fstream::out);
-        fstream GeometryFile();
-        fstream LoadFile();
+		for (int i =1 ;i <argc ; i++){
 
-        char* pwd[100]; _getwd(pwd);
+		    string gmshFile = argv[i];
+		    fstream InputFile (gmshFile,fstream::in);
 
-        cout<< pwd;
+		    if(!InputFile.is_open()){ 
 
-	    // GmshTranslator Translator = GmshTranslator(file);
-	    // Translator.Convert();
-	}
+		    	string msg = "\033[1;31m ERROR:: The program failed to open the file = " +  gmshFile + " \033[0m\n" ; 
+		    	throw msg.c_str();
+		    	exit(0);
+		    }
+
+		    Tokenizer str = Tokenizer(gmshFile,".");
+		    gmshFile = str.nextToken();
+		    string newDirectory= getFilePath() + slash +gmshFile+ "_Essi_Simulation";
+
+		    if(!str.nextToken().compare("msh")==0){
+
+		    	string msg = "\033[1;31m ERROR:: The file does not have .msh extension \033[0m\n" ; 
+		    	throw msg.c_str();
+		    }
+
+		    if(!mkdir(newDirectory.c_str(),0777)==0){ 
+
+		    	cout <<  "\033[1;31m ERROR:: Directory Allready Present. Not Able to create the directory \"" + newDirectory  + "\" \033[0m\n";
+		    	cout <<  "Do you want to override the folder contents?(Yy/Nn)" << endl << "\033[1;33m WARNING:: If you say yes, the contents of the Folder may get changed \033[0m\n" ;
+		    	char response;cin >> response;
+
+	    		if(response == 'n' ||response == 'N')  exit(0);
+		    }
+		    newDirectory  =newDirectory +slash;
+
+		   	GmshTranslator Translator = GmshTranslator(gmshFile, newDirectory);
+		    Translator.Convert();
+		}
+	} catch (const char* msg){cerr << msg << endl;}
 
 	return 0;
+}
+
+
+string getFilePath(){
+
+	char filePath[256];
+	
+	if(!GetCurrentDir(filePath, sizeof(filePath))){
+
+		cout<<"** ERROR - Something went wrong, exiting...\n";
+	}
+	
+	string FilePath(filePath);
+
+	return FilePath;
+}
+
+bool copyFile(const string& Source, const string& Destination){
+
+   	ifstream src(Source, ios::binary);
+   	ofstream dest(Destination, ios::binary);
+    dest << src.rdbuf();
+    return src && dest;
 }

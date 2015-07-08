@@ -31,11 +31,11 @@ class GmshTranslator{
     public:
 
         GmshTranslator();
-        GmshTranslator(const string& gmshFile);
-        GmshTranslator(const string& gmshFile, const string& mapppingFile);
+        GmshTranslator(const string& gmshFile, const string& newDir);
+        GmshTranslator(const string& gmshFile, const string& mapppingFile, const string& newDir);
         ~GmshTranslator();
 
-        void setGmshFile(const string& str);
+        void setGmshFile(const string& gmshFile, const string& newDir);
         void Convert();
         string getFileName();
 
@@ -45,8 +45,8 @@ class GmshTranslator{
         string getVariable(string& var);
         void clear( queue<string> &q );
         string delSpaces(string str);
-        void PrintEssiCommand(string Command, int NofEssiVariables);
-        string GmshFile, MappingFile;
+        string PrintEssiCommand(string Command, int NofEssiVariables, int j);
+        string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
 
         void ElementalCommand(const int& i, const int& j);
         void ElementalCompoundCommand(const int& i, const int& j);
@@ -67,12 +67,10 @@ class GmshTranslator{
         vector<string> CommandList;
         vector<vector<string>> VariableList;
         vector<int> NofVariablesList;
+        vector<string> UserCommandList;
 
         map<string,int> EssiTagVariableMap;
         queue<string> TempVariable;
-        fstream MainFile();
-        fstream GeometryFile();
-        fstream LoadFile();
 };
 
 #endif //GMSHTRANSLATOR_H

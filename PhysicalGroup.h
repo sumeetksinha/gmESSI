@@ -26,6 +26,7 @@ class PhysicalGroup{
 		int getType();
 		string getPhysicTag();
 		vector<string> getCommandList();
+		vector<string> getUserCommandList();
 		vector<vector<string>> getVariableList();
 		vector<int> getNofVariables();
 
@@ -37,7 +38,8 @@ class PhysicalGroup{
 		int Id;
 		int Type;
 		string PhysicTag;
-		vector<string>   CommandList;
+		vector<string> UserCommandList;
+		vector<string> CommandList;
 		vector<vector<string>> VariableList;
 		vector<int> NofVariables;
 };

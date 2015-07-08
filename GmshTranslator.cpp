@@ -23,15 +23,23 @@ using namespace::std;
 
 GmshTranslator::GmshTranslator(){}
 
-GmshTranslator::GmshTranslator(const string& gmshFile){
+GmshTranslator::GmshTranslator(const string& gmshFile, const string& newDir){
 
-    this->GmshFile = gmshFile;
+    GmshFile = gmshFile+ ".msh";
+
+    geometryFile = newDir + gmshFile + "_geometry.fei";
+    loadFile = newDir + gmshFile + "_load.fei";
+    mainFile = newDir + gmshFile + "_analysis.fei";
 }
 
-GmshTranslator::GmshTranslator(const string& gmshFile, const string& mappingFile){
+GmshTranslator::GmshTranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
 
-    this->GmshFile = gmshFile;
-    this->MappingFile = mappingFile;
+    GmshFile = gmshFile + ".msh";
+    MappingFile = mappingFile;
+
+    geometryFile = newDir + gmshFile + "_geometry.fei";
+    loadFile = newDir + gmshFile + "_load.fei";
+    mainFile = newDir + gmshFile + "_analysis.fei";
 }
 
 GmshTranslator::~GmshTranslator(){}
@@ -40,9 +48,12 @@ GmshTranslator::~GmshTranslator(){}
 **************************** Public Functions *********************************
 ******************************************************************************/
 
-void GmshTranslator::setGmshFile(const string& gmshFile){
+void GmshTranslator::setGmshFile(const string& gmshFile, const string& newDir){
 
-    this->GmshFile = gmshFile;
+    this->GmshFile = gmshFile +".msh";
+    geometryFile = newDir + gmshFile + "_geometry.fei";
+    loadFile = newDir + gmshFile + "_load.fei";
+    mainFile = newDir + gmshFile + "_analysis.fei";;
 }
 
 void GmshTranslator::Convert(){
@@ -61,6 +72,10 @@ string GmshTranslator::getFileName(){
 ******************************************************************************/
 
 void GmshTranslator::GmshToEssi(){
+
+    ofstream MainFile(mainFile,ios::out);  MainFile.close();
+    ofstream GeometryFile(geometryFile, ios::out); GeometryFile.close();
+    ofstream LoadFile(loadFile,ios::out); LoadFile.close();
 
     this->Map.createMapping();
     this->GmshParse.setFileName(this->GmshFile);
@@ -91,6 +106,7 @@ void GmshTranslator::GmshToEssi(){
         this->CommandList = this->PhysicalGroupList.at(i).getCommandList();
         this->VariableList = this->PhysicalGroupList.at(i).getVariableList();
         this->NofVariablesList = this->PhysicalGroupList.at(i).getNofVariables();
+        this->UserCommandList = this->PhysicalGroupList.at(i).getUserCommandList();
         int CommandListSize = CommandList.size();
 
         for (unsigned j=0; j<CommandListSize; j++){
@@ -114,6 +130,10 @@ void GmshTranslator::GmshToEssi(){
                 else if (!this->FunctionIter->second.getElementId().compare("sc"))
                     this->SingularCommand(i,j);
             }
+            else{
+                
+                cout << endl <<  "\033[1;33m WARNING:: Execuation of the command escaped. The essi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found \n" << " \033[0m\n" ; 
+            }
         }
     }
 }
@@ -128,6 +148,7 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
     int NofVariables = this->NofVariablesList.at(j);
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+    ofstream GeometryFile(geometryFile, ios::app); 
 
     cout<< "Elemental Command" ;
 
@@ -156,9 +177,11 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
                 }
             }
 
-            this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables());
+            GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
         }
     }
+
+    GeometryFile.close();
 }
 
 void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
@@ -171,6 +194,7 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
     int NofVariables = this->NofVariablesList.at(j);
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+    ofstream LoadFile(loadFile,ios::app); 
 
     cout<< "Elemental Compound Command";
 
@@ -237,11 +261,13 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
             }
 
             if (this->TempVariable.size() == this->FunctionIter->second.getNofEssiVariables())  
-                this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables());
+                LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
             else
                 this->clear(this->TempVariable);
         }
     }
+
+    LoadFile.close();
 }
 
 void GmshTranslator::NodalCommand(const int& i, const int& j){
@@ -256,6 +282,7 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
     map<int,int> ::iterator NodeListBegin = NodeList.begin();
     map<int,int> ::iterator NodeListEnd = NodeList.end();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+    ofstream LoadFile(loadFile,ios::app); 
 
     for(map<int,int>::iterator it=NodeListBegin; it!=NodeListEnd; ++it){
 
@@ -277,8 +304,10 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
             }
         }
 
-        this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables());
+        LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
     }
+
+    LoadFile.close();
 }
 
 void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
@@ -292,6 +321,7 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
     int NofVariables = NofVariablesList.at(j);
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+    ofstream LoadFile(loadFile,ios::app); 
 
     for(int k =0;k<ElementListSize ; k++){
 
@@ -316,8 +346,10 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
             }
         }
 
-        this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables());
+        LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
     }
+
+    LoadFile.close();
 }
 
 void GmshTranslator::SingularCommand(const int& i, const int& j){
@@ -329,6 +361,7 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
     int NofVariables = NofVariablesList.at(j);
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
     int n=0;
+    ofstream MainFile(mainFile,ios::app);  
 
     for(int l=0 ; l<NofEssiVariables ;l++ ){
 
@@ -343,7 +376,8 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
         }
     }
 
-    this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables());
+    MainFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+    MainFile.close();
 }
 
 
@@ -365,19 +399,33 @@ string GmshTranslator::getVariable(string& var){
     return  to_string(EssiTagIter->second++);
 }
 
-void GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables){
+string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, int j){
 
     int nofTokens = 0;
     string Ecommand = "";
     Tokenizer inpString = Tokenizer(Command,"{}") ;
+
+    if(this->TempVariable.size() > NofEssiVariables) {
+
+        string msg = "\033[1;31m ERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has more than required variables" + " \033[0m\n" ; 
+        throw msg.c_str();
+    }
+    if(this->TempVariable.size() < NofEssiVariables) {
+        
+        string msg = "\033[1;31m ERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has less than required variables" + " \033[0m\n" ; 
+        throw msg.c_str();
+    }
     
     while(inpString.hasMoreTokens() && nofTokens++<NofEssiVariables){
 
-        cout << inpString.nextToken() << " ";
-        cout << TempVariable.front();
+        Ecommand = Ecommand + inpString.nextToken() + " ";
+        Ecommand = Ecommand + TempVariable.front();
         TempVariable.pop();
     }
-    cout << " " <<inpString.nextToken() << endl;
+    
+    Ecommand = Ecommand + " " + inpString.nextToken() + "\n";
+
+    return Ecommand;
 }
 
 void GmshTranslator::clear( queue<string> &q ){
