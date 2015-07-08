@@ -2,9 +2,10 @@ $MeshFormat
 2.2 0 8
 $EndMeshFormat
 $PhysicalNames
-2
-2 2 "$Fix$ <Var{x,23}> , <RayleighDamping{a0,a1,stiffness}> , <SelfWeight{1}>"
-3 1 "$Soil$ <SelfWeight{1}>"
+3
+2 2 "$Fix$ <Var{x,23}> , <RayleighDamping{a0,a1,stiffness}> , <SelfWeight{1}>, "
+2 4 "$Fix$ <Var{x,23}> , <RayleighDamping{a0,a1,stiffness}> , <SelfWeight{1}>, "
+3 1 "$Soil$ <8NodeBrick{1}>, <SelfWeight{4}> , <8NodeBrick_SurfaceLoad{Enty#26,43}>"
 $EndPhysicalNames
 $Nodes
 15756
