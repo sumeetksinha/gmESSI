@@ -141,6 +141,14 @@ void GmshTranslator::GmshToEssi(){
 void GmshTranslator::ElementalCommand(const int& i, const int& j){
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter =this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()){
+
+        string msg = "\033[1;33m WARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " is not executed as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
     vector<Element> ElementList =PhysicalGroupMapIter->second.ElementList;
     map<int,int>  NodeList =PhysicalGroupMapIter->second.NodeList;
     vector<string> Variables = this->VariableList.at(j);
@@ -315,6 +323,14 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
     cout<< "General Elemental Commands";
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()){
+
+        string msg = "\033[1;33m WARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " is not executed as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        cout << msg;
+        return;       
+    }
+
     vector<Element> ElementList =PhysicalGroupMapIter->second.ElementList;
     vector<string> Variables = VariableList.at(j);
     vector<string> EssiVariables= this->FunctionIter->second.getVarList();
