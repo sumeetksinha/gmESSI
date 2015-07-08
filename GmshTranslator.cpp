@@ -74,7 +74,14 @@ string GmshTranslator::getFileName(){
 
 void GmshTranslator::GmshToEssi(){
 
-    ofstream MainFile(mainFile,ios::out);  MainFile.close();
+    ofstream MainFile(mainFile,ios::out);  
+
+    MainFile << "\n" <<"model name \"" << this->GmshFile << "\";\n";
+    MainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
+    MainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
+    MainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
+
+    MainFile.close();
     ofstream GeometryFile(geometryFile, ios::out); GeometryFile.close();
     ofstream LoadFile(loadFile,ios::out); LoadFile.close();
 
@@ -149,6 +156,10 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
     int nofRun=0;
     ofstream GeometryFile(geometryFile,ios::app); 
 
+    GeometryFile << "\n//*************************************************************************************************************************\n";
+    GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Begins\n";  
+    GeometryFile << "//*************************************************************************************************************************\n\n";
+
     if(!(this->UserCommandList.at(j).substr(3,3).compare("All"))){
 
         map<int,Node> ::iterator AllNodeBegin = this->NodeMap.begin();
@@ -167,6 +178,10 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
         }
 
         cout << "Sucessfully Converted" << endl;
+
+        GeometryFile << "\n//*************************************************************************************************************************\n";
+        GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
+        GeometryFile << "//*************************************************************************************************************************\n\n";
 
         GeometryFile.close();
         return;
@@ -210,12 +225,22 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
 
     cout << "Sucessfully Converted" << endl;
 
+    GeometryFile << "\n//*************************************************************************************************************************\n";
+    GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
+    GeometryFile << "//*************************************************************************************************************************\n\n";
+
     GeometryFile.close();
 }
 
 void GmshTranslator::ElementalCommand(const int& i, const int& j){
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter =this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+    
+    ofstream GeometryFile(geometryFile, ios::app);
+
+    GeometryFile << "\n//*************************************************************************************************************************\n";
+    GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Begins\n";  
+    GeometryFile << "//*************************************************************************************************************************\n\n";
 
     if(PhysicalGroupMapIter==this->PhysicalGroupMap.end() || PhysicalGroupMapIter->second.ElementList.size()==0){
 
@@ -231,7 +256,7 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
     int NofVariables = this->NofVariablesList.at(j);
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
-    ofstream GeometryFile(geometryFile, ios::app); 
+     
 
     // cout<< "Elemental Command";
     int nofRun=0;
@@ -276,12 +301,22 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
 
     cout << "Sucessfully Converted" << endl;
 
+    GeometryFile << "\n//*************************************************************************************************************************\n";
+    GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
+    GeometryFile << "//*************************************************************************************************************************\n\n";
+
     GeometryFile.close();
 }
 
 void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter =this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+    
+    ofstream LoadFile(loadFile,ios::app); 
+
+    LoadFile << "\n//*************************************************************************************************************************\n";
+    LoadFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Begins\n";  
+    LoadFile << "//*************************************************************************************************************************\n\n";
 
     if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.ElementList.size()==0){
 
@@ -297,7 +332,7 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
     int NofVariables = this->NofVariablesList.at(j);
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
-    ofstream LoadFile(loadFile,ios::app); 
+
 
     // cout<< "Elemental Compound Command";
     int nofRun=0;
@@ -413,7 +448,6 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
         }
     }
 
-
     if(nofRun==0){
 
         string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
@@ -422,6 +456,10 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
     }
 
     cout << "Sucessfully Converted" << endl;
+
+    LoadFile << "\n//*************************************************************************************************************************\n";
+    LoadFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
+    LoadFile << "//*************************************************************************************************************************\n\n";
 
     LoadFile.close();
 }
@@ -432,6 +470,12 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
     int nofRun=0;
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    ofstream LoadFile(loadFile,ios::app);
+
+    LoadFile << "\n//*************************************************************************************************************************\n";
+    LoadFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Begins\n";  
+    LoadFile << "//*************************************************************************************************************************\n\n";
 
     if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.NodeList.size()==0){
 
@@ -447,7 +491,6 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
     map<int,int> ::iterator NodeListBegin = NodeList.begin();
     map<int,int> ::iterator NodeListEnd = NodeList.end();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
-    ofstream LoadFile(loadFile,ios::app); 
 
     for(map<int,int>::iterator it=NodeListBegin; it!=NodeListEnd; ++it){
 
@@ -483,6 +526,10 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
 
     cout << "Sucessfully Converted" << endl;
 
+    LoadFile << "\n//*************************************************************************************************************************\n";
+    LoadFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
+    LoadFile << "//*************************************************************************************************************************\n\n";
+
     LoadFile.close();
 }
 
@@ -492,6 +539,12 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
     int nofRun=0;
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    ofstream LoadFile(loadFile,ios::app);
+
+    LoadFile << "\n//*************************************************************************************************************************\n";
+    LoadFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Begins\n";  
+    LoadFile << "//*************************************************************************************************************************\n\n";
 
     if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.ElementList.size()==0){
 
@@ -506,7 +559,6 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
     int NofVariables = NofVariablesList.at(j);
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
-    ofstream LoadFile(loadFile,ios::app); 
 
     for(int k =0;k<ElementListSize ; k++){
 
@@ -545,6 +597,10 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
 
     cout << "Sucessfully Converted" << endl;
 
+    LoadFile << "\n//*************************************************************************************************************************\n";
+    LoadFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
+    LoadFile << "//*************************************************************************************************************************\n\n";
+
     LoadFile.close();
 }
 
@@ -552,12 +608,13 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
 
     // cout<< "Singular Commands";
 
+    ofstream MainFile(mainFile,ios::app);
+
     vector<string> Variables = VariableList.at(j);
     vector<string> EssiVariables= this->FunctionIter->second.getVarList();
     int NofVariables = NofVariablesList.at(j);
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
-    int n=0;
-    ofstream MainFile(mainFile,ios::app);  
+    int n=0;  
 
     for(int l=0 ; l<NofEssiVariables ;l++ ){
 
