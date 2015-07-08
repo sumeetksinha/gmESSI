@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 
 		if( argc <= 1){ 
 
-		    string msg = "\033[1;31m ERROR:: Please Enter the Gmsh File \033[0m\n" ; 
+		    string msg = "\033[1;31mERROR:: Please Enter the Gmsh File \033[0m\n" ; 
 		    throw msg.c_str();		
 		}
 
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
 
 		    if(!InputFile.is_open()){ 
 
-		    	string msg = "\033[1;31m ERROR:: The program failed to open the file = " +  gmshFile + " \033[0m\n" ; 
+		    	string msg = "\033[1;31mERROR:: The program failed to open the file = " +  gmshFile + " \033[0m\n" ; 
 		    	throw msg.c_str();
 		    	exit(0);
 		    }
@@ -45,14 +45,14 @@ int main(int argc, char* argv[]){
 
 		    if(!str.nextToken().compare("msh")==0){
 
-		    	string msg = "\033[1;31m ERROR:: The file does not have .msh extension \033[0m\n" ; 
+		    	string msg = "\033[1;31mERROR:: The file does not have .msh extension \033[0m\n" ; 
 		    	throw msg.c_str();
 		    }
 
 		    if(!mkdir(newDirectory.c_str(),0777)==0){ 
 
-		    	cout <<  "\033[1;31m ERROR:: Directory Allready Present. Not Able to create the directory \"" + newDirectory  + "\" \033[0m\n";
-		    	cout <<  "Do you want to override the folder contents?(Yy/Nn)" << endl << "\033[1;33m WARNING:: If you say yes, the contents of the Folder may get changed \033[0m\n" ;
+		    	cout <<  "\033[1;31mERROR:: Directory Allready Present. Not Able to create the directory \"" + newDirectory  + "\" \033[0m\n";
+		    	cout <<  "Do you want to override the folder contents?(Yy/Nn)" << endl << "\033[1;33mWARNING:: If you say yes, the contents of the Folder may get changed \033[0m\n" ;
 		    	char response;cin >> response;
 
 	    		if(response == 'n' ||response == 'N')  exit(0);

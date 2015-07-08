@@ -13,6 +13,7 @@
 #include <fstream>
 #include <queue>
 #include <algorithm>
+#include <iomanip> 
 
 using namespace::std;
 
@@ -99,7 +100,7 @@ void GmshTranslator::GmshToEssi(){
     this->EssiTagVariableMap.insert(pair<string,int>("motion",1));
 
     int PhysicalGroupListSize = this->PhysicalGroupList.size();
-    cout << "PhysicalGroupListSize " << PhysicalGroupListSize<< endl << endl;
+    // cout << "PhysicalGroupListSize " << PhysicalGroupListSize<< endl << endl;
 
     for (unsigned i=0; i<PhysicalGroupListSize; i++){
 
@@ -112,12 +113,12 @@ void GmshTranslator::GmshToEssi(){
         for (unsigned j=0; j<CommandListSize; j++){
             
             this->FunctionIter = this->FunctionMap.find(this->CommandList.at(j));
-            cout << this->CommandList.at(j) << ";";
+            cout << left << setw(40) << this->UserCommandList.at(j) ;
 
             if (this->FunctionIter != this->FunctionMap.end()){
                 
-                cout<< "Function Found so success!!" << endl;
-                cout<< "Element Id !!" << this->FunctionIter->second.getElementId() <<endl;
+                cout<< left << setw(15) << "Found!!";
+                // cout<< "Element Id !!" << this->FunctionIter->second.getElementId() <<endl;
 
                 if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("c")))
                     this->ElementalCompoundCommand(i,j);
@@ -132,7 +133,8 @@ void GmshTranslator::GmshToEssi(){
             }
             else{
                 
-                cout << endl <<  "\033[1;33m WARNING:: Execuation of the command escaped. The essi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found \n" << " \033[0m\n" ; 
+                cout << left << setw(15) << "\033[1;31mNot Found!!" << "\033[0m";
+                cout << "\t" << "\033[1;33mWARNING:: Execuation of the command escaped. The essi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found" << " \033[0m\n" ; 
             }
         }
     }
@@ -142,9 +144,9 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter =this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
 
-    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()){
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end() || PhysicalGroupMapIter->second.ElementList.size()==0){
 
-        string msg = "\033[1;33m WARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " is not executed as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " is not executed as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
         cout << msg;
         return;        
     }
@@ -158,13 +160,16 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
     ofstream GeometryFile(geometryFile, ios::app); 
 
-    cout<< "Elemental Command" ;
+    // cout<< "Elemental Command";
+    int nofRun=0;
 
     for(int k =0;k<ElementListSize ; k++){
 
         int m =0, n=0 ;
 
         if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+
+            nofRun++;
 
             for(int l=0 ; l<NofEssiVariables ;l++ ){
 
@@ -189,12 +194,29 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
         }
     }
 
+    if(nofRun==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
     GeometryFile.close();
 }
 
 void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter =this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.ElementList.size()==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " is not executed as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
     vector<Element> ElementList =PhysicalGroupMapIter->second.ElementList;
     map<int,int>  NodeList =PhysicalGroupMapIter->second.NodeList;
     vector<string> Variables = this->VariableList.at(j);
@@ -204,20 +226,31 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
     ofstream LoadFile(loadFile,ios::app); 
 
-    cout<< "Elemental Compound Command";
+    // cout<< "Elemental Compound Command";
+    int nofRun=0;
 
     Tokenizer tkr = Tokenizer(Variables.at(0),"#");
     string type = this->delSpaces(tkr.nextToken());
+
+    if(!tkr.hasMoreTokens()){
+        
+        string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Enty/Phy# tag" + " \033[0m\n" ;
+        throw msg.c_str();
+    }
+
     int tag = stoi(this->delSpaces(tkr.nextToken()));
+        
 
     map<int,NodeElement>::iterator EntityMapIter = this->EntityMap.find(tag);
     map<int,NodeElement>::iterator PhysicalMapIter = this->PhysicalGroupMap.find(tag);
 
     for(int k =0;k<ElementListSize ; k++){
 
-        int m =0, n=1 ;
+        int m =0, n=1;
 
         if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+
+            nofRun++;
 
             for(int l=0 ; l<NofEssiVariables ;l++ ){
 
@@ -235,7 +268,20 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
                          
                         if(!type.compare("Phy")){
 
+                            if(PhysicalMapIter==this->PhysicalGroupMap.end()){
+
+                                string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no such Physical/Entity Group" + " \033[0m\n";
+                                throw msg.c_str(); 
+                            }
+
                             map<int,int>::iterator NodeIter = PhysicalMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+
+                            if(NodeIter==PhysicalMapIter->second.NodeList.end()){
+
+                                string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+                                cout <<  msg;   
+                            }
+
                             map<int,int>::iterator NodeIterEnd = PhysicalMapIter->second.NodeList.end();
 
                             if(NodeIter!= NodeIterEnd){
@@ -248,7 +294,20 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
 
                         else if (!type.compare("Enty")){
 
+                            if(EntityMapIter==this->EntityMap.end()){
+
+                                string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no such Physical/Entity Group" + " \033[0m\n";
+                                throw msg.c_str(); 
+                            }
+
                             map<int,int>::iterator NodeIter = EntityMapIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+
+                            if(NodeIter==PhysicalMapIter->second.NodeList.end()){
+
+                                string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+                                cout << msg;   
+                            }
+
                             map<int,int>::iterator NodeIterEnd = EntityMapIter->second.NodeList.end();
 
                             if(NodeIter!= NodeIterEnd){
@@ -257,6 +316,12 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
                             }
                             
                             m++;
+                        }
+
+                        else{
+
+                            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ; 
+                            throw msg.c_str();
                         }
                     }
                 }
@@ -275,14 +340,33 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
         }
     }
 
+
+    if(nofRun==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
     LoadFile.close();
 }
 
 void GmshTranslator::NodalCommand(const int& i, const int& j){
 
-    cout<< "Nodal Commands ";
+    // cout<< "Nodal Commands ";
+    int nofRun=0;
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.NodeList.size()==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
     map<int,int> NodeList =PhysicalGroupMapIter->second.NodeList;
     vector<string> Variables = this->VariableList.at(j);
     vector<string> EssiVariables= this->FunctionIter->second.getVarList();
@@ -297,6 +381,8 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
         int n=0 ;
 
         for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+            nofRun++;
 
             Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
             string var = tknzr.nextToken();
@@ -315,18 +401,28 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
         LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
     }
 
+    if(nofRun==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
     LoadFile.close();
 }
 
 void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
 
-    cout<< "General Elemental Commands";
+    // cout<< "General Elemental Commands";
+    int nofRun=0;
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
 
-    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()){
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.ElementList.size()==0){
 
-        string msg = "\033[1;33m WARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " is not executed as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
         cout << msg;
         return;       
     }
@@ -344,6 +440,8 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
         int m =0, n=0 ;
 
         for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+            nofRun++;
 
             Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
             string var = tknzr.nextToken();
@@ -365,12 +463,21 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
         LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
     }
 
+    if(nofRun==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
     LoadFile.close();
 }
 
 void GmshTranslator::SingularCommand(const int& i, const int& j){
 
-    cout<< "Singular Commands";
+    // cout<< "Singular Commands";
 
     vector<string> Variables = VariableList.at(j);
     vector<string> EssiVariables= this->FunctionIter->second.getVarList();
@@ -393,6 +500,9 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
     }
 
     MainFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+
+    cout << "Sucessfully Converted" << endl;
+
     MainFile.close();
 }
 
@@ -423,12 +533,12 @@ string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, in
 
     if(this->TempVariable.size() > NofEssiVariables) {
 
-        string msg = "\033[1;31m ERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has more than required variables" + " \033[0m\n" ; 
+        string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has more than required variables" + " \033[0m\n" ; 
         throw msg.c_str();
     }
     if(this->TempVariable.size() < NofEssiVariables) {
         
-        string msg = "\033[1;31m ERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has less than required variables" + " \033[0m\n" ; 
+        string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has less than required variables" + " \033[0m\n" ; 
         throw msg.c_str();
     }
     
