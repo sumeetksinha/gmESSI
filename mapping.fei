@@ -3,6 +3,7 @@
 	 ec "General Elemental Commands"
 	 sc "Singular Commands"
 	 sp "Special Commands"
+	 an "Add Node Commands"
 	 0 "Element-cum-physicalgroup commands"     //Hybrid of Element and Node Commands
 	 1 "2-node line."
 	 2 "3-node triangle."
@@ -50,6 +51,11 @@
 	node
 	nodes
 #ENDESSI_TAGS
+
+// Add Node Commands
+
+	!an <AddNode{unit, dof}>																								add node # {} at ({},{},{}) with {} dofs;
+	!an <AddAllNode{unit, dof}>																								add node # {} at ({},{},{}) with {} dofs;
 
 // Singular Commands 
 
