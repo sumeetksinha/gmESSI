@@ -168,10 +168,10 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
         for(map<int,Node>::iterator it=AllNodeBegin; it!=AllNodeEnd; ++it){
         
             this->TempVariable.push(to_string(it->second.getId()));
-            this->TempVariable.push(to_string(it->second.getXcord())); 
-            this->TempVariable.push(to_string(it->second.getYcord()));
-            this->TempVariable.push(to_string(it->second.getZcord())); 
-            this->TempVariable.push(this->VariableList.at(j).at(0)); 
+            this->TempVariable.push(to_string(it->second.getXcord())+"*"+this->VariableList.at(j).at(0)); 
+            this->TempVariable.push(to_string(it->second.getYcord())+"*"+this->VariableList.at(j).at(0));
+            this->TempVariable.push(to_string(it->second.getZcord())+"*"+this->VariableList.at(j).at(0)); 
+            this->TempVariable.push(this->VariableList.at(j).at(1)); 
 
             GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
         
@@ -208,10 +208,10 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
         map<int,Node>::iterator NodeInfo = this->NodeMap.find(it->second);
 
         this->TempVariable.push(to_string(it->second));
-        this->TempVariable.push(to_string(NodeInfo->second.getXcord())); 
-        this->TempVariable.push(to_string(NodeInfo->second.getYcord()));
-        this->TempVariable.push(to_string(NodeInfo->second.getZcord())); 
-        this->TempVariable.push(Variables.at(0)); 
+        this->TempVariable.push(to_string(NodeInfo->second.getXcord())+"*"+this->VariableList.at(j).at(0)); 
+        this->TempVariable.push(to_string(NodeInfo->second.getYcord())+"*"+this->VariableList.at(j).at(0));
+        this->TempVariable.push(to_string(NodeInfo->second.getZcord())+"*"+this->VariableList.at(j).at(0)); 
+        this->TempVariable.push(Variables.at(1)); 
 
         GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
     }
