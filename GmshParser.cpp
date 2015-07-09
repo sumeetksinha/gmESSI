@@ -97,6 +97,26 @@ void GmshParser::parseGmshFile(){
 	while(getline(parseFile,line)){
 
 		Tokenizer str = Tokenizer(line,"$  \t\v\n\r\f");
+		if(!delSpaces(str.nextToken()).compare("MeshFormat"))
+			break;
+	}
+
+
+	while(getline(parseFile,line)){
+
+		Tokenizer str = Tokenizer(line,"$  \t\v\n\r\f");
+		if(!delSpaces(str.nextToken()).compare("EndMeshFormat"))
+			break;
+		if(line.compare("2.2 0 8")){
+
+			string msg = "\033[1;31mERROR:: Currently this software supports only  MSH ASCII 2.2 0 8 Format\033[0m\n" ; 
+            throw msg.c_str();
+		} 
+	}
+
+	while(getline(parseFile,line)){
+
+		Tokenizer str = Tokenizer(line,"$  \t\v\n\r\f");
 		if(!delSpaces(str.nextToken()).compare("PhysicalNames"))
 			break;
 	}
