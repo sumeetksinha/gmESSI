@@ -99,20 +99,34 @@ void PhysicalGroup::setContents(const string& PhysicDes){
 		str.setDelimiter("<>");
 		if(! this->delSpaces(str.nextToken()).compare("\""))
 			break;
+
+		if(!str.hasMoreTokens())
+		break;
+
+		string comm = this->delSpaces(str.nextToken());
+
+		if(!comm.substr(comm.length()-1,1).compare("\"")){
+
+			string msg = "\033[1;31mERROR:: The command \'" + PhysicDes + "\'" + " has a syntax error" + " \033[0m\n" ;
+        	throw msg.c_str();
+		}
+
 		if(!str.hasMoreTokens())
 			break;
 
-		this->Process(this->delSpaces(str.nextToken()));
+		this->Process(this->delSpaces(str.currToken()));
 	}
 
 }
 
 void PhysicalGroup::Process(const string& Command ){
 
+	// cout << "Command String :: " << Command << endl;
+
 	int nofTokens = 0, nofVariables=0; 
 	vector<string> varList;
 	string essiTag="";
-	Tokenizer inpString = Tokenizer(Command," {,;}()");
+	Tokenizer inpString = Tokenizer(Command,"  \t\v\n\r\f{,;}()");
 	nofTokens = inpString.countTokens()-1;
 	nofVariables = nofTokens-1;
 	essiTag = essiTag + inpString.nextToken() + "{";
