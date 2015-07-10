@@ -54,6 +54,7 @@ class GmshTranslator{
         void NodalCommand(const int& i, const int& j);
         void GeneralElementalCommand(const int& i, const int& j);
         void SingularCommand(const int& i, const int& j);
+        void ContactCommand(const int&i, const int& j);
 
         Mapping Map = Mapping("mapping.fei");
         GmshParser GmshParse = GmshParser ();

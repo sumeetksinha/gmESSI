@@ -4,6 +4,7 @@
 	 sc "Singular Commands"
 	 sp "Special Commands"
 	 an "Add Node Commands"
+	 cc "Contact Commands"
 	 0 "Element-cum-physicalgroup commands"     //Hybrid of Element and Node Commands
 	 1 "2-node line."
 	 2 "3-node triangle."
@@ -54,8 +55,12 @@
 
 // Add Node Commands
 
-	!an <AddNode{unit, dof}>																								add node # {} at ({},{},{}) with {} dofs;
-	!an <AddAllNode{unit, dof}>																								add node # {} at ({},{},{}) with {} dofs;
+	!an <AddNode{unit, dof}>																							add node # {} at ({},{},{}) with {} dofs;
+	!an <AddAllNode{unit, dof}>																							add node # {} at ({},{},{}) with {} dofs;
+
+// Contact Commands
+
+	!cc <Contact{Tolerence,PhyEntTag,PhyEntTag,ns,ts,fr,mg,cp1,cp2,cp3}>												add element #{} type contact with nodes ({},{}) normal_stiffness={} tangential_stiffness={} friction_ratio={} maximum_gap={} contact_plane_vector=({},{},{});
 
 // Singular Commands 
 

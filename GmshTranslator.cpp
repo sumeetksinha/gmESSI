@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <queue>
+#include <cmath>
 #include <algorithm>
 #include <iomanip> 
 
@@ -139,6 +140,8 @@ void GmshTranslator::GmshToEssi(){
                     this->SingularCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("an"))
                     this->AddNodeCommand(i,j);
+                else if (!this->FunctionIter->second.getElementId().compare("cc"))
+                    this->ContactCommand(i,j);
             }
             else{
                 
@@ -634,6 +637,81 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
     cout << "Sucessfully Converted" << endl;
 
     MainFile.close();
+}
+
+void GmshTranslator::ContactCommand(const int&i, const int& j){
+
+    ofstream GeometryFile(geometryFile,ios::app);
+    vector<string> Variables = VariableList.at(j);
+
+    double tolerence = stof(Variables.at(0)); 
+    int node1=0,node2=0;
+
+    Tokenizer tkr = Tokenizer(Variables.at(1),"#");
+    string type1 = this->delSpaces(tkr.nextToken());
+    string tag1 = this->delSpaces(tkr.nextToken());
+
+    tkr.set(Variables.at(2),"#");
+    string type2 = this->delSpaces(tkr.nextToken());
+    string tag2 = this->delSpaces(tkr.nextToken());
+
+    map<int,NodeElement>::iterator Iterator1;
+    map<int,NodeElement>::iterator Iterator2;
+
+    if(!type1.compare("Enty")) Iterator1 = this->EntityMap.find(stoi(tag1));
+    else if(!type1.compare("Phy")) Iterator1 = this->PhysicalGroupMap.find(stoi(tag1));
+
+    if(!type1.compare("Enty")) Iterator2 = this->EntityMap.find(stoi(tag2));
+    else if(!type1.compare("Phy")) Iterator2 = this->PhysicalGroupMap.find(stoi(tag2));
+
+    map<int,int>::iterator Iterator1Begin = Iterator1->second.NodeList.begin();
+    map<int,int>::iterator Iterator1End = Iterator1->second.NodeList.end();
+    map<int,int>::iterator Iterator2Begin = Iterator2->second.NodeList.begin();
+    map<int,int>::iterator Iterator2End = Iterator2->second.NodeList.end();
+    map<int,Node> ::iterator NodeMap1, NodeMap2;
+
+    for(map<int,int>::iterator It1 = Iterator1Begin; It1!=Iterator1End ;++It1){
+
+        node1=It1->second; node2=0;
+
+        for(map<int,int>::iterator It2 = Iterator2Begin; It2!=Iterator2End ;++It2){
+
+            NodeMap1 = this->NodeMap.find(It1->second);
+            NodeMap2 = this->NodeMap.find(It2->second);
+
+            double modx = abs(NodeMap1->second.getXcord()-NodeMap2->second.getXcord());
+            double mody = abs(NodeMap1->second.getYcord()-NodeMap2->second.getYcord());
+            double modz = abs(NodeMap1->second.getZcord()-NodeMap2->second.getZcord());
+
+            if(modx <=tolerence && mody <=tolerence && modz<=tolerence){
+
+                node2=It2->second;
+                break;
+            }
+        }
+
+        if(node1!=0 && node2!=0){
+
+            string str = "element";
+            TempVariable.push(this->getVariable(str));
+            TempVariable.push(to_string(node1));
+            TempVariable.push(to_string(node2));
+            TempVariable.push(Variables.at(3));
+            TempVariable.push(Variables.at(4));
+            TempVariable.push(Variables.at(5));
+            TempVariable.push(Variables.at(6));
+            TempVariable.push(Variables.at(7));
+            TempVariable.push(Variables.at(8));
+            TempVariable.push(Variables.at(9));
+
+            GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+
+        }
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
+    GeometryFile.close();
 }
 
 

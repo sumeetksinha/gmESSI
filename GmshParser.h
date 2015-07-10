@@ -17,8 +17,8 @@
 #include "Element.h"
 #include "Node.h"
 
-struct NodeElement
-{
+struct NodeElement{
+	
    vector<Element> ElementList;
    map<int, int> NodeList;
 
