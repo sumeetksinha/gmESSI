@@ -15,6 +15,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iomanip> 
+#include <iomanip> 
 
 using namespace::std;
 
@@ -149,6 +150,15 @@ void GmshTranslator::GmshToEssi(){
                 cout << "\t" << "\033[1;33mWARNING:: Execuation of the command escaped. The essi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found" << " \033[0m\n" ; 
             }
         }
+    }
+
+    map<string,int>::iterator EssiTagIterBegin = EssiTagVariableMap.begin();
+    map<string,int>::iterator EssiTagIterEnd = EssiTagVariableMap.end();
+
+    cout <<endl << endl<< "\033[1;36m************************ Updated New Tag Numberring *********************" << "\033[0m\n";
+    for(map<string,int>::iterator it = EssiTagIterBegin ; it!= EssiTagIterEnd ; ++it){
+
+        cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
     }
 }
 
@@ -753,8 +763,8 @@ string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, in
     
     while(inpString.hasMoreTokens() && nofTokens++<NofEssiVariables){
 
-        Ecommand = Ecommand + inpString.nextToken() + " ";
-        Ecommand = Ecommand + TempVariable.front();
+        Ecommand = Ecommand + inpString.nextToken() + "\t";
+        Ecommand = Ecommand + TempVariable.front() + "\t";
         TempVariable.pop();
     }
     

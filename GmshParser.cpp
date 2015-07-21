@@ -72,17 +72,17 @@ vector<PhysicalGroup> GmshParser::getPhysicalGroupList(){
 
 int GmshParser::getNewPhysicalGroup(){
 
-	return this->newPhysicalGroup++;
+	return this->newPhysicalGroup;
 }
 
 int GmshParser::getNewNode(){
 
-	return this->newNode++;
+	return this->newNode;
 }
 
 int GmshParser::getNewElement(){
 
-	return this->newElement++;
+	return this->newElement;
 }
 
 /******************************************************************************
