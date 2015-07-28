@@ -153,7 +153,7 @@ void PhysicalGroup::Process(const string& Command ){
 	this->NofVariables.push_back(nofVariables);
 	this->UserCommandList.push_back(Command);
 
-	cout << essiTag << endl;
+	// cout << essiTag << endl;
 }
 
 string PhysicalGroup::delSpaces(string str){

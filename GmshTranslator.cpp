@@ -301,7 +301,13 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
                     this->TempVariable.push(this->getVariable(var)); 
                 }
                 else {
-                    this->TempVariable.push(Variables.at(n++));   
+                    string newVar = Variables.at(n++);
+                    this->TempVariable.push(newVar);
+
+                    Tokenizer temptknzr = Tokenizer(this->FunctionIter->second.getEssiVarList().at(l),"#");
+                    string tempvar = temptknzr.nextToken(); 
+                    map<string,int>::iterator EssiTagVariablemapIter = this->EssiTagVariableMap.find(tempvar);
+                    if (EssiTagVariablemapIter!= this->EssiTagVariableMap.end())   EssiTagVariablemapIter->second = stoi(newVar)+1;   
                 }
             }
 
@@ -538,7 +544,13 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
                 this->TempVariable.push(this->getVariable(var)); 
             }
             else {
-                this->TempVariable.push(Variables.at(n++));   
+                string newVar = Variables.at(n++);
+                this->TempVariable.push(newVar);
+
+                Tokenizer temptknzr = Tokenizer(this->FunctionIter->second.getEssiVarList().at(l),"#");
+                string tempvar = temptknzr.nextToken(); 
+                map<string,int>::iterator EssiTagVariablemapIter = this->EssiTagVariableMap.find(tempvar);
+                if (EssiTagVariablemapIter!= this->EssiTagVariableMap.end()) EssiTagVariablemapIter->second = stoi(newVar)+1; 
             }
         }
 
@@ -609,7 +621,13 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
                 this->TempVariable.push(this->getVariable(var)); 
             }
             else {
-                this->TempVariable.push(Variables.at(n++));   
+                string newVar = Variables.at(n++);
+                this->TempVariable.push(newVar);
+
+                Tokenizer temptknzr = Tokenizer(this->FunctionIter->second.getEssiVarList().at(l),"#");
+                string tempvar = temptknzr.nextToken(); 
+                map<string,int>::iterator EssiTagVariablemapIter = this->EssiTagVariableMap.find(tempvar);
+                if (EssiTagVariablemapIter!= this->EssiTagVariableMap.end())  EssiTagVariablemapIter->second = stoi(newVar)+1; 
             }
         }
 
@@ -653,7 +671,13 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
            this->TempVariable.push(this->getVariable(var));
         }
         else {
-            this->TempVariable.push(Variables.at(n++));   
+            string newVar = Variables.at(n++);
+            this->TempVariable.push(newVar);
+
+            Tokenizer temptknzr = Tokenizer(this->FunctionIter->second.getEssiVarList().at(l),"#");
+            string tempvar = temptknzr.nextToken(); 
+            map<string,int>::iterator EssiTagVariablemapIter = this->EssiTagVariableMap.find(tempvar);
+            if (EssiTagVariablemapIter!= this->EssiTagVariableMap.end())   EssiTagVariablemapIter->second = stoi(newVar)+1;  
         }
     }
 

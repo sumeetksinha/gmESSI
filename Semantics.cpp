@@ -117,6 +117,11 @@ vector<string> Semantics::getVarList(){
 	return this->VarList;
 }
 
+vector<string> Semantics::getEssiVarList(){
+
+	return this->EssiVarList;
+}
+
 string Semantics::getEssiCommand(){
 
 	return this->EssiCommand;
@@ -203,11 +208,14 @@ void Semantics::setEssiCommand(const string& Command){
 			this->NofTagVariables++;
 		}
 
-		cout << variable << " ";
+		//cout << variable << " ";
 		
 		this->VarList.push_back(variable);
+		this->EssiVarList.push_back(variable);
 		// inpString.setDelimiter("{}#()=");
 	}
+
+	//cout << endl;
 
 	this->NofEssiVariables = this->VarList.size();
 }
