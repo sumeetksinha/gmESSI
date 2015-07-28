@@ -148,7 +148,7 @@ void GmshTranslator::GmshToEssi(){
                     this->ContactCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("mv"))
                     this->MaterialVariationalCommand(i,j);
-                else if (!this->FunctionIter->second.getElementId().compare("drm"))
+                else if (!this->FunctionIter->second.getElementId().compare("wr"))
                     this->DRMCommand(i,j);
             }
             else{
@@ -931,12 +931,12 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
 void GmshTranslator::DRMCommand(const int&i, const int& j){
 
     // Add Node Command
-
+    vector<string> Variables = VariableList.at(j);
     int nofRun=0;
-    string DRMNodesFileName = this->pwd + "_DRMNodesFile";
-    string DRMElementsFileName = this->pwd + "_DRMElementsFile";
-    ofstream DRMNodesFile(DRMNodesFileName,ios::out); 
-    ofstream DRMElementsFile(DRMElementsFileName,ios::out); 
+    string NodesFileName = this->pwd +"_" + VariableList.at(j).at(0) +"_Nodes.txt";
+    string ElementsFileName = this->pwd +"_" + VariableList.at(j).at(0) +"_Elements.txt";
+    ofstream NodesFile(NodesFileName,ios::out); 
+    ofstream ElementsFile(ElementsFileName,ios::out); 
 
     map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
 
@@ -952,12 +952,12 @@ void GmshTranslator::DRMCommand(const int&i, const int& j){
 
     for(int i=0; i<ElementListSize ; i++){
         
-        DRMElementsFile << ElementList.at(i).getId() << "\t";
+        ElementsFile << ElementList.at(i).getId() << "\t";
         int size =  ElementList.at(i).getNodeList().size();
 
         for( int j =0 ;j<size ; j++ )            
-            DRMElementsFile << ElementList.at(i).getNodeList().at(j) << "\t";
-        DRMElementsFile << "\n";
+            ElementsFile << ElementList.at(i).getNodeList().at(j) << "\t";
+        ElementsFile << "\n";
     }
 
     map<int,int> NodeList =PhysicalGroupMapIter->second.NodeList;
@@ -969,10 +969,10 @@ void GmshTranslator::DRMCommand(const int&i, const int& j){
         nofRun++;
         map<int,Node>::iterator NodeInfo = this->NodeMap.find(it->second);
 
-        DRMNodesFile << to_string(NodeInfo->second.getId()) << "\t";
-        DRMNodesFile << to_string(NodeInfo->second.getXcord())<< "\t"; 
-        DRMNodesFile << to_string(NodeInfo->second.getYcord())<< "\t"; 
-        DRMNodesFile << to_string(NodeInfo->second.getZcord())<< "\n"; 
+        NodesFile << to_string(NodeInfo->second.getId()) << "\t";
+        NodesFile << to_string(NodeInfo->second.getXcord())<< "\t"; 
+        NodesFile << to_string(NodeInfo->second.getYcord())<< "\t"; 
+        NodesFile << to_string(NodeInfo->second.getZcord())<< "\n"; 
     }
 
     if(nofRun==0){
@@ -984,8 +984,8 @@ void GmshTranslator::DRMCommand(const int&i, const int& j){
 
     cout << "Sucessfully Converted" << endl;
 
-   DRMNodesFile.close();
-   DRMElementsFile.close();
+   NodesFile.close();
+   ElementsFile.close();
 }
 
 
