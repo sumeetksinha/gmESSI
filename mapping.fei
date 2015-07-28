@@ -5,6 +5,7 @@
 	 mv "Material Variational Commands"
 	 an "Add Node Commands"
 	 cc "Contact Commands"
+	 wr "Write Commands"
 	 0 "Element-cum-physicalgroup commands"     //Hybrid of Element and Node Commands
 	 1 "2-node line."
 	 2 "3-node triangle."
@@ -53,8 +54,9 @@
 	nodes
 #ENDESSI_TAGS
 
-	!mv <AddCamClay{4NodeShell_ANDES{thickness1},2,s,3,si,4,s,5,s,6,s,7,s,8,s,9,s,10,s,11,si,12,si,13,si,14,si}>   add material #{} type camclay mass_density={} reference_void_ratio={} critical_stress_ratio_M={} lambda={} kappa={} poisson_ratio={} minimum_bulk_modulus={} initial_mean_pressure={}	algorithm={} number_of_subincrements={}	maximum_number_of_iterations={}	tolerance_1={} tolerance_2={};
+	!wr WriteData{filename}
 
+	!mv <AddCamClay{4NodeShell_ANDES{thickness1},2,s,3,si,4,s,5,s,6,s,7,s,8,s,9,s,10,s,11,si,12,si,13,si,14,si}>   add material #{} type camclay mass_density={} reference_void_ratio={} critical_stress_ratio_M={} lambda={} kappa={} poisson_ratio={} minimum_bulk_modulus={} initial_mean_pressure={}	algorithm={} number_of_subincrements={}	maximum_number_of_iterations={}	tolerance_1={} tolerance_2={};
 
 // Add Node Commands
 
