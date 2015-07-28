@@ -1,12 +1,12 @@
 # declare the variable 
 
-CC= g++ -std=c++11
+CC= g++ -O3 -std=c++11
 CFLAGS = -c
 
 all: gmssi
 
-gmssi: gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o 
-		$(CC) gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o  -o gmssi
+gmssi: gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o
+		mkoctfile --link-stand-alone gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o -o gmssi
 
 gmssi.o: gmssi.cpp
 		$(CC) $(CFLAGS) gmssi.cpp
@@ -27,9 +27,11 @@ Semantics.o: Semantics.cpp
 		$(CC) $(CFLAGS) Semantics.cpp
 Tokenizer.o: Tokenizer.cpp
 		$(CC) $(CFLAGS) Tokenizer.cpp
+OctParser.o: OctParser.cpp
+		mkoctfile -c OctParser.cpp
 
 clean:
-		-rm *.o
+		-rm *.o gmssi
 
 install:
 		if [ -d "/usr/local/gmssi" ]; then	rm -r /usr/local/gmssi; fi
@@ -37,7 +39,7 @@ install:
 		mkdir /usr/local/gmssi
 		mkdir /usr/local/gmssi/src
 		mkdir /usr/local/gmssi/bin
-		cp *.cpp mapping.fei /usr/local/gmssi/src
+		sudo cp *.cpp *.h mapping.fei Makefile /usr/local/gmssi/src
 		cp mapping.fei gmssi /usr/local/gmssi/bin
 		sudo ln -s -f /usr/local/gmssi/bin/mapping.fei /usr/local/bin/mapping.fei
 		sudo ln -s -f /usr/local/gmssi/bin/gmssi /usr/local/bin/gmssi
