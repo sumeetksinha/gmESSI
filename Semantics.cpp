@@ -202,6 +202,8 @@ void Semantics::setEssiCommand(const string& Command){
 
 			this->NofTagVariables++;
 		}
+
+		cout << variable << " ";
 		
 		this->VarList.push_back(variable);
 		// inpString.setDelimiter("{}#()=");

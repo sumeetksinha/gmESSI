@@ -8,6 +8,7 @@
 
 
 #include "GmshTranslator.h"
+#include "OctParser.h"
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -122,6 +123,7 @@ void GmshTranslator::GmshToEssi(){
         for (unsigned j=0; j<CommandListSize; j++){
             
             this->FunctionIter = this->FunctionMap.find(this->CommandList.at(j));
+            //printing output
             cout << left << setw(40) << this->UserCommandList.at(j) ;
 
             if (this->FunctionIter != this->FunctionMap.end()){
@@ -143,6 +145,8 @@ void GmshTranslator::GmshToEssi(){
                     this->AddNodeCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("cc"))
                     this->ContactCommand(i,j);
+                else if (!this->FunctionIter->second.getElementId().compare("mv"))
+                    this->MaterialVariationalCommand(i,j);
             }
             else{
                 
@@ -735,6 +739,168 @@ void GmshTranslator::ContactCommand(const int&i, const int& j){
     GeometryFile.close();
 }
 
+void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
+
+    // cout << "Material Variational Command - A type of Elemental Command";
+
+    map<int,NodeElement>::iterator PhysicalGroupMapIter =this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+    map<string,int>::iterator MaterialTagIter;
+    map<string,Semantics>::iterator TempFunctionIter;
+    
+    ofstream GeometryFile(geometryFile, ios::app);
+    ofstream MainFile(mainFile, ios::app);
+
+    GeometryFile << "\n//*************************************************************************************************************************\n";
+    GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Begins\n";  
+    GeometryFile << "//*************************************************************************************************************************\n\n";
+
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end() || PhysicalGroupMapIter->second.ElementList.size()==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " is not executed as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    vector<Element> ElementList =PhysicalGroupMapIter->second.ElementList;
+    map<int,int>  NodeList =PhysicalGroupMapIter->second.NodeList;
+    vector<string> Variables = this->VariableList.at(j);
+    vector<string> EssiVariables= this->FunctionIter->second.getVarList();
+    int NofVariables = this->NofVariablesList.at(j);
+    int ElementListSize = ElementList.size();
+    int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+     
+    int nofRun=0;
+
+    string gmshCommandtag = Variables.at(0);
+    string arguments = Variables.at(1); replace( arguments.begin(), arguments.end(), ';', ',' );
+
+    string ElementalCommand =  gmshCommandtag +"{1,"+arguments+"}";
+
+    //cout<<endl<<ElementalCommand<< " "<<NofEssiVariables<< endl;
+
+    PhysicalGroup TempPhyGroup = PhysicalGroup(); TempPhyGroup.Process(ElementalCommand);
+    TempFunctionIter = this->FunctionMap.find(TempPhyGroup.getCommandList().at(0));
+    OctParser valuate = OctParser();
+
+    for(int k =0;k<ElementListSize ; k++){
+
+        int m =0, n=2, MatTag=0;
+        // cout << endl<< ElementalCommand << " " << TempFunctionIter->second.getElementId() <<endl;
+
+        //running script in octave
+
+        if( !(TempFunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+
+            nofRun++;
+
+            int ElemNodeSize = ElementList.at(k).getNodeList().size();
+            double x_cord=0, y_cord=0, z_cord=0;
+
+            for(int z=0 ; z<ElemNodeSize ;z++ ){
+
+                map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
+                x_cord = x_cord + NodeInfo->second.getXcord();
+                y_cord = y_cord + NodeInfo->second.getYcord();
+                z_cord = z_cord + NodeInfo->second.getZcord();
+            }
+
+            x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+            string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+
+            string Material=this->FunctionIter->second.getEssiCommand();
+
+            // cout << NofEssiVariables << " " << Variables.size() << endl;
+
+            for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+                if (!EssiVariables.at(l).compare("material#1")){
+                   string ScriptFunction = "material";
+                   this->TempVariable.push(this->getVariable(ScriptFunction));
+                }
+                else{
+
+                    string ScriptFunction = Variables.at(n++);
+                    string function = ScriptVariables + ScriptFunction + ";";
+                    string prec = Variables.at(n++) ;
+                    // cout << function << "->" << endl;;// << "  ";
+                    // cout << valuate.eval(function) << endl;
+                    // // cout << to_string(roundToSignificantFigures(stof(valuate.eval(function)), stoi(Variables.at(n++))));
+                    string var = to_string(roundToSignificantFigures(stof(valuate.eval(function)), stoi(prec)));
+                    Material = Material + " " + var;
+                    this->TempVariable.push(var);  
+                }
+            }
+            //cout << endl << "-----------------------------" << endl;;
+            //cout << Material<< endl;
+
+            MaterialTagIter = this->MaterialTag.find(Material);
+
+            if(MaterialTagIter!=this->MaterialTag.end()){
+                MatTag = MaterialTagIter->second;
+                clear( this->TempVariable );
+                this->EssiTagVariableMap.find("material")->second = this->EssiTagVariableMap.find("material")->second-1;
+            }
+            else{
+                MainFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+                MatTag = this->EssiTagVariableMap.find("material")->second;
+                this->MaterialTag.insert(pair<string,int>(Material,MatTag));
+            }
+
+            ElementalCommand = gmshCommandtag +"{"+to_string(MatTag)+","+arguments+"}";
+            // cout << ElementalCommand;
+            PhysicalGroup ElemPhyGroup = PhysicalGroup(); ElemPhyGroup.Process(ElementalCommand);
+            TempFunctionIter = this->FunctionMap.find(ElemPhyGroup.getCommandList().at(0));
+
+            // cout << "size()" << ElemPhyGroup.getVariableList().size();
+
+            vector<string> NewVariables = ElemPhyGroup.getVariableList().at(0);
+            vector<string> NewEssiVariables= TempFunctionIter->second.getVarList();
+            int NewNofEssiVariables = TempFunctionIter->second.getNofEssiVariables();
+
+           // cout << "NewVariableSize" << NewVariables.size() << " NewEssiVariablesSize" << NewEssiVariables.size()<<endl;
+
+            n=0;m=0;
+
+            for(int l=0 ; l<NewNofEssiVariables ;l++ ){
+
+                Tokenizer tknzr = Tokenizer(NewEssiVariables.at(l),"#");
+                string var = tknzr.nextToken();
+             
+                if(!var.compare("element")){
+                    this->TempVariable.push(to_string(ElementList.at(k).getId()));
+                }
+                else if(!var.compare("node") || !var.compare("nodes")){
+                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+                }
+                else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
+                    this->TempVariable.push(this->getVariable(var)); 
+                }
+                else {
+                    this->TempVariable.push(NewVariables.at(n++));   
+                }
+            }
+
+            GeometryFile << this->PrintEssiCommand(TempFunctionIter->second.getEssiCommand(),TempFunctionIter->second.getNofEssiVariables(),j);
+        }
+    }
+
+    if(nofRun==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
+    GeometryFile << "\n//*************************************************************************************************************************\n";
+    GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
+    GeometryFile << "//*************************************************************************************************************************\n\n";
+
+    MainFile.close();
+    GeometryFile.close();
+}
+
 
 string GmshTranslator::getVariable(string& var){
 
@@ -760,6 +926,7 @@ string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, in
     string Ecommand = "";
     Tokenizer inpString = Tokenizer(Command,"{}") ;
 
+    // cout <<  this->TempVariable.size() << " "  <<  NofEssiVariables << endl;
     if(this->TempVariable.size() > NofEssiVariables) {
 
         string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has more than required variables" + " \033[0m\n" ; 
@@ -794,4 +961,14 @@ string GmshTranslator::delSpaces(string str){
 
    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
    return str;
+}
+
+double GmshTranslator::roundToSignificantFigures(double num, int n) {
+    
+  double RoundedNumber =0;
+  
+  if(n >=1)  RoundedNumber = floor((num+ 5* pow(10,-n-1))*pow(10,n))/pow(10,n);
+  else RoundedNumber = floor((num+5* pow(10,-(n+2)))/pow(10,-n-1))*pow(10,-n-1);
+
+  return RoundedNumber;
 }

@@ -46,6 +46,7 @@ class GmshTranslator{
         void clear( queue<string> &q );
         string delSpaces(string str);
         string PrintEssiCommand(string Command, int NofEssiVariables, int j);
+        double roundToSignificantFigures(double num, int n);
         string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
 
         void AddNodeCommand(const int&i, const int& j);
@@ -55,6 +56,7 @@ class GmshTranslator{
         void GeneralElementalCommand(const int& i, const int& j);
         void SingularCommand(const int& i, const int& j);
         void ContactCommand(const int&i, const int& j);
+        void MaterialVariationalCommand(const int&i, const int& j);
 
         Mapping Map = Mapping("mapping.fei");
         GmshParser GmshParse = GmshParser ();
@@ -65,6 +67,7 @@ class GmshTranslator{
         map<int,NodeElement> PhysicalGroupMap;
         map<int,NodeElement> EntityMap;
         map<int,Node> NodeMap;
+        map<string,int> MaterialTag;
 
         vector<string> CommandList;
         vector<vector<string>> VariableList;

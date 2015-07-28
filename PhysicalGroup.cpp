@@ -96,7 +96,7 @@ void PhysicalGroup::setContents(const string& PhysicDes){
 
 	while(str.hasMoreTokens()){
 
-		str.setDelimiter("<>");
+		str.setDelimiter("[]");
 		if(! this->delSpaces(str.nextToken()).compare("\""))
 			break;
 
@@ -104,6 +104,7 @@ void PhysicalGroup::setContents(const string& PhysicDes){
 		break;
 
 		string comm = this->delSpaces(str.nextToken());
+		cout << comm << endl;
 
 		if(!comm.substr(comm.length()-1,1).compare("\"")){
 
@@ -126,7 +127,8 @@ void PhysicalGroup::Process(const string& Command ){
 	int nofTokens = 0, nofVariables=0; 
 	vector<string> varList;
 	string essiTag="";
-	Tokenizer inpString = Tokenizer(Command,"  \t\v\n\r\f{,;}()");
+	// Tokenizer inpString = Tokenizer(Command,"  \t\v\n\r\f{,}()");
+	Tokenizer inpString = Tokenizer(Command,"{,}");
 	nofTokens = inpString.countTokens()-1;
 	nofVariables = nofTokens-1;
 	essiTag = essiTag + inpString.nextToken() + "{";
@@ -150,9 +152,11 @@ void PhysicalGroup::Process(const string& Command ){
 	this->CommandList.push_back(essiTag);
 	this->NofVariables.push_back(nofVariables);
 	this->UserCommandList.push_back(Command);
+
+	cout << essiTag << endl;
 }
 
 string PhysicalGroup::delSpaces(string str){
-   str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+   // str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
    return str;
 }

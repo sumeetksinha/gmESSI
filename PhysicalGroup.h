@@ -22,6 +22,7 @@ class PhysicalGroup{
 		void setId(const int& id);
 		void setType(const int& type);
 		void setPhysicTag(const string& physicTag);
+		void Process(const string& Command);
 		int getId();
 		int getType();
 		string getPhysicTag();
@@ -33,7 +34,6 @@ class PhysicalGroup{
 	private:
 
 		void setContents(const string& PhysicDes);
-		void Process(const string& Command);
 		string delSpaces( string str);
 		int Id;
 		int Type;
