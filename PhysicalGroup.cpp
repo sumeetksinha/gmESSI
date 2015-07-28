@@ -104,7 +104,7 @@ void PhysicalGroup::setContents(const string& PhysicDes){
 		break;
 
 		string comm = this->delSpaces(str.nextToken());
-		cout << comm << endl;
+		//cout << comm << endl;
 
 		if(!comm.substr(comm.length()-1,1).compare("\"")){
 

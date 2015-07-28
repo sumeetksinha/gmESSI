@@ -29,8 +29,8 @@ GmshTranslator::GmshTranslator(){}
 
 GmshTranslator::GmshTranslator(const string& gmshFile, const string& newDir){
 
-    GmshFile = gmshFile+ ".msh";
-
+    GmshFile = gmshFile+".msh";
+    this->pwd = newDir+gmshFile; 
     geometryFile = newDir + gmshFile + "_geometry.fei";
     loadFile = newDir + gmshFile + "_load.fei";
     mainFile = newDir + gmshFile + "_analysis.fei";
@@ -38,9 +38,9 @@ GmshTranslator::GmshTranslator(const string& gmshFile, const string& newDir){
 
 GmshTranslator::GmshTranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
 
-    GmshFile = gmshFile + ".msh";
+    GmshFile = gmshFile+".msh";
     MappingFile = mappingFile;
-
+    this->pwd = newDir+gmshFile; 
     geometryFile = newDir + gmshFile + "_geometry.fei";
     loadFile = newDir + gmshFile + "_load.fei";
     mainFile = newDir + gmshFile + "_analysis.fei";
@@ -54,7 +54,8 @@ GmshTranslator::~GmshTranslator(){}
 
 void GmshTranslator::setGmshFile(const string& gmshFile, const string& newDir){
 
-    this->GmshFile = gmshFile +".msh";
+    this->GmshFile = gmshFile+".msh";
+    this->pwd = newDir+gmshFile; 
     geometryFile = newDir + gmshFile + "_geometry.fei";
     loadFile = newDir + gmshFile + "_load.fei";
     mainFile = newDir + gmshFile + "_analysis.fei";;
@@ -147,6 +148,8 @@ void GmshTranslator::GmshToEssi(){
                     this->ContactCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("mv"))
                     this->MaterialVariationalCommand(i,j);
+                else if (!this->FunctionIter->second.getElementId().compare("drm"))
+                    this->DRMCommand(i,j);
             }
             else{
                 
@@ -754,7 +757,6 @@ void GmshTranslator::ContactCommand(const int&i, const int& j){
             TempVariable.push(Variables.at(9));
 
             GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
-
         }
     }
 
@@ -921,8 +923,69 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
     GeometryFile << "//\t\t\t\t\t\t\t" <<  this->UserCommandList.at(j) << "Ends\n";  
     GeometryFile << "//*************************************************************************************************************************\n\n";
 
+    remove( "script" );
     MainFile.close();
     GeometryFile.close();
+}
+
+void GmshTranslator::DRMCommand(const int&i, const int& j){
+
+    // Add Node Command
+
+    int nofRun=0;
+    string DRMNodesFileName = this->pwd + "_DRMNodesFile";
+    string DRMElementsFileName = this->pwd + "_DRMElementsFile";
+    ofstream DRMNodesFile(DRMNodesFileName,ios::out); 
+    ofstream DRMElementsFile(DRMElementsFileName,ios::out); 
+
+    map<int,NodeElement>::iterator PhysicalGroupMapIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+
+    if(PhysicalGroupMapIter==this->PhysicalGroupMap.end()|| PhysicalGroupMapIter->second.NodeList.size()==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    vector<Element> ElementList = PhysicalGroupMapIter->second.ElementList;
+    int ElementListSize = ElementList.size();
+
+    for(int i=0; i<ElementListSize ; i++){
+        
+        DRMElementsFile << ElementList.at(i).getId() << "\t";
+        int size =  ElementList.at(i).getNodeList().size();
+
+        for( int j =0 ;j<size ; j++ )            
+            DRMElementsFile << ElementList.at(i).getNodeList().at(j) << "\t";
+        DRMElementsFile << "\n";
+    }
+
+    map<int,int> NodeList =PhysicalGroupMapIter->second.NodeList;
+    map<int,int> ::iterator NodeListBegin = NodeList.begin();
+    map<int,int> ::iterator NodeListEnd = NodeList.end();
+
+    for(map<int,int>::iterator it=NodeListBegin; it!=NodeListEnd; ++it){
+        
+        nofRun++;
+        map<int,Node>::iterator NodeInfo = this->NodeMap.find(it->second);
+
+        DRMNodesFile << to_string(NodeInfo->second.getId()) << "\t";
+        DRMNodesFile << to_string(NodeInfo->second.getXcord())<< "\t"; 
+        DRMNodesFile << to_string(NodeInfo->second.getYcord())<< "\t"; 
+        DRMNodesFile << to_string(NodeInfo->second.getZcord())<< "\n"; 
+    }
+
+    if(nofRun==0){
+
+        string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+        cout << msg;
+        return;        
+    }
+
+    cout << "Sucessfully Converted" << endl;
+
+   DRMNodesFile.close();
+   DRMElementsFile.close();
 }
 
 

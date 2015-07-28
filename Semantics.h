@@ -36,6 +36,7 @@ class Semantics{
 		bool getMatchMode();
 		map<string,int> getTagList();
 		vector<string> getVarList();
+		vector<string> getEssiVarList();
 		string getEssiCommand();
 		string getGmshCommand();
 		
@@ -58,6 +59,7 @@ class Semantics{
 		int NofTagVariables=0;
 		map<string, int> TagList;
 		vector<string> VarList;
+		vector<string> EssiVarList;
 		set<string> EssiTagList;
 };
 

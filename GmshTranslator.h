@@ -57,6 +57,7 @@ class GmshTranslator{
         void SingularCommand(const int& i, const int& j);
         void ContactCommand(const int&i, const int& j);
         void MaterialVariationalCommand(const int&i, const int& j);
+        void DRMCommand(const int&i, const int& j);
 
         Mapping Map = Mapping("mapping.fei");
         GmshParser GmshParse = GmshParser ();
