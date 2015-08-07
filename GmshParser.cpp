@@ -65,6 +65,10 @@ vector<Element> GmshParser::getElementList(){
 	return this->ElementList;
 }
 
+void GmshParser::addElement(Element elm){
+	return this->ElementList.push_back(elm);	
+}
+
 vector<PhysicalGroup> GmshParser::getPhysicalGroupList(){
 
 	return this->PhysicalGroupList;
@@ -149,7 +153,7 @@ void GmshParser::parseGmshFile(){
 		if(!delSpaces(str.nextToken()).compare("EndNodes"))
 			break;
 		Node node = Node(line);
-		this->NodeList.push_back(node);
+		// this->NodeList.push_back(node);
 		this->NodeMap.insert(pair<int,Node>(node.getId(),node));
 	}
 

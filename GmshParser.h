@@ -39,6 +39,7 @@ class GmshParser{
 		map<int,NodeElement> getEntityMap();
 		vector<Node> getNodeList();
 		vector<Element> getElementList();
+		void addElement(Element elm);
 		vector<PhysicalGroup> getPhysicalGroupList();
 		int getNewPhysicalGroup();
 		int getNewNode();
