@@ -34,6 +34,11 @@ class Element{
 		int getPhysicalTag();
 		vector<int> getNodeList();
 		
+		//Just for Boost sake of 
+
+		bool operator==(const Element& other) {return false;}
+  		bool operator!=(const Element& other) {return true;}
+
 	private:
 
 		int Id;
