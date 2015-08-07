@@ -8,6 +8,7 @@ gmssi: Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o 
 		mkoctfile --link-stand-alone -I/usr/local/include/octave-3.8.0/octave  -lboost_python-py27 -lpython2.7  gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o -o gmssi
 		mkoctfile -I/usr/local/include/octave-3.8.0/octave  -lboost_python-py27 -lpython2.7 Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o -o gmssi.so
 		mv gmssi.so.oct gmssi.so
+		rm *.o
 
 gmssi.o: gmssi.cpp
 		$(CC) $(CFLAGS) gmssi.cpp
@@ -40,7 +41,14 @@ install:
 		mkdir /usr/local/gmssi
 		mkdir /usr/local/gmssi/src
 		mkdir /usr/local/gmssi/bin
+		mkdir /usr/local/gmssi/lib
 		sudo cp *.cpp *.h mapping.fei Makefile /usr/local/gmssi/src
 		cp mapping.fei gmssi /usr/local/gmssi/bin
-		sudo ln -s -f /usr/local/gmssi/bin/mapping.fei /usr/local/bin/mapping.fei
-		sudo ln -s -f /usr/local/gmssi/bin/gmssi /usr/local/bin/gmssi
+		cp gmssi.so /usr/local/gmssi/lib
+		cd /usr/local/bin
+		sudo ln -s -f /usr/local/gmssi/bin/mapping.fei mapping.fei
+		sudo ln -s -f /usr/local/gmssi/bin/gmssi gmssi
+		cd - 
+		cd /usr/lib
+		sudo ln -s -f /usr/local/gmssi/bin/gmssi.so gmssi.so
+		cd - 
