@@ -53,6 +53,11 @@ int PhysicalGroup::getId(){
 	return this->Id;
 }
 
+string PhysicalGroup::getPhysicDes(){
+
+	return PhysicDes;
+}
+
 int PhysicalGroup::getType(){
 
 	return this->Type;
@@ -87,9 +92,11 @@ vector<int> PhysicalGroup::getNofVariables(){
 **************************** Private Functions ********************************
 ******************************************************************************/		
 
-void PhysicalGroup::setContents(const string& PhysicDes){
+void PhysicalGroup::setContents(const string& PhysicDesc){
 
-	Tokenizer str = Tokenizer(PhysicDes,"  \t\v\n\r\f\"$");
+	this->PhysicDes = PhysicDesc;
+	
+	Tokenizer str = Tokenizer(PhysicDesc,"  \t\v\n\r\f\"$");
 	this->Type = stoi(str.nextToken());
 	this->Id = stoi(str.nextToken());
 	this->PhysicTag = str.nextToken();
@@ -108,7 +115,7 @@ void PhysicalGroup::setContents(const string& PhysicDes){
 
 		if(!comm.substr(comm.length()-1,1).compare("\"")){
 
-			string msg = "\033[1;31mERROR:: The command \'" + PhysicDes + "\'" + " has a syntax error" + " \033[0m\n" ;
+			string msg = "\033[1;31mERROR:: The command \'" + PhysicDesc + "\'" + " has a syntax error" + " \033[0m\n" ;
         	throw msg.c_str();
 		}
 
@@ -153,6 +160,7 @@ void PhysicalGroup::Process(const string& Command ){
 	this->NofVariables.push_back(nofVariables);
 	this->UserCommandList.push_back(Command);
 
+	// cout << Command << endl;
 	// cout << essiTag << endl;
 }
 

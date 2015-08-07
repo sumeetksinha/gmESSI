@@ -1,37 +1,38 @@
-# declare the variable 
 
 CC= g++ -O3 -std=c++11
 CFLAGS = -c
 
 all: gmssi
 
-gmssi: gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o
-		mkoctfile --link-stand-alone gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o -o gmssi
+gmssi: Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o gmssi.o
+		mkoctfile --link-stand-alone -I/usr/local/include/octave-3.8.0/octave  -lboost_python-py27 -lpython2.7  gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o -o gmssi
+		mkoctfile -I/usr/local/include/octave-3.8.0/octave  -lboost_python-py27 -lpython2.7 Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o -o gmssi.so
+		mv gmssi.so.oct gmssi.so
 
 gmssi.o: gmssi.cpp
 		$(CC) $(CFLAGS) gmssi.cpp
-
 GmshTranslator.o: GmshTranslator.cpp
-		$(CC) $(CFLAGS) GmshTranslator.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) GmshTranslator.cpp 
 GmshParser.o: GmshParser.cpp
-		$(CC) $(CFLAGS) GmshParser.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) GmshParser.cpp
 Mapping.o: Mapping.cpp
-		$(CC) $(CFLAGS) Mapping.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) Mapping.cpp
 PhysicalGroup.o: PhysicalGroup.cpp
-		$(CC) $(CFLAGS) PhysicalGroup.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) PhysicalGroup.cpp
 Node.o: Node.cpp
-		$(CC) $(CFLAGS) Node.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) Node.cpp
 Element.o: Element.cpp 
-		$(CC) $(CFLAGS) Element.cpp 
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) Element.cpp 
 Semantics.o: Semantics.cpp
-		$(CC) $(CFLAGS) Semantics.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) Semantics.cpp
 Tokenizer.o: Tokenizer.cpp
-		$(CC) $(CFLAGS) Tokenizer.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) Tokenizer.cpp
 OctParser.o: OctParser.cpp
-		mkoctfile -c OctParser.cpp
-
+		mkoctfile -I/usr/local/include/octave-3.8.0/octave -c OctParser.cpp
+PythonInterpreter.o: PythonInterpreter.cpp
+		$(CC)  -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_python -lboost_system $(CFLAGS) PythonInterpreter.cpp
 clean:
-		-rm *.o gmssi
+		-rm *.o *.so gmssi
 
 install:
 		if [ -d "/usr/local/gmssi" ]; then	rm -r /usr/local/gmssi; fi
@@ -43,9 +44,3 @@ install:
 		cp mapping.fei gmssi /usr/local/gmssi/bin
 		sudo ln -s -f /usr/local/gmssi/bin/mapping.fei /usr/local/bin/mapping.fei
 		sudo ln -s -f /usr/local/gmssi/bin/gmssi /usr/local/bin/gmssi
-
-
-
-
-
-
