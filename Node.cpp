@@ -7,6 +7,8 @@
 *******************************************************************************/
 
 #include "Node.h"
+#include <exception>
+#include <iostream>
 
 /******************************************************************************
 ****************************** Constructor ************************************
@@ -70,11 +72,15 @@ void Node::setNode(const int& id,const double& X_cord, const double& Y_cord, con
 
 void Node::setNode(const string GmshNodeRep){
 
-	Tokenizer str = Tokenizer(GmshNodeRep," ");
-	this->Id = stoi(str.nextToken()); 
-	this->Xcord = stod(str.nextToken()); 
-	this->Ycord = stod(str.nextToken()); 
-	this->Zcord = stod(str.nextToken()); 
+	try{
+
+		Tokenizer str = Tokenizer(GmshNodeRep," ");
+		this->Id = stoi(str.nextToken()); 
+		this->Xcord = stod(str.nextToken()); 
+		this->Ycord = stod(str.nextToken()); 
+		this->Zcord = stod(str.nextToken()); 
+		
+	} catch(exception& e) { throw "\033[1;31mERROR:: Gmsh File has invalid symbols in Node Section. Unable to convert string to integer in Gmsh File\033[0m\n" ;}
 }
 
 int Node::getId(){

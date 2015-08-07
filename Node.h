@@ -32,6 +32,11 @@ class Node{
 		double getXcord();
 		double getYcord();
 		double getZcord();
+
+		//Just for Boost sake of 
+
+		bool operator==(const Node& other) {return false;}
+  		bool operator!=(const Node& other) {return true;}
 		
 	private:
 
