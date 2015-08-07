@@ -1,3 +1,17 @@
+/********************************************************************************************************
+*  File:        gmssi.cpp           	        		| Copyright:: ##############################    *
+*  Description: Contains the magic of translation       | BOX 1505                                      *
+*  Rev:         Version 1                               | 125 25 ALVSJO                                 *
+*  Created:     June 28, 2015                           | SWEDEN                                        *
+*  Author:      Sumeet Kumar Sinha                      | tel int 530-601-8271                          *
+*  Email:       sumeet.kumar507@gmail.com               |                                               *
+*                                                                                                       *
+*  The copyright to the computer program(s) herein is the property of #######################, ######.  *
+*  The program(s) may be used and/or copied only with the written permission of Sumeet Kumar Sinha      *
+*  or in accordance with the terms and conditions stipulated in the agreement/contract under which      *
+*  the program(s) have been supplied.                                                                   *
+********************************************************************************************************/
+
 #include "GmshTranslator.h"
 #include "PythonInterpreter.h"
 #include <iostream>
@@ -46,11 +60,11 @@ int main(int argc, char* argv[]){
 		    gmshFile = str.nextToken();
 		    string newDirectory= getFilePath() + slash +gmshFile+ "_Essi_Simulation";
 
-		    if(!str.nextToken().compare("msh")==0){
+		    // if(!str.nextToken().compare("msh")==0){
 
-		    	string msg = "\033[1;31mERROR:: The file does not have .msh extension \033[0m\n" ; 
-		    	throw msg.c_str();
-		    }
+		    // 	string msg = "\033[1;31mERROR:: The file does not have .msh extension \033[0m\n" ; 
+		    // 	throw msg.c_str();
+		    // }
 
 		    int n = 1;string tempDirectory = newDirectory;
 
