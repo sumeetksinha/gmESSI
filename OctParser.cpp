@@ -11,7 +11,7 @@
 #include <octave/octave.h>
 #include <octave/parse.h>
 #include <octave/toplev.h>
-#include <ov.h>
+#include <octave/ov.h>
 #include "OctParser.h"
 
 #include <iostream>
