@@ -37,24 +37,26 @@ Element::~Element(){}
 
 void Element::setElement(const string ElementDes){
 
-	int nofTag=0;
-	Tokenizer str = Tokenizer(ElementDes," ");
+	try{
+		int nofTag=0;
+		Tokenizer str = Tokenizer(ElementDes," ");
 
-	this->Id = stoi(str.nextToken()); 
-	this->Type = stoi(str.nextToken());
-	nofTag= stoi(str.nextToken());
-	this->NofTag = nofTag; 
+		this->Id = stoi(str.nextToken()); 
+		this->Type = stoi(str.nextToken());
+		nofTag= stoi(str.nextToken());
+		this->NofTag = nofTag; 
 
-	this->PhysicalTag = stoi(str.nextToken());
-	this->EntityTag = stoi(str.nextToken());
+		this->PhysicalTag = stoi(str.nextToken());
+		this->EntityTag = stoi(str.nextToken());
 
-	for (int i=0; i<nofTag-2; i++)
-		str.nextToken(); 
+		for (int i=0; i<nofTag-2; i++)
+			str.nextToken(); 
 
-	while(str.hasMoreTokens()){
-		
-		this->NodeList.push_back(stoi(str.nextToken()));
-	}
+		while(str.hasMoreTokens()){
+			
+			this->NodeList.push_back(stoi(str.nextToken()));
+		}
+	} catch(exception& e) { throw "\033[1;31mERROR:: Gmsh File has invalid symbols in Element Section. Unable to convert string to integer in Gmsh File\033[0m\n" ;}
 }
 
 void Element::setId(const int& id){
