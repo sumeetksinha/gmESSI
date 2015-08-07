@@ -258,6 +258,8 @@ void Semantics::setGmshCommand(const string& Command){
 	Gcommand = Gcommand +variable + " }";
 	essiTag = essiTag + " }"+to_string(this->NofGmshVariables);
 	
+	// cout << Gcommand << endl;
+	// cout << essiTag << endl;
 	this->GmshCommand= Gcommand;
 	this->setEssiTag(essiTag);
 

@@ -1,4 +1,5 @@
 #include "GmshTranslator.h"
+#include "PythonInterpreter.h"
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
@@ -17,6 +18,8 @@
 string getFilePath();
 
 int main(int argc, char* argv[]){
+
+	int override = 1; //atoi
 
 	try{
 
@@ -49,19 +52,35 @@ int main(int argc, char* argv[]){
 		    	throw msg.c_str();
 		    }
 
-		    if(!mkdir(newDirectory.c_str(),0777)==0){ 
+		    int n = 1;string tempDirectory = newDirectory;
 
-		    	cout <<  "\033[1;31mERROR:: Directory Allready Present. Not Able to create the directory \"" + newDirectory  + "\" \033[0m\n";
-		    	cout <<  "Do you want to override the folder contents?(Yy/Nn)" << endl << "\033[1;33mWARNING:: If you say yes, the contents of the Folder may get changed \033[0m\n" ;
-		    	char response;cin >> response;
+	    	while(!mkdir(newDirectory.c_str(),0777)==0){ 
 
-	    		if(response == 'n' ||response == 'N')  exit(0);
-		    }
+		    	if(override>=1){ 
+		    		cout << "\033[1;33mWARNING::Directory Allready Present. The contents of the Folder may get changed \033[0m\n"; 
+		    		break;
+		    	}
+		    	else{ 
+		    		newDirectory = tempDirectory+"_"+to_string(n); 
+		    		n=n+1;
+		    	}
+	    	}
 		    newDirectory  =newDirectory +slash;
 
-		   	GmshTranslator Translator = GmshTranslator(gmshFile, newDirectory);
-		    Translator.Convert();
+		    PythonInterpreter gmssi = PythonInterpreter ();
+		    gmssi.Translator = GmshTranslator(gmshFile, newDirectory);
+		    gmssi.Translator.Convert();
+		    // string x = "element";
+		    // cout << gmssi.getEssiTag(x)<<endl;
+		    // map<int,int> NodeMap = gmssi.getPhysicalGroupNodes(1);
+		    // cout << "NodeMap Size" << NodeMap.size() << endl;
+		    // NodeMap = gmssi.getEntityGroupNodes(1);
+		    // cout << "NodeMap Size" << NodeMap.size() << endl;
+
+		   	// GmshTranslator Translator = GmshTranslator(gmshFile, newDirectory);
+		    // Translator.Convert();
 		}
+
 	} catch (const char* msg){cerr << msg << endl;}
 
 	return 0;
