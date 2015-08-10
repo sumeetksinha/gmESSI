@@ -34,21 +34,24 @@ GmshTranslator::GmshTranslator(){}
 
 GmshTranslator::GmshTranslator(const string& gmshFile, const string& newDir){
 
-    GmshFile = gmshFile+".msh";
-    this->pwd = newDir+gmshFile; 
-    geometryFile = newDir + gmshFile + "_geometry.fei";
-    loadFile = newDir + gmshFile + "_load.fei";
-    mainFile = newDir + gmshFile + "_analysis.fei";
+    GmshFile = gmshFile;
+    Tokenizer tknzr = Tokenizer(gmshFile,"/ ."); 
+    tknzr.setcurrPos(gmshFile.length()-1);tknzr.setMode(1);tknzr.nextToken();tknzr.nextToken();
+    this->pwd = newDir+tknzr.currToken(); 
+    geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
+    loadFile = newDir + tknzr.currToken() + "_load.fei";
+    mainFile = newDir + tknzr.currToken() + "_analysis.fei";
 }
 
 GmshTranslator::GmshTranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
 
-    GmshFile = gmshFile+".msh";
+    GmshFile = gmshFile;
+    Tokenizer tknzr = Tokenizer(gmshFile,"/ "); tknzr.setMode(1);tknzr.nextToken();
     MappingFile = mappingFile;
-    this->pwd = newDir+gmshFile; 
-    geometryFile = newDir + gmshFile + "_geometry.fei";
-    loadFile = newDir + gmshFile + "_load.fei";
-    mainFile = newDir + gmshFile + "_analysis.fei";
+    this->pwd = newDir+tknzr.currToken(); 
+    geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
+    loadFile = newDir + tknzr.currToken() + "_load.fei";
+    mainFile = newDir + tknzr.currToken() + "_analysis.fei";
 }
 
 GmshTranslator::~GmshTranslator(){}
@@ -59,11 +62,12 @@ GmshTranslator::~GmshTranslator(){}
 
 void GmshTranslator::setGmshFile(const string& gmshFile, const string& newDir){
 
-    this->GmshFile = gmshFile+".msh";
-    this->pwd = newDir+gmshFile; 
-    geometryFile = newDir + gmshFile + "_geometry.fei";
-    loadFile = newDir + gmshFile + "_load.fei";
-    mainFile = newDir + gmshFile + "_analysis.fei";;
+    GmshFile = gmshFile;
+    Tokenizer tknzr = Tokenizer(gmshFile,"/ "); tknzr.setMode(1);tknzr.nextToken();
+    this->pwd = newDir+tknzr.currToken(); 
+    geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
+    loadFile = newDir + tknzr.currToken() + "_load.fei";
+    mainFile = newDir + tknzr.currToken() + "_analysis.fei";;
 }
 
 void GmshTranslator::Convert(){
@@ -821,7 +825,7 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
             }
             else{
                 MainFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
-                MatTag = this->EssiTagVariableMap.find("material")->second;
+                MatTag = this->EssiTagVariableMap.find("material")->second-1;
                 this->MaterialTag.insert(pair<string,int>(Material,MatTag));
             }
 

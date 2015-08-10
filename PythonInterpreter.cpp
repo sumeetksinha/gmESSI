@@ -179,15 +179,20 @@ void PythonInterpreter::ConvertFile(const string& mshFile,int override){
 	    	exit(0);
 	    }
 
-	    Tokenizer str = Tokenizer(gmshFile,".");
-	    gmshFile = str.nextToken();
-	    string newDirectory= getFilePath() + slash +gmshFile+ "_Essi_Simulation";
+	    Tokenizer str = Tokenizer(gmshFile,"/ .");
+	    str.setcurrPos(gmshFile.length()-1); str.setMode(1); str.nextToken();gmshFile = str.nextToken();
+	    string newDirectory= getFilePath() + slash + gmshFile+ "_Essi_Simulation";
+	    gmshFile = mshFile;   
 
-	    if(!str.nextToken().compare("msh")==0){
+	    // cout << "GmshFile:: " << gmshFile << endl;
+	    // cout << "newDirectory:: " << newDirectory << endl;
+	    // return;
 
-	    	string msg = "\033[1;31mERROR:: The file does not have .msh extension \033[0m\n" ; 
-	    	throw msg.c_str();
-	    }
+	    // if(!str.nextToken().compare("msh")==0){
+
+	    // 	string msg = "\033[1;31mERROR:: The file does not have .msh extension \033[0m\n" ; 
+	    // 	throw msg.c_str();
+	    // }
 	    int n = 1;string tempDirectory = newDirectory;
 	    while(!mkdir(newDirectory.c_str(),0777)==0){ 
 

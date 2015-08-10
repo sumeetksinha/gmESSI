@@ -56,9 +56,10 @@ int main(int argc, char* argv[]){
 		    	exit(0);
 		    }
 
-		    Tokenizer str = Tokenizer(gmshFile,".");
-		    gmshFile = str.nextToken();
-		    string newDirectory= getFilePath() + slash +gmshFile+ "_Essi_Simulation";
+		    Tokenizer str = Tokenizer(gmshFile,"/ .");
+		    str.setcurrPos(gmshFile.length()-1); str.setMode(1); str.nextToken();gmshFile = str.nextToken();
+		    string newDirectory= getFilePath() + slash + gmshFile+ "_Essi_Simulation";
+		    gmshFile = argv[i];
 
 		    // if(!str.nextToken().compare("msh")==0){
 
@@ -84,15 +85,6 @@ int main(int argc, char* argv[]){
 		    PythonInterpreter gmssi = PythonInterpreter ();
 		    gmssi.Translator = GmshTranslator(gmshFile, newDirectory);
 		    gmssi.Translator.Convert();
-		    // string x = "element";
-		    // cout << gmssi.getEssiTag(x)<<endl;
-		    // map<int,int> NodeMap = gmssi.getPhysicalGroupNodes(1);
-		    // cout << "NodeMap Size" << NodeMap.size() << endl;
-		    // NodeMap = gmssi.getEntityGroupNodes(1);
-		    // cout << "NodeMap Size" << NodeMap.size() << endl;
-
-		   	// GmshTranslator Translator = GmshTranslator(gmshFile, newDirectory);
-		    // Translator.Convert();
 		}
 
 	} catch (const char* msg){cerr << msg << endl;}

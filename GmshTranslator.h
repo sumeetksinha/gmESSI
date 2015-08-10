@@ -78,7 +78,7 @@ class GmshTranslator{
         string PrintEndConversion(const int& nofRun, const int& j);
         void UpdateEssiTags(const string& tempvar, const int& l);
 
-        Mapping Map = Mapping("mapping.fei");
+        Mapping Map = Mapping("/usr/local/gmssi/bin/mapping.fei");
         GmshParser GmshParse = GmshParser ();
         vector<PhysicalGroup> PhysicalGroupList;
         map<string,Semantics> FunctionMap;

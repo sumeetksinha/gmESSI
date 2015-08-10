@@ -26,6 +26,8 @@ Tokenizer::Tokenizer(){
 	Token="";
 	strDelim="";
 	currPos=inpString.begin();
+	mode = 0;
+	nofTokens=0;
 }
 
 Tokenizer::Tokenizer(const string& str, const string& delm){
@@ -34,6 +36,8 @@ Tokenizer::Tokenizer(const string& str, const string& delm){
 	Token="";
 	strDelim=delm;
 	currPos=inpString.begin();
+	mode = 0;
+	nofTokens=0;
 }
 
 Tokenizer::Tokenizer(vector<string>& strList, const string& str, const string& delm){
@@ -43,6 +47,8 @@ Tokenizer::Tokenizer(vector<string>& strList, const string& str, const string& d
 	strDelim=delm;
 	strList= this->split();
 	currPos=inpString.begin();
+	mode = 0;
+	nofTokens=0;
 }
 
 Tokenizer::~Tokenizer(){}
@@ -56,12 +62,16 @@ void Tokenizer::set(const string& str, const string& delm){
 	this->inpString=str;
 	this->strDelim=delm;
 	this->currPos=this->inpString.begin();	
+	mode = 0;
+	nofTokens=0;
 }
 
 void Tokenizer::setString(const string& str){
 
 	this->inpString=str;
 	this->currPos=this->inpString.begin();
+	mode = 0;
+	nofTokens=0;
 }
 
 void Tokenizer::setDelimiter(const string& delm){

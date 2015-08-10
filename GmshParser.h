@@ -62,7 +62,7 @@ class GmshParser{
 		vector<Node> NodeList;
 		vector<Element> ElementList;
 		vector<PhysicalGroup> PhysicalGroupList;
-		int newNode, newElement , newPhysicalGroup;
+		int newNode=1, newElement=1, newPhysicalGroup=1;
 };
 
 #endif //GMSHPARSER_H

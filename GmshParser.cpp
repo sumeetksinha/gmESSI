@@ -102,7 +102,7 @@ int GmshParser::getNewElement(){
 void GmshParser::parseGmshFile(){
 
 	fstream parseFile(this->FileName, fstream::in);
-	string line;
+	string line; int i=0;
 
 	while(getline(parseFile,line)){
 
@@ -111,6 +111,7 @@ void GmshParser::parseGmshFile(){
 			break;
 	}
 
+	if(parseFile.eof()) return; 
 
 	while(getline(parseFile,line)){
 
@@ -124,12 +125,16 @@ void GmshParser::parseGmshFile(){
 		} 
 	}
 
+	if(parseFile.eof()) return; 
+
 	while(getline(parseFile,line)){
 
 		Tokenizer str = Tokenizer(line,"$  \t\v\n\r\f");
 		if(!delSpaces(str.nextToken()).compare("PhysicalNames"))
 			break;
 	}
+
+	if(parseFile.eof()) return; 
 
 	getline(parseFile,line);
 	newPhysicalGroup = stof(line)+1;
@@ -143,12 +148,16 @@ void GmshParser::parseGmshFile(){
 		this->PhysicalGroupList.push_back(PhyGroup);
 	}
 
+	if(parseFile.eof()) return; 
+
 	while(getline(parseFile,line)){
 
 		Tokenizer str = Tokenizer(line,"$  \t\v\n\r\f");
 		if(!delSpaces(str.nextToken()).compare("Nodes"))
 			break;
 	}
+
+	if(parseFile.eof()) return; 
 
 	getline(parseFile,line);
 	newNode = stof(line)+1;
@@ -163,12 +172,16 @@ void GmshParser::parseGmshFile(){
 		this->NodeMap.insert(pair<int,Node>(node.getId(),node));
 	}
 
+	if(parseFile.eof()) return; 
+
 	while(getline(parseFile,line)){
 
 		Tokenizer str = Tokenizer(line,"$  \t\v\n\r\f");
 		if(!delSpaces(str.nextToken()).compare("Elements"))
 			break;
 	}
+
+	if(parseFile.eof()) return; 
 
 	getline(parseFile,line);
 	newElement = stof(line)+1;
@@ -254,6 +267,7 @@ void GmshParser::parseGmshFile(){
 		}
 	}
 
+	if(parseFile.eof()) return; 
 	parseFile.close();
 }
 
