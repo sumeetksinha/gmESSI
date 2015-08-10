@@ -7,9 +7,7 @@ all: gmssi
 gmssi: Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o gmssi.o
 		mkoctfile --link-stand-alone -I/usr/local/include/octave-3.8.0/octave  -lboost_python-py27 -lpython2.7  gmssi.o Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o -o gmssi
 		mkoctfile -I/usr/local/include/octave-3.8.0/octave  -lboost_python-py27 -lpython2.7 Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o -o gmssi.so
-		gcc -shared -I/usr/local/include/octave-3.8.0/octave  -lboost_python-py27 -lpython2.7 Element.o GmshParser.o GmshTranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o PythonInterpreter.o -o gmssi.pyd
 		mv gmssi.so.oct gmssi.so
-		rm *.o
 
 gmssi.o: gmssi.cpp
 		$(CC) $(CFLAGS) gmssi.cpp
@@ -45,17 +43,10 @@ install:
 		sudo mkdir /usr/local/gmssi/lib
 		sudo cp *.cpp *.h mapping.fei Makefile /usr/local/gmssi/src
 		sudo cp mapping.fei gmssi /usr/local/gmssi/bin
-		sudo cp gmssi.pyd gmssi.so mapping.fei /usr/local/gmssi/lib
-		if [ -d " /usr/local/lib/python2.7/dist-packages/gmssi" ]; then	sudo rm  -r  /usr/lib/python2.7/dist-packages/gmssi; fi
-		echo "/usr/local/lib/python2.7/dist-packages/gmssi"
-		sudo mkdir /usr/local/lib/python2.7/dist-packages/gmssi
-		cd /usr/local/lib/python2.7/dist-packages/gmssi
-		sudo ln -s -f /usr/local/gmssi/bin/mapping.fei mapping.fei
-		sudo ln -s -f /usr/local/gmssi/lib/gmssi.so gmssi.so
-		sudo ln -s -f /usr/local/gmssi/lib/gmssi.pyd gmssi.pyd
-		sudo touch __init__.py
-		cd -
-		cd /usr/local/bin
-		sudo ln -s -f /usr/local/gmssi/bin/mapping.fei mapping.fei
-		sudo ln -s -f /usr/local/gmssi/bin/gmssi gmssi
-		cd - 
+		sudo cp gmssi.so mapping.fei /usr/local/gmssi/lib
+		if [ -d "/usr/lib/python2.7/gmssi.so" ]; then sudo rm  /usr/lib/python2.7/gmssi.so ; fi
+		if [ -d "/usr/lib/python2.7/mapping.fei" ]; then sudo rm  /usr/lib/python2.7/mapping.fei; fi
+		sudo cp gmssi.so mapping.fei /usr/lib/python2.7	
+		sudo ln -s -f /usr/local/gmssi/bin/mapping.fei /usr/local/bin/mapping.fei
+		sudo ln -s -f /usr/local/gmssi/bin/gmssi /usr/local/bin/gmssi
+		
