@@ -5,7 +5,7 @@
 	 sc "Singular Commands"
 	 mv "Material Variational Commands"
 	 an "Add Node Commands"
-	 cc "Contact Commands"
+	 cc "Connect Commands"
 	 wr "Write Commands"
 	 0 "Element-cum-physicalgroup commands"     //Hybrid of Element and Node Commands
 	 1 "2-node line."
