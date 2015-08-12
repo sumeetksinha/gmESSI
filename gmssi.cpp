@@ -82,6 +82,9 @@ int main(int argc, char* argv[]){
 	    	}
 		    newDirectory  =newDirectory +slash;
 
+		    cout << "\033[1;36mMessage::Files converted to " << newDirectory << "  \033[0m\n" << endl; 
+	   		newDirectory  =newDirectory +slash;
+
 		    PythonInterpreter gmssi = PythonInterpreter ();
 		    gmssi.Translator = GmshTranslator(gmshFile, newDirectory);
 		    gmssi.Translator.Convert();
