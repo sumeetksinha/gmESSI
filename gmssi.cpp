@@ -33,9 +33,15 @@ string getFilePath();
 
 int main(int argc, char* argv[]){
 
-	int override = 1; //atoi
+	int override = 1, start =1; //atoi
+	string off = argv[1];
 
 	try{
+
+		if(!off.compare("-o")){
+			override =0;
+			start =2;
+		}
 
 		if( argc <= 1){ 
 
@@ -44,7 +50,7 @@ int main(int argc, char* argv[]){
 		}
 
 
-		for (int i =1 ;i <argc ; i++){
+		for (int i =start ;i <argc ; i++){
 
 		    string gmshFile = argv[i];
 		    fstream InputFile (gmshFile,fstream::in);
@@ -61,17 +67,14 @@ int main(int argc, char* argv[]){
 		    string newDirectory= getFilePath() + slash + gmshFile+ "_Essi_Simulation";
 		    gmshFile = argv[i];
 
-		    // if(!str.nextToken().compare("msh")==0){
-
-		    // 	string msg = "\033[1;31mERROR:: The file does not have .msh extension \033[0m\n" ; 
-		    // 	throw msg.c_str();
-		    // }
-
 		    int n = 1;string tempDirectory = newDirectory;
+
+
 
 	    	while(!mkdir(newDirectory.c_str(),0777)==0){ 
 
 		    	if(override>=1){ 
+		    		cout << "\033[1;36mFiles will be converted to " << newDirectory << "  \033[0m\n" << endl; 
 		    		cout << "\033[1;33mWARNING::Directory Allready Present. The contents of the Folder may get changed \033[0m\n"; 
 		    		break;
 		    	}
@@ -80,10 +83,9 @@ int main(int argc, char* argv[]){
 		    		n=n+1;
 		    	}
 	    	}
-		    newDirectory  =newDirectory +slash;
 
-		    cout << "\033[1;36mMessage::Files converted to " << newDirectory << "  \033[0m\n" << endl; 
-	   		newDirectory  =newDirectory +slash;
+	    	cout << "\033[1;36mFiles converted to " << newDirectory << "  \033[0m\n" << endl; 
+		    newDirectory  =newDirectory +slash;
 
 		    PythonInterpreter gmssi = PythonInterpreter ();
 		    gmssi.Translator = GmshTranslator(gmshFile, newDirectory);

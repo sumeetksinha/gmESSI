@@ -12,7 +12,7 @@
 	 2 "3-node triangle."
 	 3 "4-node quadrangle."
 	 4 "4-node tetrahedron."
-	 5 "8-node hexahedron."
+	 5 "8-node hexahedron." 
 	 6 "6-node prism."
 	 7 "5-node pyramid."
 	 8 "3-node second order line (2 nodes associated with the vertices and 1 with the edge)."
