@@ -49,7 +49,7 @@ string OctParser::eval(const string& function) {
     ScriptFile.close();
     source_file("script");
     //eval_string(function,false,status);
-    octave_value f = eval_string("num2str(ans);",false,status);
+    octave_value f = eval_string("num2str(ans,10);",false,status);
     string val = f.string_value();
     return val; 
 }

@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 #include "PythonInterpreter.h"
 
 #ifdef _WIN32 
@@ -97,6 +98,107 @@ vector<Element> PythonInterpreter::getEntityGroupElements(const int& tag ){
 // 	else return map<int,int>();
 // }
 
+SelectionData PythonInterpreter::BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2){
+
+	vector<Element> ElementList;
+	// Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    map<int,NodeElement>::iterator TypeIter;
+    if(!setTypeIter(TypeIter,PhysEntyTag))
+    	ElementList = TypeIter->second.ElementList;
+    else
+    	ElementList= this->Translator.GmshParse.getElementList();
+	/// Ends Initialization here
+
+	struct SelectionData newSelectionData;
+	int ElementListSize = ElementList.size();
+
+	for (int i =0 ; i< ElementListSize ; i++){
+
+		Element NewElement = ElementList.at(i);
+		vector<int> Nodelist = NewElement.getNodeList();
+		int NodelistSize = Nodelist.size(), NofNodesMatched = 0;
+
+		for(int j=0 ; j<NodelistSize ; j++ ){
+
+			Node node = Translator.NodeMap.find(Nodelist.at(j))->second;
+			double x = node.getXcord(), y = node.getYcord(), z = node.getZcord(); 
+
+			if(x>=x1 && x<=x2 && y>=y1 && y<=y2 && z>=z1 && z<=z2){
+
+				newSelectionData.NodeList.push_back(node);
+				NofNodesMatched++;
+			}
+		}
+
+		if(NofNodesMatched==NodelistSize)
+			newSelectionData.ElementList.push_back(NewElement);	
+	}
+
+	return newSelectionData;
+}
+
+SelectionData PythonInterpreter::SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z){
+
+	vector<Element> ElementList;
+	// Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    map<int,NodeElement>::iterator TypeIter;
+    if(!setTypeIter(TypeIter,PhysEntyTag))
+    	ElementList = TypeIter->second.ElementList;
+    else
+    	ElementList= this->Translator.GmshParse.getElementList();
+	/// Ends Initialization here
+
+	struct SelectionData newSelectionData;
+	int ElementListSize = ElementList.size();
+
+	for (int i =0 ; i< ElementListSize ; i++){
+
+		Element NewElement = ElementList.at(i);
+		vector<int> Nodelist = NewElement.getNodeList();
+		int NodelistSize = Nodelist.size(), NofNodesMatched = 0;
+
+		for(int j=0 ; j<NodelistSize ; j++ ){
+
+			Node node = Translator.NodeMap.find(Nodelist.at(j))->second;
+			double x = node.getXcord(), y = node.getYcord(), z = node.getZcord(); 
+
+			if(sqrt((x-center_x)*(x-center_x)+(y-center_y)*(y-center_y)+(z-center_z)*(z-center_z))<=radius){
+
+				newSelectionData.NodeList.push_back(node);
+				NofNodesMatched++;
+			}
+		}
+
+		if(NofNodesMatched==NodelistSize)
+			newSelectionData.ElementList.push_back(NewElement);	
+	}
+
+	return newSelectionData;
+}
+
+void PythonInterpreter::CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList){
+
+	NodeElement newNodeElement; 
+	map<int,int> NodeNumberNodeMap;
+	int ElementListSize, NodelistSize;
+
+	for(int i=0 ; i<ElementListSize ;i++)
+		ElementList.at(i).setPhysicalTag(this->Translator.PhysicalGroupMap.size()+1);
+
+	for(int i=0 ; i<NodelistSize ;i++)
+		NodeNumberNodeMap.insert(pair<int,int>(NodeList.at(i).getId(),NodeList.at(i).getId()));
+
+	newNodeElement.ElementList = ElementList;
+	newNodeElement.NodeList = NodeNumberNodeMap;
+
+    this->Translator.PhysicalGroupMap.insert(pair<int,NodeElement>(this->Translator.PhysicalGroupMap.size()+1,newNodeElement));
+    string PhysicDes = "3 "+ to_string(this->Translator.PhysicalGroupMap.size())+  " \"$NewPhysicalGroup_" + to_string(this->Translator.PhysicalGroupMap.size()) +  "$\""; 
+    PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
+    this->Translator.PhysicalGroupList.push_back(newPhysicalGroup);
+
+	return;
+}
+
 vector<Node> PythonInterpreter::getPhysicalGroupNodes(const int& tag ){
 
 	map<int,NodeElement>::iterator PhysicalGroupIter = Translator.PhysicalGroupMap.find(tag);
@@ -121,13 +223,10 @@ vector<Node> PythonInterpreter::getEntityGroupNodes(const int& tag ){
 	else return vector<Node> ();
 }
 
-
-
 map<int,Node> PythonInterpreter::getNodeMap(){
 
 	return Translator.NodeMap;
 }
-
 
 string PythonInterpreter::getFilePath(){
 
@@ -184,15 +283,6 @@ void PythonInterpreter::ConvertFile(const string& mshFile,int override){
 	    string newDirectory= getFilePath() + slash + gmshFile+ "_Essi_Simulation";
 	    gmshFile = mshFile;   
 
-	    // cout << "GmshFile:: " << gmshFile << endl;
-	    // cout << "newDirectory:: " << newDirectory << endl;
-	    // return;
-
-	    // if(!str.nextToken().compare("msh")==0){
-
-	    // 	string msg = "\033[1;31mERROR:: The file does not have .msh extension \033[0m\n" ; 
-	    // 	throw msg.c_str();
-	    // }
 	    int n = 1;string tempDirectory = newDirectory;
 	    while(!mkdir(newDirectory.c_str(),0777)==0){ 
 
@@ -213,6 +303,58 @@ void PythonInterpreter::ConvertFile(const string& mshFile,int override){
 
 	} catch (const char* msg){cerr << msg << endl;}
 
+}
+
+int PythonInterpreter::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
+
+    Tokenizer tknzr = Tokenizer(variable," #");
+
+    if(tknzr.countTokens()==2){
+
+        string type = delSpaces(tknzr.nextToken());
+        int tag = stoi(delSpaces(tknzr.nextToken()));
+
+        if(!type.compare("Enty")){
+
+            TypeIter = this->Translator.EntityMap.find(tag);
+
+            if(TypeIter==this->Translator.EntityMap.end()|| TypeIter->second.NodeList.size()==0){
+                string msg = "\033[1;33mWARNING:: The command failed to convert as there is no elements/nodes in the Physical Group \033[0m\n" ; 
+                cout << msg;
+                return 0 ;        
+            }
+        }
+
+        else if (!type.compare("Phy")){
+
+            TypeIter = this->Translator.PhysicalGroupMap.find(tag);
+
+            if(TypeIter==this->Translator.PhysicalGroupMap.end()|| TypeIter->second.NodeList.size()==0){
+                string msg = "\033[1;33mWARNING:: The command failed to convert as there is no elements/nodes in the Physical Group \033[0m\n" ; 
+                cout << msg;
+                return 0 ;        
+            }
+        }
+
+        else{
+
+            string msg = "\033[1;31mERROR:: The command has a syntaxERROR in Enty/Phy# tag \033[0m\n" ;
+            throw msg.c_str();
+        }
+    }
+
+    else{
+
+        return 1;
+    }
+
+    return 0;
+}
+
+string PythonInterpreter::delSpaces(string str){
+
+   str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+   return str;
 }
 
 /*******************************************************************************
@@ -277,3 +419,15 @@ BOOST_PYTHON_MODULE(gmssi)
     	.def("getFilePath",&PythonInterpreter::getFilePath)
     	.def("UpdateGmshFile",&PythonInterpreter::UpdateGmshFile);
 }
+
+
+/// Selection Objects
+
+/**
+
+Box
+Cone
+Cylinder
+Sphere
+
+**/

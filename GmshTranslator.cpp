@@ -164,7 +164,7 @@ void GmshTranslator::GmshToEssi(){
             else{
                 
                 cout << left << setw(15) << "\033[1;31mNot Found!!" << "\033[0m";
-                cout << "\t" << "\033[1;33mWARNING:: Execuation of the command escaped. The essi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found" << " \033[0m\n" ; 
+                cout << "\t" << "\033[1;33mWARNING:: Execuation of the command escaped. The Gmssi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found" << " \033[0m\n" ; 
             }
         }
     } 
@@ -297,7 +297,7 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
 
 void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
 
-	cout << "ElementalCompoundCommand" << endl;
+	// cout << "ElementalCompoundCommand" << endl;
  
     ofstream LoadFile(loadFile,ios::app); int init=0;
     LoadFile<< PrintStartConversion(j);
@@ -618,7 +618,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     map<int,int>::iterator Iterator3Begin = Iterator3->second.NodeList.begin();
     map<int,int>::iterator Iterator3End = Iterator3->second.NodeList.end();
 
-    string vector = (this->delSpaces(Variables.at(3))); tkr.set(vector,";");
+    string vector = (this->delSpaces(Variables.at(3))); tkr.set(vector,"\\");
     double vec_x = stof(tkr.nextToken()),vec_y = stof(tkr.nextToken()),vec_z = stof(tkr.nextToken());double sum = vec_x*vec_x+vec_y*vec_y+vec_z*vec_z;
     vec_x=vec_x/sqrt(sum);vec_y=vec_y/sqrt(sum);vec_z=vec_z/sqrt(sum);
     double length = stof(this->delSpaces(Variables.at(4))); //magnitude of vector
@@ -657,10 +657,10 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 Node1=NodeMap1->first;
                 Node2=newNode.getId(); 
 
-                cout << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z << endl;
+                cout << endl << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z;
                 // cout << " New Nodes and Elements Created" << endl; 
                 string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " -1 " + to_string(Node1) + " " + to_string(Node2);
-                cout << ElementDesc << endl;
+                cout << endl << ElementDesc;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
                 newNodeElement.ElementList.push_back(newElement);
@@ -685,7 +685,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                         Node2=It3->second; string str = "element";
                         // cout << "New Elements Created from finding nodes" << endl; 
                         string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " -1 " + to_string(Node1) + " " + to_string(Node2);
-                        cout << ElementDesc << endl;
+                        cout << endl << ElementDesc;
                         Element newElement = Element(ElementDesc);
                         this->GmshParse.addElement(newElement);
                         newNodeElement.ElementList.push_back(newElement);
@@ -716,7 +716,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 Node2=It2->second; string str = "element";
                 // cout << "New Elements Created" << endl; 
                 string ElementDesc = this->getVariable(str) + " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " -1 " + to_string(Node1) + " " + to_string(Node2);
-                cout << ElementDesc << endl;
+                cout << endl << ElementDesc ;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
                 newNodeElement.ElementList.push_back(newElement);
@@ -728,7 +728,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     }
 
     this->PhysicalGroupMap.insert(pair<int,NodeElement>(this->PhysicalGroupMap.size()+1,newNodeElement));
-    string PhysicDes = "1 "+ to_string(this->PhysicalGroupMap.size())+  " \"NewLineGroup_" + to_string(this->PhysicalGroupMap.size()) +  "\""; 
+    string PhysicDes = "1 "+ to_string(this->PhysicalGroupMap.size())+  " \"$NewLineGroup_" + to_string(this->PhysicalGroupMap.size()) +  "$\""; 
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
     this->PhysicalGroupList.push_back(newPhysicalGroup);
 
@@ -806,13 +806,21 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
                    this->TempVariable.push(this->getVariable(ScriptFunction));
                 }
                 else{
-
-                    string ScriptFunction = Variables.at(n++);
-                    string function = ScriptVariables + ScriptFunction + ";";
-                    string prec = Variables.at(n++) ; 
-                    string var = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)), stoi(prec)));          //running script in octave
-                    Material = Material + " " + var;
-                    this->TempVariable.push(var);  
+                    string UserVariable = Variables.at(n++), unit="", prec="0", value, function;
+                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
+                    string ScriptFunction = tknzr.nextToken();
+                    function = ScriptVariables + ScriptFunction + ";";
+                    value = this->Evaluate.eval(function);
+                    if(tknzr.hasMoreTokens()){
+                        string temp = delSpaces(tknzr.nextToken()); 
+                        if (temp.compare("")) prec = temp ;
+                        value = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)), stoi(prec)));
+                    }
+                    if(tknzr.hasMoreTokens()) unit = unit + "*" + delSpaces(tknzr.nextToken());
+                    // cout << function << " " << prec << " "<< unit << " "<< endl;
+                    value = value + unit;          
+                    Material = Material + " " + value;
+                    this->TempVariable.push(value);  
                 }
             }
 

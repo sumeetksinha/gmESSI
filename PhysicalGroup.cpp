@@ -18,6 +18,10 @@
 #include <algorithm>
 using namespace::std;
 
+void trim(string& s, const string& delimiters = " \f\n\r\t\v" ){
+    s.erase( s.find_last_not_of( delimiters ) + 1 ).erase( 0, s.erase( s.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
+}
+
 /******************************************************************************
 ****************************** Constructor ************************************
 ******************************************************************************/
@@ -128,7 +132,9 @@ void PhysicalGroup::setContents(const string& PhysicDesc){
 		if(!str.hasMoreTokens())
 			break;
 
-		this->Process(this->delSpaces(str.currToken()));
+		string command = str.currToken();
+		trim(command);
+		this->Process(this->delSpaces(command));
 	}
 
 }
