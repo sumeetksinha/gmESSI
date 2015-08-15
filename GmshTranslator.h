@@ -56,6 +56,8 @@ class GmshTranslator{
         map<int,NodeElement> PhysicalGroupMap;
         map<int,NodeElement> EntityMap;
         map<int,Node> NodeMap;
+        GmshParser GmshParse = GmshParser ();
+        vector<PhysicalGroup> PhysicalGroupList;
 
     private:
 
@@ -79,8 +81,6 @@ class GmshTranslator{
         void UpdateEssiTags(const string& tempvar, const int& l);
 
         Mapping Map = Mapping("/usr/local/gmssi/bin/mapping.fei");
-        GmshParser GmshParse = GmshParser ();
-        vector<PhysicalGroup> PhysicalGroupList;
         map<string,Semantics> FunctionMap;
         set<string> EssiTagList;
         map<string,Semantics>::iterator FunctionIter;

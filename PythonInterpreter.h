@@ -20,7 +20,11 @@
 #include "Element.h"
 #include "Node.h"
 
-typedef vector<Node> NodeList;
+struct SelectionData{
+	
+   vector<Element> ElementList;
+   vector<Node> NodeList;
+};
 
 using namespace::std;
 
@@ -44,12 +48,18 @@ class PythonInterpreter{
 		void UpdateGmshFile();
 		string MshFile;
 		GmshTranslator Translator = GmshTranslator();
+		SelectionData BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);
+		SelectionData SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z);
+		void CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList);
+
 
 	private:
 
 		// void ConvertFile(const string& mshFile,int override);
 		// string MshFile;
 		// GmshTranslator Translator = GmshTranslator();
+		int setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable);
+		string delSpaces(string str);
 
 };
 
