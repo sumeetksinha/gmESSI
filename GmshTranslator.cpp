@@ -88,12 +88,7 @@ void GmshTranslator::GmshToEssi(){
 
     ofstream MainFile(mainFile,ios::out);  
 
-    MainFile << "\n" <<"model name \"" << this->GmshFile << "\";\n";
-    MainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
-    MainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
-    MainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
-
-    MainFile.close();
+    MainFile << "\n" <<"model name \"" << this->GmshFile << "\";\n"; MainFile.close();
     ofstream GeometryFile(geometryFile, ios::out); GeometryFile.close();
     ofstream LoadFile(loadFile,ios::out); LoadFile.close();
 
@@ -170,6 +165,12 @@ void GmshTranslator::GmshToEssi(){
     } 
 
     UpdateGmshFile();
+
+    ofstream AgainMainFile(mainFile,ios::app);  
+    AgainMainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
+    AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
+    AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
+    AgainMainFile.close();
 
     PhysicalGroup PythonScriptCommands = PhysicalGroup();
     this->PhysicalGroupList.push_back(PythonScriptCommands);
@@ -758,7 +759,7 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
     // int NofVariables = this->NofVariablesList.at(j);
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
-     
+    
     string gmshCommandtag = Variables.at(0);
     Tokenizer tkr =   Tokenizer(this->UserCommandList.at(j),"{");tkr.nextToken();tkr.nextToken();tkr.nextToken();
     string str = delSpaces(tkr.currToken()); string arguments="";
@@ -864,7 +865,6 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
                 }
                 else{string newVar = NewVariables.at(n++);
                     this->TempVariable.push(newVar);
-                    UpdateEssiTags(newVar,l);  
                 }
             }
 

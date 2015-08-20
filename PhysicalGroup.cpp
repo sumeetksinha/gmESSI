@@ -18,8 +18,10 @@
 #include <algorithm>
 using namespace::std;
 
-void trim(string& s, const string& delimiters = " \f\n\r\t\v" ){
+string trim(const string& str, const string& delimiters = " \f\n\r\t\v" ){
+	string s=str;
     s.erase( s.find_last_not_of( delimiters ) + 1 ).erase( 0, s.erase( s.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
+    return s;
 }
 
 /******************************************************************************
@@ -132,9 +134,7 @@ void PhysicalGroup::setContents(const string& PhysicDesc){
 		if(!str.hasMoreTokens())
 			break;
 
-		string command = str.currToken();
-		trim(command);
-		this->Process(this->delSpaces(command));
+		this->Process(this->delSpaces(trim(str.currToken())));
 	}
 
 }
@@ -147,24 +147,37 @@ void PhysicalGroup::Process(const string& Command ){
 	vector<string> varList;
 	string essiTag="";
 	// Tokenizer inpString = Tokenizer(Command,"  \t\v\n\r\f{,}()");
-	Tokenizer inpString = Tokenizer(Command,"{,}");
+	Tokenizer inpString = Tokenizer(trim(Command),"{,}");
 	nofTokens = inpString.countTokens()-1;
-	nofVariables = nofTokens-1;
-	essiTag = essiTag + inpString.nextToken() + "{";
-	
-	for( int i=0 ;i<nofTokens-1; i++){
+	nofVariables = nofTokens-2;
+	essiTag = essiTag + trim(inpString.nextToken()) + "{";
 
-		string variable= this->delSpaces(inpString.nextToken());
+	for( int i=0 ;i<nofTokens-2; i++){
+		string variable= trim(inpString.nextToken());
 		varList.push_back(variable);
 		essiTag = essiTag + " ,";
 	}
 
-	string variable= this->delSpaces(inpString.nextToken());
+	string variable= trim(inpString.nextToken());
 	varList.push_back(variable);
+
+	if(inpString.hasMoreTokens()){
+		
+		string nextvariable= trim(inpString.nextToken());
+
+		if(nextvariable.compare("")){
+			nofVariables++;
+			essiTag = essiTag + " ,";
+			varList.push_back(nextvariable);
+		}
+	}
 
 	if(variable.compare("")){
 		nofVariables++;
 	}
+
+	if(nofVariables == 0 )	nofVariables=1;
+	else if (nofVariables < 0 ) nofVariables=0;
 
 	essiTag = essiTag + " }"+to_string(nofVariables);
 	this->VariableList.push_back(varList);
