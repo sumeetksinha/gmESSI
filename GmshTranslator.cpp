@@ -88,7 +88,7 @@ void GmshTranslator::GmshToEssi(){
 
     ofstream MainFile(mainFile,ios::out);  
 
-    MainFile << "\n" <<"model name \"" << this->GmshFile << "\";\n"; MainFile.close();
+    // MainFile << "\n" <<"model name \"" << this->GmshFile << "\";\n"; MainFile.close();
     ofstream GeometryFile(geometryFile, ios::out); GeometryFile.close();
     ofstream LoadFile(loadFile,ios::out); LoadFile.close();
 
@@ -130,11 +130,11 @@ void GmshTranslator::GmshToEssi(){
             
             this->FunctionIter = this->FunctionMap.find(this->CommandList.at(j));
             //printing output
-            cout << left << setw(40) << this->UserCommandList.at(j) ;
+            cout << left << setw(60) << this->UserCommandList.at(j) ;
 
             if (this->FunctionIter != this->FunctionMap.end()){
                 
-                cout<< left << setw(15) << "Found!!";
+                cout<< left << setw(15) << "\t \t Found!!";
                 // cout<< "Element Id !!" << this->FunctionIter->second.getElementId() <<endl;
 
                 if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("c")))
@@ -158,7 +158,7 @@ void GmshTranslator::GmshToEssi(){
             }
             else{
                 
-                cout << left << setw(15) << "\033[1;31mNot Found!!" << "\033[0m";
+                cout << left << setw(60) << "\033[1;31mNot Found!!" << "\033[0m";
                 cout << "\t" << "\033[1;33mWARNING:: Execuation of the command escaped. The Gmssi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found" << " \033[0m\n" ; 
             }
         }
@@ -166,11 +166,11 @@ void GmshTranslator::GmshToEssi(){
 
     UpdateGmshFile();
 
-    ofstream AgainMainFile(mainFile,ios::app);  
-    AgainMainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
-    AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
-    AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
-    AgainMainFile.close();
+    // ofstream AgainMainFile(mainFile,ios::app);  
+    // AgainMainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
+    // AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
+    // AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
+    // AgainMainFile.close();
 
     PhysicalGroup PythonScriptCommands = PhysicalGroup();
     this->PhysicalGroupList.push_back(PythonScriptCommands);
@@ -967,12 +967,12 @@ string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, in
     }
     
     while(inpString.hasMoreTokens() && nofTokens++<NofEssiVariables){
-        Ecommand << inpString.nextToken()  << setw(10);
-        Ecommand << TempVariable.front()   << setw(10) ;
+        Ecommand << inpString.nextToken()  << setw(0);
+        Ecommand << TempVariable.front()   << setw(0) ;
         TempVariable.pop();
     }
     
-    Ecommand <<inpString.nextToken() << setw(10) <<"\n";
+    Ecommand <<inpString.nextToken() << setw(0) <<"\n";
     return Ecommand.str();
 }
 
