@@ -44,6 +44,9 @@ PythonInterpreter::PythonInterpreter(const string& mshFile, int override){
 	return;
 }
 
+PythonInterpreter::~PythonInterpreter(){
+	Translator.UpdateNewTagNumbering();
+}
 
 /*******************************************************************************
 ********************************* Public Function ******************************
@@ -66,6 +69,12 @@ int PythonInterpreter::getEssiTag(const string& EssiTag){
 	string Tag = EssiTag;
 	string newNumber = Translator.getVariable(Tag);
 	return stoi(newNumber);
+}
+
+void PythonInterpreter::UpdateNewTagNumbering(){
+	
+	Translator.UpdateNewTagNumbering();
+	return;
 }
 
 vector<Element> PythonInterpreter::getPhysicalGroupElements(const int& tag ){

@@ -90,6 +90,8 @@ int main(int argc, char* argv[]){
 		    PythonInterpreter gmssi = PythonInterpreter ();
 		    gmssi.Translator = GmshTranslator(gmshFile, newDirectory);
 		    gmssi.Translator.Convert();
+
+		    gmssi.Translator.UpdateNewTagNumbering();
 		}
 
 	} catch (const char* msg){cerr << msg << endl;}

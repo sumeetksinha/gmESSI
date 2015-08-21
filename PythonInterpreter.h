@@ -31,11 +31,12 @@ using namespace::std;
 class PythonInterpreter{
 
 	public:
-		PythonInterpreter();
+		PythonInterpreter(); ~PythonInterpreter();
 		PythonInterpreter(const string& mshFile, int override = 1);
 		void loadMshFile(const string& mshFile, int override = 1);
 		void Convert(const string& GmssiCommand);
 		int getEssiTag( const string& EssiTag);
+		void UpdateNewTagNumbering();
 		vector<Element> getPhysicalGroupElements(const int& n );
 		vector<Node> getPhysicalGroupNodes(const int& n );
 		vector<Element> getEntityGroupElements(const int& n );

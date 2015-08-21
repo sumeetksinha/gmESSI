@@ -172,20 +172,21 @@ void GmshTranslator::GmshToEssi(){
     // AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
     // AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
     // AgainMainFile.close();
+    
+    return;
+}
 
-    // PhysicalGroup PythonScriptCommands = PhysicalGroup();
-    // this->PhysicalGroupList.push_back(PythonScriptCommands);
+
+void GmshTranslator::UpdateNewTagNumbering(){
 
     map<string,int>::iterator EssiTagIterBegin = EssiTagVariableMap.begin();
     map<string,int>::iterator EssiTagIterEnd = EssiTagVariableMap.end();
-
+    
     cout <<endl << endl<< "\033[1;36m************************ Updated New Tag Numberring *********************" << "\033[0m\n";
     for(map<string,int>::iterator it = EssiTagIterBegin ; it!= EssiTagIterEnd ; ++it){
 
         cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
     }
-
-    return;
 }
 
 void GmshTranslator::AddNodeCommand(const int&i, const int& j){

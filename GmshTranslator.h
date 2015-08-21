@@ -50,6 +50,7 @@ class GmshTranslator{
         string getVariable(string& var);
         void UpdateGmshFile();
         void Convert(const string& GmssiCommand);
+        void UpdateNewTagNumbering();
 
         int NewEntity =0;
         string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
