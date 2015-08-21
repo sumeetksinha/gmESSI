@@ -172,7 +172,7 @@ void GmshTranslator::GmshToEssi(){
     // AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
     // AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
     // AgainMainFile.close();
-    
+
     return;
 }
 
@@ -1106,7 +1106,7 @@ void GmshTranslator::Convert(const string& GmssiCommand){
 
     if (this->FunctionIter != this->FunctionMap.end()){
         
-        cout<< left << setw(15) << "Found!!";
+        cout<< left << setw(15) << "\t \t Found!!";
 
         if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("c")))
             this->ElementalCompoundCommand(i,j);
@@ -1131,15 +1131,6 @@ void GmshTranslator::Convert(const string& GmssiCommand){
         
         cout << left << setw(15) << "\033[1;31mNot Found!!" << "\033[0m";
         cout << "\t" << "\033[1;33mWARNING:: Execuation of the command escaped. The essi command \'" << this->UserCommandList.at(j) << "\'" << "could not be found" << " \033[0m\n" ; 
-    }
-
-    map<string,int>::iterator EssiTagIterBegin = EssiTagVariableMap.begin();
-    map<string,int>::iterator EssiTagIterEnd = EssiTagVariableMap.end();
-
-    cout <<endl << endl<< "\033[1;36m************************ Updated New Tag Numberring *********************" << "\033[0m\n";
-    for(map<string,int>::iterator it = EssiTagIterBegin ; it!= EssiTagIterEnd ; ++it){
-
-        cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
     }
 
     return;
