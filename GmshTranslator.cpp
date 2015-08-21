@@ -190,7 +190,7 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
     ofstream GeometryFile(geometryFile,ios::app); int init=0;int nofRun=0;
     GeometryFile << PrintStartConversion(j);
 
-    if(!(this->UserCommandList.at(j).substr(3,3).compare("All"))){
+    if(!(this->UserCommandList.at(j).substr(4,3).compare("All"))){
 
         map<int,Node> ::iterator AllNodeBegin = this->NodeMap.begin();
         map<int,Node> ::iterator AllNodeEnd = this->NodeMap.end();
@@ -1082,6 +1082,8 @@ void GmshTranslator::UpdateEssiTags(const string& newVar, const int& l){
     string tempvar = temptknzr.nextToken(); 
     map<string,int>::iterator EssiTagVariablemapIter = this->EssiTagVariableMap.find(tempvar);
     if (EssiTagVariablemapIter!= this->EssiTagVariableMap.end())   EssiTagVariablemapIter->second = stoi(newVar)+1;
+
+    return;
 }
 
 void GmshTranslator::Convert(const string& GmssiCommand){
@@ -1135,6 +1137,8 @@ void GmshTranslator::Convert(const string& GmssiCommand){
 
         cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
     }
+
+    return;
 }
 
 void GmshTranslator::UpdateGmshFile(){
@@ -1172,4 +1176,6 @@ void GmshTranslator::UpdateGmshFile(){
 		UpdateGmshFile << "\n";
 	}
 	UpdateGmshFile << "$EndElements\n";
+
+    return;
 }

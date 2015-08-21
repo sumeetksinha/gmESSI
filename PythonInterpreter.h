@@ -35,18 +35,16 @@ class PythonInterpreter{
 		PythonInterpreter(const string& mshFile, int override = 1);
 		void loadMshFile(const string& mshFile, int override = 1);
 		void Convert(const string& GmssiCommand);
-		string getEssiTag( const string& EssiTag);
+		int getEssiTag( const string& EssiTag);
 		vector<Element> getPhysicalGroupElements(const int& n );
 		vector<Node> getPhysicalGroupNodes(const int& n );
 		vector<Element> getEntityGroupElements(const int& n );
 		vector<Node> getEntityGroupNodes(const int& n );
 		map<int,Node> getNodeMap();
 		string getFilePath();
-		bool copyFile(const string& Source, const string& Destination);
 		string getFile();
 		void ConvertFile(const string& mshFile,int override);
 		void UpdateGmshFile();
-		string MshFile;
 		GmshTranslator Translator = GmshTranslator();
 		SelectionData BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);
 		SelectionData SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z);
@@ -55,11 +53,9 @@ class PythonInterpreter{
 
 	private:
 
-		// void ConvertFile(const string& mshFile,int override);
-		// string MshFile;
-		// GmshTranslator Translator = GmshTranslator();
 		int setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable);
 		string delSpaces(string str);
+		string trim(const string& str, const string& delimiters = " []\f\n\r\t\v" );
 
 };
 

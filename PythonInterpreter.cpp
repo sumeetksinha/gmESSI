@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <cmath>
 #include "PythonInterpreter.h"
+#include "Node.h"
 
 #ifdef _WIN32 
     #include <direct.h>
@@ -40,6 +41,7 @@ PythonInterpreter::PythonInterpreter(){}
 PythonInterpreter::PythonInterpreter(const string& mshFile, int override){
 
 	ConvertFile(mshFile,override);
+	return;
 }
 
 
@@ -50,18 +52,20 @@ PythonInterpreter::PythonInterpreter(const string& mshFile, int override){
 void PythonInterpreter::loadMshFile(const string& mshFile,int override){
 
 	ConvertFile(mshFile,override);
+	return;
 }
 
 void PythonInterpreter::Convert(const string& GmssiCommand){
 
-	Translator.Convert(GmssiCommand);
+	Translator.Convert(trim(GmssiCommand));
+	return;
 }
 
-string PythonInterpreter::getEssiTag(const string& EssiTag){
+int PythonInterpreter::getEssiTag(const string& EssiTag){
 
 	string Tag = EssiTag;
 	string newNumber = Translator.getVariable(Tag);
-	return newNumber;
+	return stoi(newNumber);
 }
 
 vector<Element> PythonInterpreter::getPhysicalGroupElements(const int& tag ){
@@ -101,6 +105,7 @@ vector<Element> PythonInterpreter::getEntityGroupElements(const int& tag ){
 SelectionData PythonInterpreter::BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2){
 
 	vector<Element> ElementList;
+
 	// Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if(!setTypeIter(TypeIter,PhysEntyTag))
@@ -111,6 +116,7 @@ SelectionData PythonInterpreter::BoxSelection(string PhysEntyTag, double x1,doub
 
 	struct SelectionData newSelectionData;
 	int ElementListSize = ElementList.size();
+	vector<Node> TempNodeList;
 
 	for (int i =0 ; i< ElementListSize ; i++){
 
@@ -125,10 +131,12 @@ SelectionData PythonInterpreter::BoxSelection(string PhysEntyTag, double x1,doub
 
 			if(x>=x1 && x<=x2 && y>=y1 && y<=y2 && z>=z1 && z<=z2){
 
-				newSelectionData.NodeList.push_back(node);
+				TempNodeList.push_back(node);
 				NofNodesMatched++;
 			}
 		}
+
+		newSelectionData.NodeList=TempNodeList;
 
 		if(NofNodesMatched==NodelistSize)
 			newSelectionData.ElementList.push_back(NewElement);	
@@ -140,6 +148,7 @@ SelectionData PythonInterpreter::BoxSelection(string PhysEntyTag, double x1,doub
 SelectionData PythonInterpreter::SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z){
 
 	vector<Element> ElementList;
+
 	// Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if(!setTypeIter(TypeIter,PhysEntyTag))
@@ -150,6 +159,7 @@ SelectionData PythonInterpreter::SphereSelection(string PhysEntyTag,double radiu
 
 	struct SelectionData newSelectionData;
 	int ElementListSize = ElementList.size();
+	vector<Node> TempNodeList;
 
 	for (int i =0 ; i< ElementListSize ; i++){
 
@@ -164,10 +174,14 @@ SelectionData PythonInterpreter::SphereSelection(string PhysEntyTag,double radiu
 
 			if(sqrt((x-center_x)*(x-center_x)+(y-center_y)*(y-center_y)+(z-center_z)*(z-center_z))<=radius){
 
-				newSelectionData.NodeList.push_back(node);
+				TempNodeList.push_back(node);
 				NofNodesMatched++;
 			}
 		}
+
+		sort( TempNodeList.begin(), TempNodeList.end() );
+		TempNodeList.erase( unique( TempNodeList.begin(), TempNodeList.end() ), TempNodeList.end() );
+		newSelectionData.NodeList=TempNodeList;
 
 		if(NofNodesMatched==NodelistSize)
 			newSelectionData.ElementList.push_back(NewElement);	
@@ -242,17 +256,9 @@ string PythonInterpreter::getFilePath(){
 	return FilePath;
 }
 
-bool PythonInterpreter::copyFile(const string& Source, const string& Destination){
-
-   	ifstream src(Source, ios::binary);
-   	ofstream dest(Destination, ios::binary);
-    dest << src.rdbuf();
-    return src && dest;
-}
-
 string PythonInterpreter::getFile(){
 
-	return MshFile;
+	return Translator.GmshFile;
 }
 
 void PythonInterpreter::UpdateGmshFile(){
@@ -357,6 +363,12 @@ string PythonInterpreter::delSpaces(string str){
    return str;
 }
 
+string PythonInterpreter::trim(const string& str, const string& delimiters ){
+	string s=str;
+    s.erase( s.find_last_not_of( delimiters ) + 1 ).erase( 0, s.erase( s.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
+    return s;
+}
+
 /*******************************************************************************
 *********************** BoostPython Wrapper Function ***************************
 *******************************************************************************/
@@ -380,6 +392,10 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(gmssi)
 {
+    class_<SelectionData>("SelectionData")
+	    .def_readonly("NodeList",&SelectionData::NodeList)
+	    .def_readonly("ElementList",&SelectionData::ElementList);
+
     class_<Element>("Element")
     	.def("getId",&Element::getId)
     	.def("getType",&Element::getType)
@@ -392,6 +408,9 @@ BOOST_PYTHON_MODULE(gmssi)
     	.def("getXcord",&Node::getXcord)
     	.def("getYcord",&Node::getYcord) 
     	.def("getZcord",&Node::getZcord);
+
+    class_<std::vector<int> >("NodeNumberList")
+        .def(vector_indexing_suite<std::vector<int>>());
 
     class_<std::vector<Node> >("NodeList")
         .def(vector_indexing_suite<std::vector<Node>>());
@@ -417,17 +436,7 @@ BOOST_PYTHON_MODULE(gmssi)
     	.def("getPhysicalGroupNodes",&PythonInterpreter::getPhysicalGroupNodes)
     	.def("getNodeMap",&PythonInterpreter::getNodeMap)
     	.def("getFilePath",&PythonInterpreter::getFilePath)
-    	.def("UpdateGmshFile",&PythonInterpreter::UpdateGmshFile);
+    	.def("SphereSelection",&PythonInterpreter::SphereSelection)
+    	.def("UpdateGmshFile",&PythonInterpreter::UpdateGmshFile)
+    	.def("BoxSelection",&PythonInterpreter::BoxSelection);
 }
-
-
-/// Selection Objects
-
-/**
-
-Box
-Cone
-Cylinder
-Sphere
-
-**/

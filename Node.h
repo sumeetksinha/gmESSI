@@ -40,9 +40,14 @@ class Node{
 		double getZcord();
 
 		//Just for Boost sake of 
+		//Overloading of Operators
 
 		bool operator==(const Node& other) {return false;}
   		bool operator!=(const Node& other) {return true;}
+  		bool operator> ( Node& other ) { if(this->getId() >  other.getId()) return true; else return false;}
+  		bool operator< ( Node& other ) { if(this->getId() <  other.getId()) return true; else return false;}
+  		bool operator>=( Node& other ) { if(this->getId() >= other.getId()) return true; else return false;}
+  		bool operator<=( Node& other ) { if(this->getId() <= other.getId()) return true; else return false;}
 		
 	private:
 
