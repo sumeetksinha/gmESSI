@@ -50,6 +50,7 @@ class GmshParser{
 		int getNewPhysicalGroup();
 		int getNewNode();
 		int getNewElement();
+		int getNewEntity();
 
 	private:
 

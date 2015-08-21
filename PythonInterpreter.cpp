@@ -116,7 +116,7 @@ SelectionData PythonInterpreter::BoxSelection(string PhysEntyTag, double x1,doub
 
 	struct SelectionData newSelectionData;
 	int ElementListSize = ElementList.size();
-	vector<Node> TempNodeList;
+	set<int> TempNodeList;
 
 	for (int i =0 ; i< ElementListSize ; i++){
 
@@ -131,16 +131,17 @@ SelectionData PythonInterpreter::BoxSelection(string PhysEntyTag, double x1,doub
 
 			if(x>=x1 && x<=x2 && y>=y1 && y<=y2 && z>=z1 && z<=z2){
 
-				TempNodeList.push_back(node);
+				TempNodeList.insert(node.getId());
 				NofNodesMatched++;
 			}
 		}
 
-		newSelectionData.NodeList=TempNodeList;
-
 		if(NofNodesMatched==NodelistSize)
 			newSelectionData.ElementList.push_back(NewElement);	
 	}
+
+	for (set<int>::iterator it=TempNodeList.begin(); it!=TempNodeList.end(); ++it)
+		newSelectionData.NodeList.push_back(Translator.NodeMap.find(*it)->second);
 
 	return newSelectionData;
 }
@@ -159,7 +160,7 @@ SelectionData PythonInterpreter::SphereSelection(string PhysEntyTag,double radiu
 
 	struct SelectionData newSelectionData;
 	int ElementListSize = ElementList.size();
-	vector<Node> TempNodeList;
+	set<int> TempNodeList;
 
 	for (int i =0 ; i< ElementListSize ; i++){
 
@@ -174,18 +175,17 @@ SelectionData PythonInterpreter::SphereSelection(string PhysEntyTag,double radiu
 
 			if(sqrt((x-center_x)*(x-center_x)+(y-center_y)*(y-center_y)+(z-center_z)*(z-center_z))<=radius){
 
-				TempNodeList.push_back(node);
+				TempNodeList.insert(node.getId());
 				NofNodesMatched++;
 			}
 		}
 
-		sort( TempNodeList.begin(), TempNodeList.end() );
-		TempNodeList.erase( unique( TempNodeList.begin(), TempNodeList.end() ), TempNodeList.end() );
-		newSelectionData.NodeList=TempNodeList;
-
 		if(NofNodesMatched==NodelistSize)
 			newSelectionData.ElementList.push_back(NewElement);	
 	}
+
+	for (set<int>::iterator it=TempNodeList.begin(); it!=TempNodeList.end(); ++it)
+		newSelectionData.NodeList.push_back(Translator.NodeMap.find(*it)->second);
 
 	return newSelectionData;
 }
@@ -194,10 +194,16 @@ void PythonInterpreter::CreatePhysicalGroup (string Name,vector<Node> NodeList, 
 
 	NodeElement newNodeElement; 
 	map<int,int> NodeNumberNodeMap;
-	int ElementListSize, NodelistSize;
+	int ElementListSize=ElementList.size(), NodelistSize=NodeList.size(), newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size()+1;
 
-	for(int i=0 ; i<ElementListSize ;i++)
-		ElementList.at(i).setPhysicalTag(this->Translator.PhysicalGroupMap.size()+1);
+
+	for(int i=0 ; i<ElementListSize ;i++){
+		ElementList.at(i).setPhysicalTag(newPhysicalGroupTag);
+		ElementList.at(i).setEntityTag(this->Translator.NewEntity++);
+		string str = "element";
+		ElementList.at(i).setId(stoi(this->Translator.getVariable(str)));
+		this->Translator.GmshParse.addElement(ElementList.at(i));
+	}
 
 	for(int i=0 ; i<NodelistSize ;i++)
 		NodeNumberNodeMap.insert(pair<int,int>(NodeList.at(i).getId(),NodeList.at(i).getId()));
@@ -205,8 +211,9 @@ void PythonInterpreter::CreatePhysicalGroup (string Name,vector<Node> NodeList, 
 	newNodeElement.ElementList = ElementList;
 	newNodeElement.NodeList = NodeNumberNodeMap;
 
-    this->Translator.PhysicalGroupMap.insert(pair<int,NodeElement>(this->Translator.PhysicalGroupMap.size()+1,newNodeElement));
-    string PhysicDes = "3 "+ to_string(this->Translator.PhysicalGroupMap.size())+  " \"$NewPhysicalGroup_" + to_string(this->Translator.PhysicalGroupMap.size()) +  "$\""; 
+    this->Translator.PhysicalGroupMap.insert(pair<int,NodeElement>(newPhysicalGroupTag,newNodeElement));
+    string PhysicDes = "3 "+ to_string(newPhysicalGroupTag)+  " \"$NewPhysicalGroup_" + to_string(newPhysicalGroupTag) +  "$\"";
+    cout << "\033[1;36mNew Physical Group " << newPhysicalGroupTag << " created "  << "\033[0m\n";
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
     this->Translator.PhysicalGroupList.push_back(newPhysicalGroup);
 
@@ -438,5 +445,6 @@ BOOST_PYTHON_MODULE(gmssi)
     	.def("getFilePath",&PythonInterpreter::getFilePath)
     	.def("SphereSelection",&PythonInterpreter::SphereSelection)
     	.def("UpdateGmshFile",&PythonInterpreter::UpdateGmshFile)
-    	.def("BoxSelection",&PythonInterpreter::BoxSelection);
+    	.def("BoxSelection",&PythonInterpreter::BoxSelection)
+    	.def("CreatePhysicalGroup",&PythonInterpreter::CreatePhysicalGroup);
 }

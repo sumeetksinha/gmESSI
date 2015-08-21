@@ -95,6 +95,15 @@ int GmshParser::getNewElement(){
 	return this->newElement;
 }
 
+int GmshParser::getNewEntity(){
+
+	int new_entity = 0;
+	for (map<int,NodeElement>::iterator it=this->EntityMap.begin(); it!=this->EntityMap.end(); ++it){
+		if(it->first >= new_entity) new_entity = it->first;
+	}
+	return new_entity;
+}
+
 /******************************************************************************
 ****************************** Purivate Function*******************************
 ******************************************************************************/
@@ -102,7 +111,7 @@ int GmshParser::getNewElement(){
 void GmshParser::parseGmshFile(){
 
 	fstream parseFile(this->FileName, fstream::in);
-	string line; int i=0;
+	string line;
 
 	while(getline(parseFile,line)){
 

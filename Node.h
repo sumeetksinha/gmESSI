@@ -48,7 +48,7 @@ class Node{
   		bool operator< ( Node& other ) { if(this->getId() <  other.getId()) return true; else return false;}
   		bool operator>=( Node& other ) { if(this->getId() >= other.getId()) return true; else return false;}
   		bool operator<=( Node& other ) { if(this->getId() <= other.getId()) return true; else return false;}
-		
+
 	private:
 
 		int Id;

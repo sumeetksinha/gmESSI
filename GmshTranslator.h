@@ -51,7 +51,7 @@ class GmshTranslator{
         void UpdateGmshFile();
         void Convert(const string& GmssiCommand);
 
-
+        int NewEntity =0;
         string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
         map<int,NodeElement> PhysicalGroupMap;
         map<int,NodeElement> EntityMap;

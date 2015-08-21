@@ -102,10 +102,11 @@ void GmshTranslator::GmshToEssi(){
     this->PhysicalGroupMap = this->GmshParse.getPhysicalGroupMap();
     this->EntityMap = this->GmshParse.getEntityMap();
     this->NodeMap = this->GmshParse.getNodeMap();
+    this->NewEntity = this->GmshParse.getNewEntity()+1;
 
-    this->EssiTagVariableMap.insert(pair<string,int>("element",GmshParse.getNewElement()));
-    this->EssiTagVariableMap.insert(pair<string,int>("node",GmshParse.getNewNode()));
-    this->EssiTagVariableMap.insert(pair<string,int>("nodes",GmshParse.getNewNode()));
+    this->EssiTagVariableMap.insert(pair<string,int>("element",this->GmshParse.getNewElement()));
+    this->EssiTagVariableMap.insert(pair<string,int>("node",this->GmshParse.getNewNode()));
+    this->EssiTagVariableMap.insert(pair<string,int>("nodes",this->GmshParse.getNewNode()));
     this->EssiTagVariableMap.insert(pair<string,int>("damping",1));
     this->EssiTagVariableMap.insert(pair<string,int>("displacement",1));
     this->EssiTagVariableMap.insert(pair<string,int>("field",1));
@@ -172,8 +173,8 @@ void GmshTranslator::GmshToEssi(){
     // AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
     // AgainMainFile.close();
 
-    PhysicalGroup PythonScriptCommands = PhysicalGroup();
-    this->PhysicalGroupList.push_back(PythonScriptCommands);
+    // PhysicalGroup PythonScriptCommands = PhysicalGroup();
+    // this->PhysicalGroupList.push_back(PythonScriptCommands);
 
     map<string,int>::iterator EssiTagIterBegin = EssiTagVariableMap.begin();
     map<string,int>::iterator EssiTagIterEnd = EssiTagVariableMap.end();
@@ -183,6 +184,8 @@ void GmshTranslator::GmshToEssi(){
 
         cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
     }
+
+    return;
 }
 
 void GmshTranslator::AddNodeCommand(const int&i, const int& j){
@@ -660,7 +663,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
 
                 cout << endl << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z;
                 // cout << " New Nodes and Elements Created" << endl; 
-                string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " -1 " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + to_string(this->NewEntity++) + to_string(Node1) + " " + to_string(Node2);
                 cout << endl << ElementDesc;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
@@ -685,7 +688,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                         Node1=NodeMap1->first;
                         Node2=It3->second; string str = "element";
                         // cout << "New Elements Created from finding nodes" << endl; 
-                        string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " -1 " + to_string(Node1) + " " + to_string(Node2);
+                        string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + to_string(this->NewEntity++) + to_string(Node1) + " " + to_string(Node2);
                         cout << endl << ElementDesc;
                         Element newElement = Element(ElementDesc);
                         this->GmshParse.addElement(newElement);
