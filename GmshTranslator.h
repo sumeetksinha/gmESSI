@@ -29,6 +29,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <regex>
 
 
 using namespace::std;
@@ -50,7 +51,7 @@ class GmshTranslator{
         string getVariable(string& var);
         void UpdateGmshFile();
         void Convert(const string& GmssiCommand);
-        void UpdateNewTagNumbering();
+        void DisplayNewTagNumbering();
 
         int NewEntity =0;
         string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
@@ -74,9 +75,11 @@ class GmshTranslator{
 
         void clear( queue<string> &q );
         string delSpaces(string str);
+        string trim(const string& str, const string& delimiters = " \f\n\r\t\v" );
         string PrintEssiCommand(string Command, int NofEssiVariables, int j);
         double roundToSignificantFigures(double num, int n);
-        void setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable,const int& i,const int& j, int &n);
+        void setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable);
+        void setTypeIter(map<int,NodeElement>::iterator &TypeIter,const vector<string>& variable,const int& i,const int& j, int &n);
         string PrintStartConversion( const int& j);
         string PrintEndConversion(const int& nofRun, const int& j);
         void UpdateEssiTags(const string& tempvar, const int& l);

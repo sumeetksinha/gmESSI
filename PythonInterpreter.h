@@ -34,26 +34,29 @@ class PythonInterpreter{
 		PythonInterpreter(); ~PythonInterpreter();
 		PythonInterpreter(const string& mshFile, int override = 1);
 		void loadMshFile(const string& mshFile, int override = 1);
+		void loadMshFile2(const string& mshFile);
 		void Convert(const string& GmssiCommand);
 		int getEssiTag( const string& EssiTag);
-		void UpdateNewTagNumbering();
+		void DisplayNewTagNumbering();
 		vector<Element> getPhysicalGroupElements(const int& n );
 		vector<Node> getPhysicalGroupNodes(const int& n );
 		vector<Element> getEntityGroupElements(const int& n );
 		vector<Node> getEntityGroupNodes(const int& n );
 		map<int,Node> getNodeMap();
-		string getFilePath();
-		string getFile();
 		void ConvertFile(const string& mshFile,int override);
 		void UpdateGmshFile();
 		GmshTranslator Translator = GmshTranslator();
 		SelectionData BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);
 		SelectionData SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z);
-		void CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList);
+		SelectionData getEntityGroupData(const int& tag);
+		SelectionData getPhysicalGroupData(const int& tag);
 
+		void CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList);
+		string GmshFile="", pwd="", GeometryFile="", MainFile="", LoadFile="";
 
 	private:
 
+		string getFilePath();
 		int setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable);
 		string delSpaces(string str);
 		string trim(const string& str, const string& delimiters = " []\f\n\r\t\v" );

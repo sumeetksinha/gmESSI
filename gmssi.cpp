@@ -91,10 +91,11 @@ int main(int argc, char* argv[]){
 		    gmssi.Translator = GmshTranslator(gmshFile, newDirectory);
 		    gmssi.Translator.Convert();
 
-		    gmssi.Translator.UpdateNewTagNumbering();
+		    gmssi.Translator.DisplayNewTagNumbering();
+
 		}
 
-	} catch (const char* msg){cerr << msg << endl;}
+	} catch (const char* msg){cerr << msg << endl; 	 exit (EXIT_FAILURE);}
 
 	return 0;
 }

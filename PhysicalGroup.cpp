@@ -177,7 +177,7 @@ void PhysicalGroup::Process(const string& Command ){
 	}
 
 	if(nofVariables == 0 )	nofVariables=1;
-	else if (nofVariables < 0 ) nofVariables=0;
+	else if (nofVariables < 0 ){ nofVariables=0; vector<string> emptyvarList; varList = emptyvarList;}
 
 	essiTag = essiTag + " }"+to_string(nofVariables);
 	this->VariableList.push_back(varList);
