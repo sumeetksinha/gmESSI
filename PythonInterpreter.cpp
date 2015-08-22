@@ -387,11 +387,11 @@ int PythonInterpreter::setTypeIter(map<int,NodeElement>::iterator &TypeIter,cons
 
     if(variable.compare("All")){
 
-        string type = delSpaces(tknzr.nextToken());
+        string type = tknzr.nextToken();
 
         if(!type.compare("Enty")){
 
-            int tag = stoi(delSpaces(tknzr.nextToken()));
+            int tag = stoi(tknzr.nextToken());
             TypeIter = this->Translator.EntityMap.find(tag);
 
             if(TypeIter==this->Translator.EntityMap.end()|| TypeIter->second.NodeList.size()==0){
@@ -403,7 +403,7 @@ int PythonInterpreter::setTypeIter(map<int,NodeElement>::iterator &TypeIter,cons
 
         else if (!type.compare("Phy")){
 
-            int tag = stoi(delSpaces(tknzr.nextToken()));
+            int tag = stoi(tknzr.nextToken());
             TypeIter = this->Translator.PhysicalGroupMap.find(tag);
 
             if(TypeIter==this->Translator.PhysicalGroupMap.end()|| TypeIter->second.NodeList.size()==0){
@@ -414,8 +414,6 @@ int PythonInterpreter::setTypeIter(map<int,NodeElement>::iterator &TypeIter,cons
         }
 
         else{
-
-            cout << "\033[1;31mERROR:: The command has a syntaxERROR in Enty/Phy# tag \033[0m\n";
             string msg = "\033[1;31mERROR:: The command has a syntaxERROR in Enty/Phy# tag \033[0m\n" ;
             throw msg.c_str();
         }
