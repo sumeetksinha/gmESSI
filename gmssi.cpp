@@ -13,7 +13,7 @@
 ********************************************************************************************************/
 
 #include "GmshTranslator.h"
-#include "PythonInterpreter.h"
+#include "GmssiPython.h"
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
@@ -49,57 +49,16 @@ int main(int argc, char* argv[]){
 		    throw msg.c_str();		
 		}
 
-
 		for (int i =start ;i <argc ; i++){
 
-		    string gmshFile = argv[i];
-		    fstream InputFile (gmshFile,fstream::in);
-
-		    if(!InputFile.is_open()){ 
-
-		    	string msg = "\033[1;31mERROR:: The program failed to open the file = " +  gmshFile + " \033[0m\n" ; 
-		    	throw msg.c_str();
-		    	exit(0);
-		    }
-
-		    Tokenizer str = Tokenizer(gmshFile,"/ .");
-		    str.setcurrPos(gmshFile.length()-1); str.setMode(1); str.nextToken();gmshFile = str.nextToken();
-		    string newDirectory= getFilePath() + slash + gmshFile+ "_Essi_Simulation";
-		    gmshFile = argv[i];
-
-		    int n = 1;string tempDirectory = newDirectory;
-
-
-
-	    	while(!mkdir(newDirectory.c_str(),0777)==0){ 
-
-		    	if(override>=1){ 
-		    		cout << "\033[1;36mFiles will be converted to " << newDirectory << "  \033[0m\n" << endl; 
-		    		cout << "\033[1;33mWARNING::Directory Allready Present. The contents of the Folder may get changed \033[0m\n"; 
-		    		break;
-		    	}
-		    	else{ 
-		    		newDirectory = tempDirectory+"_"+to_string(n); 
-		    		n=n+1;
-		    	}
-	    	}
-
-	    	cout << "\033[1;36mFiles converted to " << newDirectory << "  \033[0m\n" << endl; 
-		    newDirectory  =newDirectory +slash;
-
-		    PythonInterpreter gmssi = PythonInterpreter ();
-		    gmssi.Translator = GmshTranslator(gmshFile, newDirectory);
-		    gmssi.Translator.Convert();
-
-		    gmssi.Translator.DisplayNewTagNumbering();
-
+		    string gmshFile = "Foundation.msh";
+		    GmssiPython gmssi = GmssiPython (gmshFile);
 		}
 
-	} catch (const char* msg){cerr << msg << endl; 	 exit (EXIT_FAILURE);}
+	} catch (const char* msg){cerr << msg << endl;}
 
 	return 0;
 }
-
 
 string getFilePath(){
 

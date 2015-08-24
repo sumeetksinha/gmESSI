@@ -68,12 +68,14 @@ void GmshTranslator::setGmshFile(const string& gmshFile, const string& newDir){
     this->pwd = newDir+tknzr.currToken(); 
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
     loadFile = newDir + tknzr.currToken() + "_load.fei";
-    mainFile = newDir + tknzr.currToken() + "_analysis.fei";;
+    mainFile = newDir + tknzr.currToken() + "_analysis.fei";
+    return;
 }
 
 void GmshTranslator::Convert(){
 
     this->GmshToEssi();
+    return;
 }
 
 string GmshTranslator::getFileName(){
@@ -160,9 +162,7 @@ void GmshTranslator::GmshToEssi(){
             }
         }
     } 
-
-    UpdateGmshFile();
-    
+  
     // ofstream AgainMainFile(mainFile,ios::app);  
     // AgainMainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
     // AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
@@ -183,6 +183,7 @@ void GmshTranslator::DisplayNewTagNumbering(){
 
         cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
     }
+    return;
 }
 
 void GmshTranslator::AddNodeCommand(const int&i, const int& j){
@@ -245,6 +246,7 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
 
     GeometryFile << PrintEndConversion(nofRun,j);
     GeometryFile.close();
+    return;
 }
 
 void GmshTranslator::ElementalCommand(const int& i, const int& j){
@@ -307,6 +309,7 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
 
     GeometryFile << PrintEndConversion(nofRun,j);
     GeometryFile.close();
+    return;
 }
 
 void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
@@ -427,6 +430,7 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
 
     LoadFile << PrintEndConversion(nofRun,j);
     LoadFile.close();
+    return;
 }
 
 void GmshTranslator::NodalCommand(const int& i, const int& j){
@@ -483,6 +487,7 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
 
     LoadFile << PrintEndConversion(nofRun,j);
     LoadFile.close();
+    return;
 }
 
 void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
@@ -541,6 +546,7 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
 
     LoadFile << PrintEndConversion(nofRun,j);
     LoadFile.close();
+    return;
 }
 
 void GmshTranslator::SingularCommand(const int& i, const int& j){
@@ -570,6 +576,7 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
 
     cout << "Sucessfully Converted" << endl;
     MainFile.close();
+    return;
 }
 
 void GmshTranslator::ConnectCommand(const int&i, const int& j){
@@ -604,7 +611,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
         throw msg.c_str();
     }
 
-    double vec_x = stof(tkr.nextToken()),vec_y = stof(tkr.nextToken()),vec_z = stof(tkr.nextToken());double sum = vec_x*vec_x+vec_y*vec_y+vec_z*vec_z;
+    double vec_x = stof(trim(tkr.nextToken())),vec_y = stof(trim(tkr.nextToken())),vec_z = stof(trim(tkr.nextToken()));double sum = vec_x*vec_x+vec_y*vec_y+vec_z*vec_z;
     vec_x=vec_x/sqrt(sum);vec_y=vec_y/sqrt(sum);vec_z=vec_z/sqrt(sum);
     double length = stof(this->delSpaces(Variables.at(4))); // Magnitude of vector
     int NofLayers = stoi(this->delSpaces(Variables.at(5))); // Number of layers
@@ -620,10 +627,14 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     map<int,Node> ::iterator NodeMap1, NodeMap2;
     struct NodeElement newNodeElement;
 
-    int Node1=0,Node2=0;
+    int Node1=0,Node2=0,EntityNo = this->NewEntity++;
     int NofElementsCreated=0 , NofNodesCreated = 0;
 
-    // cout << algo << endl;
+    // cout << "Vector->" << vec_x << "," << vec_y << "," << vec_z << endl;
+    // cout << "length->" << length << endl;
+    // cout << "NofLayers->" << NofLayers << endl;
+    // cout << "algo->" << algo << endl;
+    // cout << "tolerence->" << tolerence << endl;
 
     for(map<int,int>::iterator It1 = Iterator1Begin; It1!=Iterator1End ;++It1){
 
@@ -648,7 +659,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 // cout << endl << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z;
                 // cout << " New Nodes and Elements Created" << endl;
                 NofElementsCreated+=1; 
-                string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + to_string(this->NewEntity++) + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
@@ -675,7 +686,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                         NofNodesCreated++;
                         NofElementsCreated+=1;
                         // cout << "New Elements Created from finding nodes" << endl; 
-                        string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + to_string(this->NewEntity++) + to_string(Node1) + " " + to_string(Node2);
+                        string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                         // cout << endl << ElementDesc;
                         Element newElement = Element(ElementDesc);
                         this->GmshParse.addElement(newElement);
@@ -706,7 +717,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 Node1=NodeMap1->first; NofElementsCreated+=1;NofNodesCreated++;                   
                 Node2=It2->second; string str = "element";
                 // cout << "New Elements Created" << endl; 
-                string ElementDesc = this->getVariable(str) + " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " -1 " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = this->getVariable(str) + " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " " + to_string(EntityNo)  + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc ;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
@@ -733,6 +744,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
 
     cout << "\033[1;36mNew Physical Group " << this->PhysicalGroupMap.size() << " consisting of " << NofNodesCreated <<" Nodes and " << NofElementsCreated << " 2-noded elements created "  << "\033[0m\n";
     GeometryFile.close();
+    return;
 }
 
 void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
@@ -823,8 +835,8 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
                             if (temp.compare("")) prec = temp ;
                             value = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)), stoi(prec)));
                         }
-                        if(tknzr.hasMoreTokens()) unit = unit + "*" + delSpaces(tknzr.nextToken());
-                        // cout << function << " " << prec << " "<< unit << " "<< endl;
+                        if(tknzr.hasMoreTokens()){ unit = unit + "*" + delSpaces(tknzr.nextToken()); }
+
                         value = value + unit;          
                         Material = Material + " " + value;
                         this->TempVariable.push(value);  
@@ -897,6 +909,7 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
     GeometryFile.close();
     remove( "script" );
     MainFile.close();
+    return;
 }
 
 void GmshTranslator::WriteCommand(const int&i, const int& j){
@@ -918,6 +931,7 @@ void GmshTranslator::WriteCommand(const int&i, const int& j){
     for(int i=0; i<ElementListSize ; i++){
         
         ElementsFile << ElementList.at(i).getId() << "\t";
+        ElementsFile << ElementList.at(i).getType() << "\t";
         int size =  ElementList.at(i).getNodeList().size();
 
         for( int j =0 ;j<size ; j++ )            
@@ -1001,6 +1015,7 @@ void GmshTranslator::clear( queue<string> &q ){
 
    queue<string> empty;
    swap( q, empty );
+   return;
 }
 
 string GmshTranslator::delSpaces(string str){
@@ -1146,6 +1161,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
         throw msg.c_str();
     }
 
+    return;
 }
 
 string GmshTranslator::PrintStartConversion(const int& j){
@@ -1189,6 +1205,7 @@ void GmshTranslator::UpdateEssiTags(const string& newVar, const int& l){
 void GmshTranslator::Convert(const string& GmssiCommand){
 
     int i = this->PhysicalGroupList.size()-1;
+    cout << i << endl;
     PhysicalGroupList.at(i).Process(GmssiCommand);
 
     this->CommandList = this->PhysicalGroupList.at(i).getCommandList();
@@ -1239,7 +1256,7 @@ void GmshTranslator::UpdateGmshFile(){
 
     int PhysicalGroupListSize = this->PhysicalGroupList.size();
 
-    UpdateGmshFile << "$MeshFormat \n2.2 0 8 \n$EndMeshFormat\n" << "$PhysicalNames\n" << PhysicalGroupListSize << "\n";
+    UpdateGmshFile << "$MeshFormat\n2.2 0 8\n$EndMeshFormat\n" << "$PhysicalNames\n" << PhysicalGroupListSize << "\n";
 
     for (int i=0; i<PhysicalGroupListSize; i++)
 		UpdateGmshFile << this->PhysicalGroupList.at(i).getPhysicDes()<< endl;

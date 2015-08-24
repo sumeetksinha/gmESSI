@@ -35,7 +35,8 @@ OctParser::OctParser(){
     octave_main(3,oct_argv,true);
 }
 
-OctParser::~OctParser(){}
+OctParser::~OctParser(){
+}
 
 /******************************************************************************
 **************************** Public Functions *********************************
@@ -57,9 +58,8 @@ string OctParser::eval(const string& function) {
 
 void OctParser::exit(){
 
-	// clean_up_and_exit (1);
+	clean_up_and_exit (1);
 	// reset();
-
 }
 
 

@@ -58,7 +58,7 @@
 
 // Write Commands
 
-	!wr Write_Data{filename}
+	!wr <Write_Data{filename}|Write_Data{phyEntyTag,filename}>		 																																																																																								{} {};
 
 // Material Variational Commands
 
@@ -69,7 +69,7 @@
 	!mv <Vary_Vonmises_isotropic_hardening{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}|Vary_Vonmises_isotropic_hardening{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}>																																																	add material #{} type vonmises_isotropic_hardening mass_density={} elastic_modulus={}  poisson_ratio={}  von_mises_radius={}  isotropic_hardening_rate={}  initial_confining_stress={} algorithm={}  number_of_subincrements={}  maximum_number_of_iterations={}  tolerance_1={}  tolerance_2={};
 	!mv <Vary_Vonmises_isotropic_hardening_accelerated{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9}|Vary_Vonmises_isotropic_hardening_accelerated{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9}> 																																																	add material #{} type vonmises_isotropic_hardening_accelerated mass_density={} elastic_modulus={} poisson_ratio={} von_mises_radius={} isotropic_hardening_rate={} initial_confining_stress={} maximum_number_of_iterations={} tolerance_1={} tolerance_2={};
 	!mv <Vary_Vonmises_kinematic_hardening{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11,par12}|Vary_Vonmises_kinematic_hardening{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11,par12}>																																														add material #{} type vonmises_kinematic_hardening mass_density={} elastic_modulus={} poisson_ratio={} von_mises_radius={} armstrong_frederick_ha={} armstrong_frederick_cr={} initial_confining_stress={} algorithm={} number_of_subincrements={} maximum_number_of_iterations={} tolerance_1={} tolerance_2={};
-	!mv <Vary_Vonmises_linear_kinematic_hardening{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}|Vary_Vonmises_linear_kinematic_hardening{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}> 																																													add material #{} type vonmises_linear_kinematic_hardening mass_density={} elastic_modulus={} poisson_ratio={} von_mises_radius={} kinematic_hardening_rate={} initial_confining_stress={} algorithm={} number_of_subincrements={} maximum_number_of_iterations={} tolerance_1={} tolerance_2={};
+	!mv <Vary_Vonmises_linear_kinematic_hardening{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}|Vary_Vonmises_linear_kinematic_hardening{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}> 																																														add material #{} type vonmises_linear_kinematic_hardening mass_density={} elastic_modulus={} poisson_ratio={} von_mises_radius={} kinematic_hardening_rate={} initial_confining_stress={} algorithm={} number_of_subincrements={} maximum_number_of_iterations={} tolerance_1={} tolerance_2={};
 	!mv <Vary_Vonmises_kinematic_hardening_accelerated{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}|Vary_Vonmises_kinematic_hardening_accelerated{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11}>																																											add material #{} type vonmises_kinematic_hardening_accelerated mass_density={} elastic_modulus={} poisson_ratio={} von_mises_radius={} armstrong_frederick_ha={} armstrong_frederick_cr={} initial_confining_stress={} initial_confining_strain={} maximum_number_of_iterations={} tolerance_1={} tolerance_2={};
 	!mv <Vary_Vonmises_linear_kinematic_hardening_accelerated{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10}|Vary_Vonmises_linear_kinematic_hardening_accelerated{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10}>																																											add material #{} type vonmises_linear_kinematic_hardening_accelerated mass_density={} elastic_modulus={} poisson_ratio={} von_mises_radius={} kinematic_hardening_rate={} initial_confining_stress={} initial_confining_strain={} maximum_number_of_iterations={} tolerance_1={} tolerance_2={};
 	!mv <Vary_Druckerprager_perfectly_plastic{Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10}|Vary_Druckerprager_perfectly_plastic{PhyEntytag,Element{},par1,par2,par3,par4,par5,par6,par7,par8,par9,par10}>																																																			add material #{} type druckerprager_perfectly_plastic mass_density={} elastic_modulus={} poisson_ratio={} druckerprager_angle={} initial_confining_stress={} algorithm={} number_of_subincrements={} maximum_number_of_iterations={} tolerance_1={} tolerance_2={};
@@ -114,8 +114,8 @@
 
 		!sc <Var{variable,value}>																						{} {} = {};
 		!sc <Include{filename}>																							include {};
-		!sc <New_Line{}|\n{}>																							{} {};	
-		!sc <Comment{comment}|\c{comment}>																				{} //{};		
+		!sc <New_Line{}|>																								{};	
+		!sc <Comment{comment}|>																							{} //{};		
 
 	//Acceleration field
 
@@ -414,8 +414,8 @@
 	!17 <Add_20NodeBrick{material#1}|Add_20NodeBrick{PhyEntTag,material#1}>			 																															add element #{} type 20NodeBrick with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
 	!17 <Add_20NodeBrick_elastic{material#1}|Add_20NodeBrick_elastic{PhyEntTag,material#1}>											 																			add element #{} type 20NodeBrick_elastic with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} ;
 	!17 <Add_20NodeBrick_upU{material#1,porosity,alpha,rho_s,rho_f,k_x,k_y,k_z,K_s,K_f}|Add_20NodeBrick_upU{PhyEntTag,material#1,porosity,alpha,rho_s,rho_f,k_x,k_y,k_z,K_s,K_f}>								add element #{} type 20NodeBrick_upU with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} and porosity = {} alpha = {} rho_s = {} rho_f = {} k_x = {} k_y = {} k_z = {} K_s = {}	K_f = {};
-	!17-c <Add_20NodeBrick_SurfaceLoad{PhyEntTag,magnitude}|Add_20NodeBrick_SurfaceLoad{PhyEntTag,PhyEntTag,magnitude}>																							add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{}) with magnitude ({});
-	!17-c <Add_20NodeBrick_SurfaceLoad{PhyEntTag,m1,m2,m3,m4,m5,m6,m7,m8}|Add_20NodeBrick_SurfaceLoad{PhyEntTag,PhyEntTag,m1,m2,m3,m4,m5,m6,m7,m8}>				 												add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{}) with magnitudes ({},{},{},{},{},{},{},{});
+	!17-c <Add_20NodeBrick_SurfaceLoad{PhyEntTag,magnitude}|Add_20NodeBrick_SurfaceLoad{PhyEntTag,PhyEntTag,magnitude}>																							add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{}) with magnitude ({});
+	!17-c <Add_20NodeBrick_SurfaceLoad{PhyEntTag,m1,m2,m3,m4,m5,m6,m7,m8}|Add_20NodeBrick_SurfaceLoad{PhyEntTag,PhyEntTag,m1,m2,m3,m4,m5,m6,m7,m8}>				 												add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{}) with magnitudes ({},{},{},{},{},{},{},{},{});
 	
 //Elemental Commands  --- 18 15-node second order prism (6 nodes associated with the vertices and 9 with the edges).
 //Elemental Commands  --- 19 13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges).

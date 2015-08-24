@@ -29,8 +29,6 @@
 #include <map>
 #include <vector>
 #include <algorithm>
-#include <regex>
-
 
 using namespace::std;
 
@@ -60,6 +58,7 @@ class GmshTranslator{
         map<int,Node> NodeMap;
         GmshParser GmshParse = GmshParser ();
         vector<PhysicalGroup> PhysicalGroupList;
+        OctParser Evaluate = OctParser();
 
     private:
 
@@ -89,7 +88,7 @@ class GmshTranslator{
         set<string> EssiTagList;
         map<string,Semantics>::iterator FunctionIter;
         map<string,int> MaterialTag;
-        OctParser Evaluate = OctParser();
+        
 
         vector<string> CommandList;
         vector< vector <string> > VariableList;
