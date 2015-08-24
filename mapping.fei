@@ -115,7 +115,8 @@
 		!sc <Var{variable,value}>																						{} {} = {};
 		!sc <Include{filename}>																							include {};
 		!sc <New_Line{}|>																								{};	
-		!sc <Comment{comment}|>																							{} //{};		
+		!sc <Comment{comment}|>																							{} //{};
+		!sc <Bye{}>																										bye;		
 
 	//Acceleration field
 
@@ -190,8 +191,8 @@
 
 	// Section Definition
 
-		!sc <Add_Section_Elastic_Membrane_Plate{section_no,elastic_modulus,poissons_ratio,thickness,mass_density}>  																																																																										add section #{} type Elastic_Membrane_Plate  elastic_modulus={}  poisson_ratio={}  thickness={}  mass_density={};
-		!sc <Add_Section_Membrane_Plate_Fiber{section_no,thickness,material#1}> 																																																																																			add section #{} type Membrane_Plate_Fiber thickness={}  use material #{};
+		!sc <Add_Section_Elastic_Membrane_Plate{section#1,elastic_modulus,poissons_ratio,thickness,mass_density}>  																																																																											add section #{} type Elastic_Membrane_Plate  elastic_modulus={}  poisson_ratio={}  thickness={}  mass_density={};
+		!sc <Add_Section_Membrane_Plate_Fiber{section#1,thickness,material#1}> 																																																																																				add section #{} type Membrane_Plate_Fiber thickness={}  use material #{};
 
 	// Elemental Derived Commands --- 1 2-node line.
 
@@ -245,6 +246,7 @@
 	//Elemental Derived Commands  --- 14 14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
 	//Elemental Derived Commands  --- 15 1-node point.
 
+		!sc <Add_Domain_Reduction_Method{loading#1,ts,sf,nos,nobn,noen,node,ef,bnf,enf,df,af}> 								add domain reduction method loading #{} time_step={} scale_factor={} number_of_steps={} number_of_boundary_nodes={} number_of_exterior_nodes={} number_of_drm_elements={} element_file={} boundary_nodes_file={} exterior_nodes_file={} displacement_file={} acceleration_file={};
 		!sc <Add_Single_Node_mass{node#1,mx,my,mz}>													        				add mass to node #{} mx ={} my ={} mz ={} ;
 		!sc <Add_Single_Node_mass{node#1,mx,my,mz,Imx,Imy,Imz}>										        				add mass to node #{} mx ={} my ={} mz ={} Imx ={} Imy ={} Imz ={};
 		!sc <Add_Single_Penalty_Node{node#1,stiffness, dof}>									            				add element #{} type penalty_for_applying_generalized_displacement with node ({}) stiffness = {} dof {};
@@ -266,8 +268,8 @@
 		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6,r7}>							            									free node #{} dofs {} {} {} {} {} {} {};
 		!sc <FreeNode{node#1,r1,r2,r3,r4,r5,r6,r7,r8}>							            								free node #{} dofs {} {} {} {} {} {} {} {};
 		!sc <Add_Single_Master_Slave{node#1,node#2,dof}>										           	 				add constraint equal dof with master node #{} and slave node #{}  dof to constrain {};
-		!sc <Add_Single_Remove_Master_Slave{slave_node}>									        					remove constraint equaldof node #{};
-		!sc <Add_Single_Node_Point_Constraint{node#1,dof,val}>									            					add single point constraint to node #{}  dof to constrain {} constraint value of {};
+		!sc <Add_Single_Remove_Master_Slave{node#1}>									        							remove constraint equaldof node #{};
+		!sc <Add_Single_Node_Point_Constraint{node#1,dof,val}>									            				add single point constraint to node #{}  dof to constrain {} constraint value of {};
 		!sc <Add_Single_Node_Load_linear{node#1,dir,mag}>												    				add load #{} to node #{} type linear {} = {}; 
 		!sc <Add_Single_Node_Load_Path_Series{node#1,path_series,dir,mag,seriesfile}>										add load #{} to node #{} type path_series {} = {} series_file ={};
 		!sc <Add_Single_Node_Load_Path_Time_Series{node#1,path_time_series,dir,mag,time_step,seriesfile}>					add load #{} to node #{} type path_time_series {} = {} time_step = {} series_file ={};
