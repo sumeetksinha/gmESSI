@@ -277,8 +277,9 @@ void GmssiPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vector
 
 	NodeElement newNodeElement; 
 	map<int,int> NodeNumberNodeMap; 
-	int ElementListSize=ElementList.size(), EntityNo=this->Translator.NewEntity++, NodelistSize=NodeList.size(), newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size()+1;
+	int ElementListSize=ElementList.size(), EntityNo=this->Translator.NewEntity++, NodelistSize=NodeList.size(), newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size();
 
+	cout << newPhysicalGroupTag << endl;
 
 	for(int i=0 ; i<ElementListSize ;i++){
 		ElementList.at(i).setPhysicalTag(newPhysicalGroupTag);
@@ -372,13 +373,14 @@ void GmssiPython::ConvertFile(const string& mshFile,int override){
 	    this->GeometryFile = this->Translator.geometryFile;
 	    this->MainFile = this->Translator.mainFile;
 	    this->LoadFile = this->Translator.loadFile;
+	    this->pwd = this->Translator.pwd;
 
- 		Tokenizer tknzr = Tokenizer(this->Translator.pwd,"/");
- 		tknzr.setcurrPos(this->Translator.pwd.length()-1);
- 		tknzr.setMode(1); tknzr.nextToken();
+ 		// Tokenizer tknzr = Tokenizer(this->Translator.pwd,"/");
+ 		// tknzr.setcurrPos(this->Translator.pwd.length()-1);
+ 		// tknzr.setMode(1); tknzr.nextToken();
 
- 		while(tknzr.hasMoreTokens())
- 			this->pwd= "/" + tknzr.nextToken() + this->pwd;
+ 		// while(tknzr.hasMoreTokens())
+ 		// 	this->pwd= "/" + tknzr.nextToken() + this->pwd;
 
 
 	} catch (const char* msg){cerr << msg << endl;}
@@ -433,6 +435,22 @@ int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const stri
     return 0;
 }
 
+void GmssiPython::setLoadFile(const string& loadfile){
+
+	this->Translator.loadFile= loadfile;
+	LoadFile = loadfile;
+}
+
+void GmssiPython::setGeometryFile(const string& geometryfile){
+	this->Translator.geometryFile = geometryfile;
+	GeometryFile = geometryfile;
+}
+
+void GmssiPython::setMainFile(const string& mainfile){
+	this->Translator.mainFile = mainfile;
+	MainFile = mainfile;
+}
+
 string GmssiPython::delSpaces(string str){
 
    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
@@ -444,6 +462,7 @@ string GmssiPython::trim(const string& str, const string& delimiters ){
     s.erase( s.find_last_not_of( delimiters ) + 1 ).erase( 0, s.erase( s.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
     return s;
 }
+
 
 /*******************************************************************************
 *********************** BoostPython Wrapper Function ***************************
@@ -508,6 +527,9 @@ BOOST_PYTHON_MODULE(gmssi)
 	    .def_readonly("LoadFile",&GmssiPython::LoadFile)
 	    .def_readonly("GeometryFile",&GmssiPython::GeometryFile)
 	    .def_readonly("MainFile",&GmssiPython::MainFile)
+	    .def("setMainFile",&GmssiPython::setMainFile)
+	    .def("setGeometryFile",&GmssiPython::setGeometryFile)
+	    .def("setLoadFile",&GmssiPython::setLoadFile)
     	.def("loadMshFile",&GmssiPython::loadMshFile)
     	.def("loadMshFile",&GmssiPython::loadMshFile2)
     	.def("Convert",&GmssiPython::Convert) 

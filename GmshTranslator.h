@@ -88,8 +88,8 @@ class GmshTranslator{
         set<string> EssiTagList;
         map<string,Semantics>::iterator FunctionIter;
         map<string,int> MaterialTag;
+        int PhytonScriptPhysicalGroupIndex = -1;
         
-
         vector<string> CommandList;
         vector< vector <string> > VariableList;
         vector<int> NofVariablesList;

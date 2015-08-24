@@ -50,6 +50,9 @@ class GmssiPython{
 		SelectionData SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z);
 		SelectionData getEntityGroupData(const int& tag);
 		SelectionData getPhysicalGroupData(const int& tag);
+		void setLoadFile(const string& loadfile);
+		void setGeometryFile(const string& GeometryFile);
+		void setMainFile(const string& MainFile);
 
 		void CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList);
 		string GmshFile="", pwd="", GeometryFile="", MainFile="", LoadFile="";

@@ -162,12 +162,19 @@ void GmshTranslator::GmshToEssi(){
             }
         }
     } 
-  
+
     // ofstream AgainMainFile(mainFile,ios::app);  
     // AgainMainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
     // AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
     // AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
     // AgainMainFile.close();
+
+    int newPhysicalGroupTag =-1;NodeElement newNodeElement;
+    string PhysicDes = "-1 "+ to_string(newPhysicalGroupTag)+  " \"$PythonScript$\"";
+    this->PhysicalGroupMap.insert(pair<int,NodeElement>(newPhysicalGroupTag,newNodeElement));
+    PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
+    this->PhysicalGroupList.push_back(newPhysicalGroup); 
+    PhytonScriptPhysicalGroupIndex = this->PhysicalGroupList.size()-1;
 
     return;
 }
@@ -329,7 +336,7 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
             VariablesToFind++;
     }
 
-    cout << NofEssiVariables << "  " << VariablesToFind << "  " << VariablesByUser << endl;
+    // cout << NofEssiVariables << "  " << VariablesToFind << "  " << VariablesByUser << endl;
     map<int,NodeElement>::iterator TypeIter;
     map<int,NodeElement>::iterator SurfaceIter;
 
@@ -583,6 +590,9 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
 
     ofstream GeometryFile(geometryFile,ios::app);
     vector<string> Variables = VariableList.at(j);
+    int newPhysicalGroupTag = 0;
+    if(PhytonScriptPhysicalGroupIndex==-1) newPhysicalGroupTag = this->PhysicalGroupMap.size()+1;
+    else newPhysicalGroupTag = this->PhysicalGroupMap.size();
 
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator Iterator1;
@@ -659,7 +669,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 // cout << endl << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z;
                 // cout << " New Nodes and Elements Created" << endl;
                 NofElementsCreated+=1; 
-                string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
@@ -686,7 +696,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                         NofNodesCreated++;
                         NofElementsCreated+=1;
                         // cout << "New Elements Created from finding nodes" << endl; 
-                        string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
+                        string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                         // cout << endl << ElementDesc;
                         Element newElement = Element(ElementDesc);
                         this->GmshParse.addElement(newElement);
@@ -717,7 +727,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 Node1=NodeMap1->first; NofElementsCreated+=1;NofNodesCreated++;                   
                 Node2=It2->second; string str = "element";
                 // cout << "New Elements Created" << endl; 
-                string ElementDesc = this->getVariable(str) + " 1 2 "  + to_string(this->PhysicalGroupMap.size()+1) + " " + to_string(EntityNo)  + " " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = this->getVariable(str) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo)  + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc ;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
@@ -737,12 +747,12 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
         return;
     }
 
-    this->PhysicalGroupMap.insert(pair<int,NodeElement>(this->PhysicalGroupMap.size()+1,newNodeElement));
-    string PhysicDes = "1 "+ to_string(this->PhysicalGroupMap.size())+  " \"$NewLineGroup_" + to_string(this->PhysicalGroupMap.size()) +  "$\""; 
+    this->PhysicalGroupMap.insert(pair<int,NodeElement>(newPhysicalGroupTag,newNodeElement));
+    string PhysicDes = "1 "+ to_string(newPhysicalGroupTag)+  " \"$NewLineGroup_" + to_string(newPhysicalGroupTag) +  "$\""; 
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
     this->PhysicalGroupList.push_back(newPhysicalGroup);
 
-    cout << "\033[1;36mNew Physical Group " << this->PhysicalGroupMap.size() << " consisting of " << NofNodesCreated <<" Nodes and " << NofElementsCreated << " 2-noded elements created "  << "\033[0m\n";
+    cout << "\033[1;36mNew Physical Group " << newPhysicalGroupTag << " consisting of " << NofNodesCreated <<" Nodes and " << NofElementsCreated << " 2-noded elements created "  << "\033[0m\n";
     GeometryFile.close();
     return;
 }
@@ -1204,8 +1214,7 @@ void GmshTranslator::UpdateEssiTags(const string& newVar, const int& l){
 
 void GmshTranslator::Convert(const string& GmssiCommand){
 
-    int i = this->PhysicalGroupList.size()-1;
-    cout << i << endl;
+    int i = PhytonScriptPhysicalGroupIndex;
     PhysicalGroupList.at(i).Process(GmssiCommand);
 
     this->CommandList = this->PhysicalGroupList.at(i).getCommandList();
@@ -1254,12 +1263,13 @@ void GmshTranslator::UpdateGmshFile(){
 	string UpdatedGmshFile = this->pwd +".msh";
     ofstream UpdateGmshFile(UpdatedGmshFile,ios::out); 
 
-    int PhysicalGroupListSize = this->PhysicalGroupList.size();
+    int PhysicalGroupListSize = this->PhysicalGroupList.size()-1;
 
     UpdateGmshFile << "$MeshFormat\n2.2 0 8\n$EndMeshFormat\n" << "$PhysicalNames\n" << PhysicalGroupListSize << "\n";
 
-    for (int i=0; i<PhysicalGroupListSize; i++)
-		UpdateGmshFile << this->PhysicalGroupList.at(i).getPhysicDes()<< endl;
+    for (int i=0; i<PhysicalGroupListSize+1; i++)
+        if(this->PhysicalGroupList.at(i).getId()>0)
+		  UpdateGmshFile << this->PhysicalGroupList.at(i).getPhysicDes()<< endl;
 
     UpdateGmshFile << "$EndPhysicalNames\n" << "$Nodes\n" << this->NodeMap.size() << "\n";
 
