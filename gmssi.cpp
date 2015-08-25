@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
 
 		for (int i =start ;i <argc ; i++){
 
-		    string gmshFile = "Foundation.msh";
+		    string gmshFile = argv[i];
 		    GmssiPython gmssi = GmssiPython (gmshFile);
 		}
 
