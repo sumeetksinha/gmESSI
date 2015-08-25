@@ -435,7 +435,7 @@ int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const stri
         }
 
         else{
-            string msg = "\033[1;31mERROR:: The command has a syntaxERROR in Enty/Phy# tag \"" + variable + "\" \033[0m\n" ;
+            string msg = "\033[1;31mERROR:: The command has a syntaxERROR in Entity_Group/Physical_Group#Tag tag \"" + variable + "\" \033[0m\n" ;
             throw msg.c_str();
         }
     }
