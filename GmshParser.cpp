@@ -60,6 +60,11 @@ map<int,NodeElement> GmshParser::getEntityMap(){
 
 	return this->EntityMap;
 }
+
+map<string,int> GmshParser::getPhysicalStringNameToIdMap(){
+
+	return this->PhysicalStringNameToIdMap;
+}
 		
 vector<Node> GmshParser::getNodeList(){
 
@@ -155,6 +160,8 @@ void GmshParser::parseGmshFile(){
 			break;
 		PhysicalGroup PhyGroup = PhysicalGroup(line);
 		this->PhysicalGroupList.push_back(PhyGroup);
+		this->PhysicalStringNameToIdMap.insert(pair<string,int>(PhyGroup.getPhysicTag(),PhyGroup.getId()));
+		this->PhysicalStringNameToIdMap.insert(pair<string,int>(to_string(PhyGroup.getId()),PhyGroup.getId()));
 	}
 
 	if(parseFile.eof()) return; 

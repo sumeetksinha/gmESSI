@@ -103,6 +103,7 @@ void GmshTranslator::GmshToEssi(){
     this->FunctionMap = this->Map.getFunction();
     this->EssiTagList = this->Map.getEssiTagList();
     this->PhysicalGroupMap = this->GmshParse.getPhysicalGroupMap();
+    this->PhysicalStringNameToIdMap = this->GmshParse.getPhysicalStringNameToIdMap();
     this->EntityMap = this->GmshParse.getEntityMap();
     this->NodeMap = this->GmshParse.getNodeMap();
     this->NewEntity = this->GmshParse.getNewEntity()+1;
@@ -751,6 +752,8 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     string PhysicDes = "1 "+ to_string(newPhysicalGroupTag)+  " \"$NewLineGroup_" + to_string(newPhysicalGroupTag) +  "$\""; 
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
     this->PhysicalGroupList.push_back(newPhysicalGroup);
+    this->PhysicalStringNameToIdMap.insert(pair<string,int>(newPhysicalGroup.getPhysicTag(),newPhysicalGroup.getId()));
+    this->PhysicalStringNameToIdMap.insert(pair<string,int>(to_string(newPhysicalGroup.getId()),newPhysicalGroup.getId()));
 
     cout << "\033[1;36mNew Physical Group " << newPhysicalGroupTag << " consisting of " << NofNodesCreated <<" Nodes and " << NofElementsCreated << " 2-noded elements created "  << "\033[0m\n";
     GeometryFile.close();
@@ -1055,7 +1058,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
     if(variable.size()>0){
 
         Tokenizer tknzr = Tokenizer((variable.at(0))," #");
-        int NofTokens = tknzr.countTokens();
+        int NofTokens = tknzr.countTokens(), tag ;
 
         if(NofTokens==2){
 
@@ -1063,29 +1066,40 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
 
             if(!type.compare("Enty")){
 
-                int tag = stoi(tknzr.nextToken());
+                try{
+                    tag = stoi(tknzr.nextToken());
+                } catch(exception e) {string msg = "\033[1;31mERROR:: The command  failed to convert as there is no such  Entity Group  \"" + variable.at(0)  + "\" \033[0m\n" ; throw msg.c_str();    }
+                
                 TypeIter = this->EntityMap.find(tag);
 
                 if(TypeIter==this->EntityMap.end()|| TypeIter->second.NodeList.size()==0){
-                    string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
-                    throw msg.c_str();     
+                    string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Entity Group \"" + variable.at(0) + "\" \033[0m\n" ; 
+                    cout << msg;     
                 }
             }
 
             else if (!type.compare("Phy")){
 
-                int tag = stoi(tknzr.nextToken());
+                map<string,int>::iterator PhysicalStringNameToIdMapIter;
+                PhysicalStringNameToIdMapIter = this->PhysicalStringNameToIdMap.find(tknzr.nextToken());
+
+                if(PhysicalStringNameToIdMapIter==this->PhysicalStringNameToIdMap.end()){
+                    string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no such Physical Group \"" + variable.at(0) + "\" \033[0m\n" ; 
+                    throw msg.c_str();    
+                }
+
+                tag = PhysicalStringNameToIdMapIter->second;
                 TypeIter = this->PhysicalGroupMap.find(tag);
 
-                if(TypeIter==this->PhysicalGroupMap.end()|| TypeIter->second.NodeList.size()==0){
-                    string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
-                    throw msg.c_str();     
+                if(TypeIter->second.NodeList.size()==0){
+                    string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group \"" + variable.at(0) + "\" \033[0m\n" ; 
+                    cout << msg;     
                 }
             }
 
             else{
 
-                string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Enty/Phy# tag" + " \033[0m\n" ;
+                string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Enty/Phy# tag \"" + variable.at(0) + "\" \033[0m\n" ;
                 cout << msg ; exit (EXIT_FAILURE);
                 throw msg.c_str();
             }
@@ -1098,14 +1112,14 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
             TypeIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
 
             if(TypeIter==this->PhysicalGroupMap.end()|| TypeIter->second.NodeList.size()==0){
-                string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
-                throw msg.c_str();      
+                string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group \033[0m\n" ; 
+                cout << msg;     
             }
 
         }
         else{
 
-            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Enty/Phy# tag" + " \033[0m\n" ;
+            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Enty/Phy# tag \033[0m\n" ;
             cout << msg ; exit (EXIT_FAILURE);
             throw msg.c_str();
         }
@@ -1117,8 +1131,8 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
         TypeIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
 
         if(TypeIter==this->PhysicalGroupMap.end()|| TypeIter->second.NodeList.size()==0){
-            string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no elements/nodes in the Physical Group" + " \033[0m\n" ; 
-            throw msg.c_str();       
+            string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\' failed to convert as there is no elements/nodes in the Physical Group  \033[0m\n" ; 
+            cout << msg;      
         }
     }
 
@@ -1128,7 +1142,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
 void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
 
     Tokenizer tknzr = Tokenizer((variable)," #");
-    int NofTokens = tknzr.countTokens();
+    int NofTokens = tknzr.countTokens(),tag;
 
     if(NofTokens==2){
 
@@ -1136,30 +1150,40 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
 
         if(!type.compare("Enty")){
 
-            int tag = stoi(tknzr.nextToken());
+            try{
+                tag = stoi(tknzr.nextToken());
+            } catch(exception e) {string msg = "\033[1;31mERROR:: The command  failed to convert as there s no such  Entity Group  \"" + variable + "\" \033[0m\n" ; throw msg.c_str();    }
+
             TypeIter = this->EntityMap.find(tag);
 
             if(TypeIter==this->EntityMap.end()|| TypeIter->second.NodeList.size()==0){
-                string msg = "\033[1;33mWARNING:: The command  failed to convert as there is no elements/nodes in the Entity Group"+ variable + "\033[0m\n" ; 
-                throw msg.c_str();     
+                string msg = "\033[1;33mWARNING:: The command  failed to convert as there is no elements/nodes in the Entity Group  \"" + variable + "\" \033[0m\n" ; 
+                cout << msg;    
             }
         }
 
         else if (!type.compare("Phy")){
 
-            int tag = stoi(tknzr.nextToken());
+            map<string,int>::iterator PhysicalStringNameToIdMapIter;
+            PhysicalStringNameToIdMapIter = this->PhysicalStringNameToIdMap.find(tknzr.nextToken());
+
+            if(PhysicalStringNameToIdMapIter==this->PhysicalStringNameToIdMap.end()){
+                string msg = "\033[1;33mERROR:: The command  failed to convert as there is no such Physical Group \"" + variable + "\" \033[0m\n" ; 
+                throw msg.c_str();     
+            }
+
+            tag = PhysicalStringNameToIdMapIter->second;
             TypeIter = this->PhysicalGroupMap.find(tag);
 
-            if(TypeIter==this->PhysicalGroupMap.end()|| TypeIter->second.NodeList.size()==0){
-                string msg = "\033[1;33mWARNING:: The command  failed to convert as there is no elements/nodes in the Physical Group"+ variable + "\033[0m\n" ; 
-                throw msg.c_str();     
+            if(TypeIter->second.NodeList.size()==0){
+                string msg = "\033[1;33mWARNING:: The command  failed to convert as there is no elements/nodes in the Physical Group \"" + variable + "\" \033[0m\n" ; 
+                cout << msg;     
             }
         }
 
         else{
 
             string msg = "\033[1;31mERROR:: The command  has a syntaxERROR in " +  variable  + " \033[0m\n" ;
-            cout << msg ; exit (EXIT_FAILURE);
             throw msg.c_str();
         }
     }
@@ -1167,7 +1191,6 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
     else{
 
         string msg = "\033[1;31mERROR:: The command  has a syntaxERROR in " +  variable  + " \033[0m\n" ;
-        cout << msg ; exit (EXIT_FAILURE);
         throw msg.c_str();
     }
 

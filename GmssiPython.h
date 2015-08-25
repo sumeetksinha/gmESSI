@@ -32,8 +32,8 @@ class GmssiPython{
 
 	public:
 		GmssiPython(); ~GmssiPython();
-		GmssiPython(const string& mshFile, int override = 1);
-		void loadMshFile(const string& mshFile, int override = 1);
+		GmssiPython(const string& mshFile, int overwrite = 1);
+		void loadMshFile(const string& mshFile, int overwrite = 1);
 		void loadMshFile2(const string& mshFile);
 		void Convert(const string& GmssiCommand);
 		int getEssiTag( const string& EssiTag);
@@ -43,7 +43,7 @@ class GmssiPython{
 		vector<Element> getEntityGroupElements(const int& n );
 		vector<Node> getEntityGroupNodes(const int& n );
 		map<int,Node> getNodeMap();
-		void ConvertFile(const string& mshFile,int override);
+		void ConvertFile(const string& mshFile,int overwrite);
 		void UpdateGmshFile();
 		GmshTranslator Translator = GmshTranslator();
 		SelectionData BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);

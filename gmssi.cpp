@@ -33,25 +33,26 @@ string getFilePath();
 
 int main(int argc, char* argv[]){
 
-	int override = 1, start =1; //atoi
+	int overwrite = 1, start =1; //atoi
 	string off = argv[1];
 
 	try{
 
-		if(!off.compare("-o")){
-			override =0;
-			start =2;
-		}
-
-		if( argc <= 1){ 
+		if( argc == 1){ 
 
 		    string msg = "\033[1;31mERROR:: Please Enter the Gmsh File \033[0m\n" ; 
 		    throw msg.c_str();		
 		}
 
+		if(!off.compare("-o")){
+			overwrite =0;
+			start =2;
+		}
+
 		for (int i =start ;i <argc ; i++){
 
 		    string gmshFile = argv[i];
+		    // cout << gmshFile << endl;
 		    GmssiPython gmssi = GmssiPython (gmshFile);
 		}
 

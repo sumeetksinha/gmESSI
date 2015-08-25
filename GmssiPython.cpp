@@ -37,9 +37,9 @@
 
 GmssiPython::GmssiPython(){}
 
-GmssiPython::GmssiPython(const string& mshFile, int override){
+GmssiPython::GmssiPython(const string& mshFile, int overwrite){
 
-	ConvertFile(mshFile,override);
+	ConvertFile(mshFile,overwrite);
 }
 
 GmssiPython::~GmssiPython(){
@@ -53,9 +53,9 @@ GmssiPython::~GmssiPython(){
 ********************************* Public Function ******************************
 *******************************************************************************/
 
-void GmssiPython::loadMshFile(const string& mshFile,int override){
+void GmssiPython::loadMshFile(const string& mshFile,int overwrite){
 
-	ConvertFile(mshFile,override);
+	ConvertFile(mshFile,overwrite);
 	return;
 }
 
@@ -299,7 +299,9 @@ void GmssiPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vector
     string PhysicDes = "3 "+ to_string(newPhysicalGroupTag)+  " \"$" + Name +  "$\"";
     cout << "\033[1;36mNew Physical Group " << newPhysicalGroupTag << " with name \"$" << Name << "$\" created "  << "\033[0m\n";
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
-    this->Translator.PhysicalGroupList.push_back(newPhysicalGroup); 
+    this->Translator.PhysicalGroupList.push_back(newPhysicalGroup);
+    this->Translator.PhysicalStringNameToIdMap.insert(pair<string,int>(newPhysicalGroup.getPhysicTag(),newPhysicalGroup.getId()));
+    this->Translator.PhysicalStringNameToIdMap.insert(pair<string,int>(to_string(newPhysicalGroup.getId()),newPhysicalGroup.getId()));
     
 	return;
 }
@@ -333,7 +335,7 @@ string GmssiPython::getFilePath(){
 	return FilePath;
 }
 
-void GmssiPython::ConvertFile(const string& mshFile,int override){
+void GmssiPython::ConvertFile(const string& mshFile,int overwrite){
 
 	try{
 
@@ -354,7 +356,7 @@ void GmssiPython::ConvertFile(const string& mshFile,int override){
 	    int n = 1;string tempDirectory = newDirectory;
 	    while(!mkdir(newDirectory.c_str(),0777)==0){ 
 
-	    	if(override>=1){ 
+	    	if(overwrite>=1){ 
 	    		cout << "\033[1;33mWARNING::Directory Allready Present. The contents of the Folder may get changed \033[0m\n"; 
 	    		break;
 	    	}
@@ -392,6 +394,7 @@ void GmssiPython::ConvertFile(const string& mshFile,int override){
 int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
 
     Tokenizer tknzr = Tokenizer(trim(variable)," #");
+    int tag;
 
     if(variable.compare("All")){
 
@@ -399,11 +402,14 @@ int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const stri
 
         if(!type.compare("Enty")){
 
-            int tag = stoi(tknzr.nextToken());
+			try{
+                tag = stoi(tknzr.nextToken());
+             } catch(exception e) {string msg = "\033[1;31mERROR:: The command  failed to convert as there s no such  Entity Group  \"" + variable  + "\" \033[0m\n" ; throw msg.c_str();    }
+                
             TypeIter = this->Translator.EntityMap.find(tag);
 
             if(TypeIter==this->Translator.EntityMap.end()|| TypeIter->second.NodeList.size()==0){
-                string msg = "\033[1;33mWARNING:: The command failed to convert as there is no elements/nodes in the Physical Group \033[0m\n" ; 
+                string msg = "\033[1;33mWARNING:: The command failed to convert as there is no elements/nodes in the Physical Group \"" + variable + "\" \033[0m\n" ; 
                 throw msg.c_str();
                 return 0 ;        
             }
@@ -411,18 +417,25 @@ int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const stri
 
         else if (!type.compare("Phy")){
 
-            int tag = stoi(tknzr.nextToken());
+            map<string,int>::iterator PhysicalStringNameToIdMapIter;
+            PhysicalStringNameToIdMapIter = this->Translator.PhysicalStringNameToIdMap.find(tknzr.nextToken());
+
+            if(PhysicalStringNameToIdMapIter==this->Translator.PhysicalStringNameToIdMap.end()){
+                string msg = "\033[1;31mERROR:: The command failed to convert as there is no such Physical Group \"" + variable + "\"\033[0m\n" ; 
+                throw msg.c_str();    
+            }
+
+            tag = PhysicalStringNameToIdMapIter->second;
             TypeIter = this->Translator.PhysicalGroupMap.find(tag);
 
-            if(TypeIter==this->Translator.PhysicalGroupMap.end()|| TypeIter->second.NodeList.size()==0){
-                string msg = "\033[1;33mWARNING:: The command failed to convert as there is no elements/nodes in the Physical Group \033[0m\n" ; 
-                throw msg.c_str();
-                return 0 ;        
+            if(TypeIter->second.NodeList.size()==0){
+                string msg = "\033[1;33mWARNING:: The command failed to convert as there is no elements/nodes in the Physical Group \"" + variable + "\" \033[0m\n" ; 
+                throw msg.c_str();     
             }
         }
 
         else{
-            string msg = "\033[1;31mERROR:: The command has a syntaxERROR in Enty/Phy# tag \033[0m\n" ;
+            string msg = "\033[1;31mERROR:: The command has a syntaxERROR in Enty/Phy# tag \"" + variable + "\" \033[0m\n" ;
             throw msg.c_str();
         }
     }

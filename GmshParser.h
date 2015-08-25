@@ -43,6 +43,7 @@ class GmshParser{
 		map<int,Node> getNodeMap();
 		map<int,NodeElement> getPhysicalGroupMap();
 		map<int,NodeElement> getEntityMap();
+		map<string,int> getPhysicalStringNameToIdMap();
 		vector<Node> getNodeList();
 		vector<Element> getElementList();
 		void addElement(Element elm);
@@ -60,6 +61,7 @@ class GmshParser{
 		map<int,Node>  NodeMap;
 		map<int,NodeElement> PhysicalGroupMap;
 		map<int,NodeElement> EntityMap;
+		map<string,int> PhysicalStringNameToIdMap;
 		vector<Node> NodeList;
 		vector<Element> ElementList;
 		vector<PhysicalGroup> PhysicalGroupList;

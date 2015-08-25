@@ -55,6 +55,7 @@ class GmshTranslator{
         string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
         map<int,NodeElement> PhysicalGroupMap;
         map<int,NodeElement> EntityMap;
+        map<string,int> PhysicalStringNameToIdMap;
         map<int,Node> NodeMap;
         GmshParser GmshParse = GmshParser ();
         vector<PhysicalGroup> PhysicalGroupList;
