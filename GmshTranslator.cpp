@@ -626,12 +626,13 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     vec_x=vec_x/sqrt(sum);vec_y=vec_y/sqrt(sum);vec_z=vec_z/sqrt(sum);
     double length = stof(this->delSpaces(Variables.at(4))); // Magnitude of vector
     int NofLayers = stoi(this->delSpaces(Variables.at(5))); // Number of layers
-    int algo = stoi(this->delSpaces(Variables.at(6)));      // Algo 
+    string algo = this->delSpaces(Variables.at(6));      // Algo 
     double tolerence = stof(this->delSpaces(Variables.at(7))); // Tolerence 
+    string newPhysicalGroupName = this->delSpaces(Variables.at(7)); //new PhysicalGroupName specified by the usrer
 
-    if(Iterator1==this->EntityMap.end()||Iterator2==this->EntityMap.end()||(Iterator3==this->EntityMap.end() && algo<=0)||Iterator1==this->PhysicalGroupMap.end()||Iterator2==this->PhysicalGroupMap.end()||(Iterator3==this->PhysicalGroupMap.end() && algo<=0)){
+    if(Iterator1==this->EntityMap.end()||Iterator2==this->EntityMap.end()||(Iterator3==this->EntityMap.end() && algo!=("find"))||Iterator1==this->PhysicalGroupMap.end()||Iterator2==this->PhysicalGroupMap.end()||(Iterator3==this->PhysicalGroupMap.end() && algo!=("find"))){
 
-        string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no such Physical/Entity Group" + " \033[0m\n";
+        string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no one of Physical/Entity Group" + " \033[0m\n";
         throw msg.c_str(); 
     }
 
@@ -658,7 +659,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
             double node1_y = NodeMap1->second.getYcord()+length*(vec_y);
             double node1_z = NodeMap1->second.getZcord()+length*(vec_z);
 
-            if(algo>0){
+            if(!algo.compare("create")){
                 //create node           
                 string str = "node";
                 Node newNode = Node(stoi(getVariable(str)), node1_x, node1_y, node1_z );
@@ -679,9 +680,8 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                 NodeMap1 = this->NodeMap.find(newNode.getId());
             }
-            else{
-                //find node
-
+            else if (!algo.compare("find")){//find node
+                
                 for(map<int,int>::iterator It3 = Iterator3Begin; It3!=Iterator3End ;++It3){
 
                     NodeMap2 = this->NodeMap.find(It3->second);
@@ -708,6 +708,11 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                     }
                 }
                 NodeMap1 = NodeMap2;
+            }
+            else {
+
+                string str =  "\033[1;31mError:: Please enter algo as 'find' or 'create' \033[0m\n" ;
+                throw str.c_str();
             }
         }
 
@@ -749,7 +754,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     }
 
     this->PhysicalGroupMap.insert(pair<int,NodeElement>(newPhysicalGroupTag,newNodeElement));
-    string PhysicDes = "1 "+ to_string(newPhysicalGroupTag)+  " \"$NewLineGroup_" + to_string(newPhysicalGroupTag) +  "$\""; 
+    string PhysicDes = "1 "+ to_string(newPhysicalGroupTag)+  " \"$" + newPhysicalGroupName +  "$\""; 
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
     this->PhysicalGroupList.push_back(newPhysicalGroup);
     this->PhysicalStringNameToIdMap.insert(pair<string,int>(newPhysicalGroup.getPhysicTag(),newPhysicalGroup.getId()));
