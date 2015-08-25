@@ -393,14 +393,14 @@ void GmssiPython::ConvertFile(const string& mshFile,int overwrite){
 
 int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
 
-    Tokenizer tknzr = Tokenizer(trim(variable)," #");
+    Tokenizer tknzr = Tokenizer(trim(variable),"#");
     int tag;
 
     if(variable.compare("All")){
 
         string type = tknzr.nextToken();
 
-        if(!type.compare("Enty")){
+        if(!type.compare("Entity_Group")){
 
 			try{
                 tag = stoi(tknzr.nextToken());
@@ -415,7 +415,7 @@ int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const stri
             }
         }
 
-        else if (!type.compare("Phy")){
+        else if (!type.compare("Physical_Group")){
 
             map<string,int>::iterator PhysicalStringNameToIdMapIter;
             PhysicalStringNameToIdMapIter = this->Translator.PhysicalStringNameToIdMap.find(tknzr.nextToken());

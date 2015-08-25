@@ -1062,14 +1062,14 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
 
     if(variable.size()>0){
 
-        Tokenizer tknzr = Tokenizer((variable.at(0))," #");
+        Tokenizer tknzr = Tokenizer((variable.at(0)),"#");
         int NofTokens = tknzr.countTokens(), tag ;
 
         if(NofTokens==2){
 
             string type = (tknzr.nextToken());
 
-            if(!type.compare("Enty")){
+            if(!type.compare("Entity_Group")){
 
                 try{
                     tag = stoi(tknzr.nextToken());
@@ -1083,7 +1083,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
                 }
             }
 
-            else if (!type.compare("Phy")){
+            else if (!type.compare("Physical_Group")){
 
                 map<string,int>::iterator PhysicalStringNameToIdMapIter;
                 PhysicalStringNameToIdMapIter = this->PhysicalStringNameToIdMap.find(tknzr.nextToken());
@@ -1104,7 +1104,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
 
             else{
 
-                string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Enty/Phy# tag \"" + variable.at(0) + "\" \033[0m\n" ;
+                string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Entity_Group/Physical_Group#Tag tag \"" + variable.at(0) + "\" \033[0m\n" ;
                 cout << msg ; exit (EXIT_FAILURE);
                 throw msg.c_str();
             }
@@ -1124,7 +1124,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
         }
         else{
 
-            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Enty/Phy# tag \033[0m\n" ;
+            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has a syntaxERROR in Entity_Group/Physical_Group#Tag tag \033[0m\n" ;
             cout << msg ; exit (EXIT_FAILURE);
             throw msg.c_str();
         }
@@ -1146,14 +1146,14 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
 
 void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
 
-    Tokenizer tknzr = Tokenizer((variable)," #");
+    Tokenizer tknzr = Tokenizer((variable),"#");
     int NofTokens = tknzr.countTokens(),tag;
 
     if(NofTokens==2){
 
         string type = (tknzr.nextToken());
 
-        if(!type.compare("Enty")){
+        if(!type.compare("Entity_Group")){
 
             try{
                 tag = stoi(tknzr.nextToken());
@@ -1167,7 +1167,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
             }
         }
 
-        else if (!type.compare("Phy")){
+        else if (!type.compare("Physical_Group")){
 
             map<string,int>::iterator PhysicalStringNameToIdMapIter;
             PhysicalStringNameToIdMapIter = this->PhysicalStringNameToIdMap.find(tknzr.nextToken());
