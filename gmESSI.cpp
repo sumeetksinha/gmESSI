@@ -12,8 +12,8 @@
 *  the program(s) have been supplied.                                                                   *
 ********************************************************************************************************/
 
-#include "GmshTranslator.h"
-#include "GmssiPython.h"
+#include "gmESSITranslator.h"
+#include "gmESSIPython.h"
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
@@ -34,7 +34,6 @@ string getFilePath();
 int main(int argc, char* argv[]){
 
 	int overwrite = 1, start =1; //atoi
-	string off = argv[1];
 
 	try{
 
@@ -43,6 +42,8 @@ int main(int argc, char* argv[]){
 		    string msg = "\033[1;31mERROR:: Please Enter the Gmsh File \033[0m\n" ; 
 		    throw msg.c_str();		
 		}
+
+		string off = argv[1];
 
 		if(!off.compare("-o")){
 			overwrite =0;
@@ -53,7 +54,7 @@ int main(int argc, char* argv[]){
 
 		    string gmshFile = argv[i];
 		    // cout << gmshFile << endl;
-		    GmssiPython gmssi = GmssiPython (gmshFile);
+		    gmESSIPython gmssi = gmESSIPython (gmshFile);
 		}
 
 	} catch (const char* msg){cerr << msg << endl;}

@@ -1,5 +1,5 @@
 /********************************************************************************************************
-*  File:        GmssiPython.cpp          	        | Copyright:: ##############################    *
+*  File:        gmESSIPython.cpp          	        | Copyright:: ##############################    *
 *  Description: Contains the magic of translation       | BOX 1505                                      *
 *  Rev:         Version 1                               | 125 25 ALVSJO                                 *
 *  Created:     June 28, 2015                           | SWEDEN                                        *
@@ -18,7 +18,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
-#include "GmssiPython.h"
+#include "gmESSIPython.h"
 #include "Node.h"
 
 #ifdef _WIN32 
@@ -35,14 +35,14 @@
 ****************************** Constructor ************************************
 ******************************************************************************/
 
-GmssiPython::GmssiPython(){}
+gmESSIPython::gmESSIPython(){}
 
-GmssiPython::GmssiPython(const string& mshFile, int overwrite){
+gmESSIPython::gmESSIPython(const string& mshFile, int overwrite){
 
 	ConvertFile(mshFile,overwrite);
 }
 
-GmssiPython::~GmssiPython(){
+gmESSIPython::~gmESSIPython(){
 
 	this->Translator.DisplayNewTagNumbering();
 	this->Translator.UpdateGmshFile();
@@ -53,42 +53,42 @@ GmssiPython::~GmssiPython(){
 ********************************* Public Function ******************************
 *******************************************************************************/
 
-void GmssiPython::loadMshFile(const string& mshFile,int overwrite){
+void gmESSIPython::loadMshFile(const string& mshFile,int overwrite){
 
 	ConvertFile(mshFile,overwrite);
 	return;
 }
 
-void GmssiPython::loadMshFile2(const string& mshFile){
+void gmESSIPython::loadMshFile2(const string& mshFile){
 
 	ConvertFile(mshFile,1);
 	return;
 }
 
-void GmssiPython::Convert(const string& GmssiCommand){
+void gmESSIPython::Convert(const string& GmssiCommand){
 
 	try{
 		Translator.Convert(trim(GmssiCommand));
 	} 
-	catch (const char* msg){cerr << msg << endl;}
+	catch (const char* msg){cerr << msg << endl; exit(EXIT_FAILURE);}
 
 	return;
 }
 
-int GmssiPython::getEssiTag(const string& EssiTag){
+int gmESSIPython::getEssiTag(const string& EssiTag){
 
 	string Tag = EssiTag;
 	string newNumber = Translator.getVariable(Tag);
 	return stoi(newNumber);
 }
 
-void GmssiPython::DisplayNewTagNumbering(){
+void gmESSIPython::DisplayNewTagNumbering(){
 	
 	Translator.DisplayNewTagNumbering();
 	return;
 }
 
-vector<Element> GmssiPython::getPhysicalGroupElements(const int& tag ){
+vector<Element> gmESSIPython::getPhysicalGroupElements(const int& tag ){
 
 	map<int,NodeElement>::iterator PhysicalGroupIter = Translator.PhysicalGroupMap.find(tag);
 	if(PhysicalGroupIter!=Translator.PhysicalGroupMap.end())
@@ -96,7 +96,7 @@ vector<Element> GmssiPython::getPhysicalGroupElements(const int& tag ){
 	else return vector<Element> ();
 }
 
-vector<Node> GmssiPython::getPhysicalGroupNodes(const int& tag ){
+vector<Node> gmESSIPython::getPhysicalGroupNodes(const int& tag ){
 
 	map<int,NodeElement>::iterator PhysicalGroupIter = Translator.PhysicalGroupMap.find(tag);
 	if(PhysicalGroupIter!=Translator.PhysicalGroupMap.end()){
@@ -108,7 +108,7 @@ vector<Node> GmssiPython::getPhysicalGroupNodes(const int& tag ){
 	else return vector<Node> ();
 }
 
-vector<Node> GmssiPython::getEntityGroupNodes(const int& tag ){
+vector<Node> gmESSIPython::getEntityGroupNodes(const int& tag ){
 
 	map<int,NodeElement>::iterator EntityGroupIter = Translator.EntityMap.find(tag);
 	if(EntityGroupIter!=Translator.EntityMap.end()){
@@ -120,7 +120,7 @@ vector<Node> GmssiPython::getEntityGroupNodes(const int& tag ){
 	else return vector<Node> ();
 }
 
-vector<Element> GmssiPython::getEntityGroupElements(const int& tag ){
+vector<Element> gmESSIPython::getEntityGroupElements(const int& tag ){
 
 	map<int,NodeElement>::iterator EntityGroupIter = Translator.EntityMap.find(tag);
 	if(EntityGroupIter!=Translator.EntityMap.end())
@@ -128,7 +128,7 @@ vector<Element> GmssiPython::getEntityGroupElements(const int& tag ){
 	else return vector<Element> ();
 }
 
-SelectionData GmssiPython::getEntityGroupData(const int& tag){
+SelectionData gmESSIPython::getEntityGroupData(const int& tag){
 
 	SelectionData newSelectionData;
 
@@ -138,7 +138,7 @@ SelectionData GmssiPython::getEntityGroupData(const int& tag){
 	return newSelectionData;
 }
 
-SelectionData GmssiPython::getPhysicalGroupData(const int& tag){
+SelectionData gmESSIPython::getPhysicalGroupData(const int& tag){
 
 	SelectionData newSelectionData;
 
@@ -148,7 +148,8 @@ SelectionData GmssiPython::getPhysicalGroupData(const int& tag){
 	return newSelectionData;
 }
 
-// map<int,int> GmssiPython::getPhysicalGroupNodes(const int& tag ){
+
+// map<int,int> gmESSIPython::getPhysicalGroupNodes(const int& tag ){
 
 // 	map<int,NodeElement>::iterator PhysicalGroupIter = Translator.PhysicalGroupMap.find(tag);
 // 	if(PhysicalGroupIter!=Translator.PhysicalGroupMap.end()){
@@ -157,7 +158,7 @@ SelectionData GmssiPython::getPhysicalGroupData(const int& tag){
 // 	else return map<int,int> ();
 // }
 
-// map<int,int> GmssiPython::getEntityGroupNodes(const int& tag ){
+// map<int,int> gmESSIPython::getEntityGroupNodes(const int& tag ){
 
 // 	map<int,NodeElement>::iterator EntityGroupIter = Translator.EntityMap.find(tag);
 // 	if(EntityGroupIter!=Translator.EntityMap.end()){
@@ -166,7 +167,37 @@ SelectionData GmssiPython::getPhysicalGroupData(const int& tag){
 // 	else return map<int,int>();
 // }
 
-SelectionData GmssiPython::BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2){
+SelectionData gmESSIPython::getGroupData(const string& PhysEntyTag){
+
+	struct SelectionData newSelectionData;
+
+	try{
+
+		// Checking the tags and initiallizing whether Phy or Enty Tag or All
+	    map<int,NodeElement>::iterator TypeIter;
+	    if(!setTypeIter(TypeIter,PhysEntyTag)){
+	    	newSelectionData.ElementList = TypeIter->second.ElementList;
+	    	map<int,int> NodeList = TypeIter->second.NodeList;
+			for(map<int,int>::iterator it= NodeList.begin(); it!=NodeList.end();++it)
+				newSelectionData.NodeList.push_back(Translator.NodeMap.find(it->second)->second);
+	    	cout << "\033[1;36mGroup Data retrieved for " << PhysEntyTag << "\033[0m\n";
+	    }
+	    else{
+	    	newSelectionData.ElementList = this->Translator.GmshParse.getElementList();
+	    	map<int,Node> ::iterator AllNodeBegin = this->Translator.NodeMap.begin();
+       		map<int,Node> ::iterator AllNodeEnd = this->Translator.NodeMap.end();
+       		for(map<int,Node>::iterator it=AllNodeBegin; it!=AllNodeEnd; ++it)  
+            	newSelectionData.NodeList.push_back(it->second);
+	   		cout << "\033[1;36mGroup Data retieved for All Model \033[0m\n";
+	    }
+		/// Ends Initialization here
+
+	}catch (const char* msg){cerr << msg << endl;}
+
+	return newSelectionData;
+}
+
+SelectionData gmESSIPython::BoxSelectionData(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2){
 
 	vector<Element> ElementList;
 
@@ -219,7 +250,7 @@ SelectionData GmssiPython::BoxSelection(string PhysEntyTag, double x1,double x2,
 	return newSelectionData;
 }
 
-SelectionData GmssiPython::SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z){
+SelectionData gmESSIPython::SphereSelectionData(string PhysEntyTag,double radius,double center_x,double center_y,double center_z){
 
 	vector<Element> ElementList;
 
@@ -273,7 +304,7 @@ SelectionData GmssiPython::SphereSelection(string PhysEntyTag,double radius,doub
 	return newSelectionData;
 }
 
-void GmssiPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList){
+void gmESSIPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList){
 
 	NodeElement newNodeElement; 
 	map<int,int> NodeNumberNodeMap; 
@@ -306,12 +337,12 @@ void GmssiPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vector
 	return;
 }
 
-map<int,Node> GmssiPython::getNodeMap(){
+map<int,Node> gmESSIPython::getNodeMap(){
 
 	return Translator.NodeMap;
 }
 
-void GmssiPython::UpdateGmshFile(){
+void gmESSIPython::UpdateGmshFile(){
 
 	Translator.UpdateGmshFile();
 	return;
@@ -321,7 +352,7 @@ void GmssiPython::UpdateGmshFile(){
 ********************************* Private Function *****************************
 *******************************************************************************/
 
-string GmssiPython::getFilePath(){
+string gmESSIPython::getFilePath(){
 
 	char filePath[256];
 	
@@ -335,7 +366,7 @@ string GmssiPython::getFilePath(){
 	return FilePath;
 }
 
-void GmssiPython::ConvertFile(const string& mshFile,int overwrite){
+void gmESSIPython::ConvertFile(const string& mshFile,int overwrite){
 
 	try{
 
@@ -368,7 +399,7 @@ void GmssiPython::ConvertFile(const string& mshFile,int overwrite){
 	    cout << "\033[1;36mMessage::Files converted to " << newDirectory << "  \033[0m\n" << endl; 
 	    newDirectory  =newDirectory +slash;
 
-	   	Translator = GmshTranslator(gmshFile, newDirectory);
+	   	Translator = gmESSITranslator(gmshFile, newDirectory);
 	    Translator.Convert();
 
 	    this->GmshFile = this->Translator.GmshFile;
@@ -377,21 +408,13 @@ void GmssiPython::ConvertFile(const string& mshFile,int overwrite){
 	    this->LoadFile = this->Translator.loadFile;
 	    this->pwd = this->Translator.pwd;
 
- 		// Tokenizer tknzr = Tokenizer(this->Translator.pwd,"/");
- 		// tknzr.setcurrPos(this->Translator.pwd.length()-1);
- 		// tknzr.setMode(1); tknzr.nextToken();
-
- 		// while(tknzr.hasMoreTokens())
- 		// 	this->pwd= "/" + tknzr.nextToken() + this->pwd;
-
-
 	} catch (const char* msg){cerr << msg << endl;}
 
 	return;
 
 }
 
-int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
+int gmESSIPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
 
     Tokenizer tknzr = Tokenizer(trim(variable),"#");
     int tag;
@@ -448,29 +471,29 @@ int GmssiPython::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const stri
     return 0;
 }
 
-void GmssiPython::setLoadFile(const string& loadfile){
+void gmESSIPython::setLoadFile(const string& loadfile){
 
 	this->Translator.loadFile= loadfile;
 	LoadFile = loadfile;
 }
 
-void GmssiPython::setGeometryFile(const string& geometryfile){
+void gmESSIPython::setGeometryFile(const string& geometryfile){
 	this->Translator.geometryFile = geometryfile;
 	GeometryFile = geometryfile;
 }
 
-void GmssiPython::setMainFile(const string& mainfile){
+void gmESSIPython::setMainFile(const string& mainfile){
 	this->Translator.mainFile = mainfile;
 	MainFile = mainfile;
 }
 
-string GmssiPython::delSpaces(string str){
+string gmESSIPython::delSpaces(string str){
 
    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
    return str;
 }
 
-string GmssiPython::trim(const string& str, const string& delimiters ){
+string gmESSIPython::trim(const string& str, const string& delimiters ){
 	string s=str;
     s.erase( s.find_last_not_of( delimiters ) + 1 ).erase( 0, s.erase( s.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
     return s;
@@ -498,7 +521,7 @@ string GmssiPython::trim(const string& str, const string& delimiters ){
 
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE(gmssi)
+BOOST_PYTHON_MODULE(gmessi)
 {
     class_<SelectionData>("SelectionData")
 	    .def_readonly("NodeList",&SelectionData::NodeList)
@@ -532,32 +555,32 @@ BOOST_PYTHON_MODULE(gmssi)
     class_<std::map<int,Node> >("NodeMap")
         .def(map_indexing_suite<std::map<int,Node> >() );
 
-    class_<GmssiPython>("GmssiPython")
+    class_<gmESSIPython>("gmESSIPython")
     	.def(init<const std::string&,int>())
     	.def(init<const std::string&>())
-    	.def_readonly("pwd",&GmssiPython::pwd)
-	    .def_readonly("GmshFile",&GmssiPython::GmshFile)
-	    .def_readonly("LoadFile",&GmssiPython::LoadFile)
-	    .def_readonly("GeometryFile",&GmssiPython::GeometryFile)
-	    .def_readonly("MainFile",&GmssiPython::MainFile)
-	    .def("setMainFile",&GmssiPython::setMainFile)
-	    .def("setGeometryFile",&GmssiPython::setGeometryFile)
-	    .def("setLoadFile",&GmssiPython::setLoadFile)
-    	.def("loadMshFile",&GmssiPython::loadMshFile)
-    	.def("loadMshFile",&GmssiPython::loadMshFile2)
-    	.def("Convert",&GmssiPython::Convert) 
-    	.def("getNewEssiTag",&GmssiPython::getEssiTag) 
-    	.def("getEntityGroupElements",&GmssiPython::getEntityGroupElements)
-    	.def("getEntityGroupNodes",&GmssiPython::getEntityGroupNodes)
-    	.def("getPhysicalGroupElements",&GmssiPython::getPhysicalGroupElements)
-    	.def("getPhysicalGroupNodes",&GmssiPython::getPhysicalGroupNodes)
-    	.def("getNodeMap",&GmssiPython::getNodeMap)
-    	.def("getSphereSelectionData",&GmssiPython::SphereSelection)
-    	.def("CreatePhysicalGroup",&GmssiPython::CreatePhysicalGroup)
-    	.def("UpdateGmshFile",&GmssiPython::UpdateGmshFile)
-    	.def("BoxSelectionData",&GmssiPython::BoxSelection)
-    	.def("getPhysicalGroupData",&GmssiPython::getPhysicalGroupData)
-    	.def("getEntityGroupData",&GmssiPython::getEntityGroupData)
-    	.def("getEntityGroupData",&GmssiPython::getEntityGroupData)
-    	.def("DisplayNewTagNumbering",&GmssiPython::DisplayNewTagNumbering);
+    	.def_readonly("pwd",&gmESSIPython::pwd)
+	    .def_readonly("GmshFile",&gmESSIPython::GmshFile)
+	    .def_readonly("LoadFile",&gmESSIPython::LoadFile)
+	    .def_readonly("GeometryFile",&gmESSIPython::GeometryFile)
+	    .def_readonly("MainFile",&gmESSIPython::MainFile)
+	    .def("setMainFile",&gmESSIPython::setMainFile)
+	    .def("setGeometryFile",&gmESSIPython::setGeometryFile)
+	    .def("setLoadFile",&gmESSIPython::setLoadFile)
+    	.def("loadMshFile",&gmESSIPython::loadMshFile)
+    	.def("loadMshFile",&gmESSIPython::loadMshFile2)
+    	.def("Convert",&gmESSIPython::Convert) 
+    	.def("getNewEssiTag",&gmESSIPython::getEssiTag) 
+    	.def("getEntityGroupElements",&gmESSIPython::getEntityGroupElements)
+    	.def("getEntityGroupNodes",&gmESSIPython::getEntityGroupNodes)
+    	.def("getPhysicalGroupElements",&gmESSIPython::getPhysicalGroupElements)
+    	.def("getPhysicalGroupNodes",&gmESSIPython::getPhysicalGroupNodes)
+    	.def("getNodeMap",&gmESSIPython::getNodeMap)
+    	.def("getSphereSelectionData",&gmESSIPython::SphereSelectionData)
+    	.def("CreatePhysicalGroup",&gmESSIPython::CreatePhysicalGroup)
+    	.def("UpdateGmshFile",&gmESSIPython::UpdateGmshFile)
+    	.def("BoxSelectionData",&gmESSIPython::BoxSelectionData)
+    	.def("getPhysicalGroupData",&gmESSIPython::getPhysicalGroupData)
+    	.def("getEntityGroupData",&gmESSIPython::getEntityGroupData)
+    	.def("getGroupData",&gmESSIPython::getGroupData)
+    	.def("DisplayNewTagNumbering",&gmESSIPython::DisplayNewTagNumbering);
 }

@@ -100,7 +100,7 @@
 
 // Connect Commands
 
-	!cc <Connect{PhyEntTag,PhyEntTag,PhyEntyTag,dv1,mag,noT,algo,Tolerence}>											
+	!cc <Connect{PhyEntTag,PhyEntTag,PhyEntyTag,dv1,mag,noT,algo,Tolerence,PhysicalGroupName}>											
 
 // Singular Commands 
 

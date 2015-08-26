@@ -1,5 +1,5 @@
 /********************************************************************************************************
-*  File:        GmshTranslator.cpp                      | Copyright:: ##############################    *
+*  File:        gmESSITranslator.cpp                      | Copyright:: ##############################    *
 *  Description: Contains the magic of translation       | BOX 1505                                      *
 *  Rev:         Version 1                               | 125 25 ALVSJO                                 *
 *  Created:     June 28, 2015                           | SWEDEN                                        *
@@ -12,7 +12,7 @@
 *  the program(s) have been supplied.                                                                   *
 ********************************************************************************************************/
 
-#include "GmshTranslator.h"
+#include "gmESSITranslator.h"
 #include "OctParser.h"
 #include <cstdlib>
 #include <iostream>
@@ -31,9 +31,9 @@ using namespace::std;
 ****************************** Constructor ************************************
 ******************************************************************************/
 
-GmshTranslator::GmshTranslator(){}
+gmESSITranslator::gmESSITranslator(){}
 
-GmshTranslator::GmshTranslator(const string& gmshFile, const string& newDir){
+gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& newDir){
 
     GmshFile = gmshFile;
     Tokenizer tknzr = Tokenizer(gmshFile,"/ ."); 
@@ -44,7 +44,7 @@ GmshTranslator::GmshTranslator(const string& gmshFile, const string& newDir){
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
 }
 
-GmshTranslator::GmshTranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
+gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
 
     GmshFile = gmshFile;
     Tokenizer tknzr = Tokenizer(gmshFile,"/ "); tknzr.setMode(1);tknzr.nextToken();
@@ -55,13 +55,13 @@ GmshTranslator::GmshTranslator(const string& gmshFile, const string& mappingFile
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
 }
 
-GmshTranslator::~GmshTranslator(){ }
+gmESSITranslator::~gmESSITranslator(){ }
 
 /******************************************************************************
 **************************** Public Functions *********************************
 ******************************************************************************/
 
-void GmshTranslator::setGmshFile(const string& gmshFile, const string& newDir){
+void gmESSITranslator::setGmshFile(const string& gmshFile, const string& newDir){
 
     GmshFile = gmshFile;
     Tokenizer tknzr = Tokenizer(gmshFile,"/ "); tknzr.setMode(1);tknzr.nextToken();
@@ -72,13 +72,13 @@ void GmshTranslator::setGmshFile(const string& gmshFile, const string& newDir){
     return;
 }
 
-void GmshTranslator::Convert(){
+void gmESSITranslator::Convert(){
 
     this->GmshToEssi();
     return;
 }
 
-string GmshTranslator::getFileName(){
+string gmESSITranslator::getFileName(){
 
     return this->GmshFile;
 }
@@ -87,7 +87,7 @@ string GmshTranslator::getFileName(){
 **************************** Private Functions *********************************
 ******************************************************************************/
 
-void GmshTranslator::GmshToEssi(){
+void gmESSITranslator::GmshToEssi(){
 
     ofstream MainFile(mainFile,ios::out);  
 
@@ -181,7 +181,7 @@ void GmshTranslator::GmshToEssi(){
 }
 
 
-void GmshTranslator::DisplayNewTagNumbering(){
+void gmESSITranslator::DisplayNewTagNumbering(){
 
     map<string,int>::iterator EssiTagIterBegin = this->EssiTagVariableMap.begin();
     map<string,int>::iterator EssiTagIterEnd = this->EssiTagVariableMap.end();
@@ -194,7 +194,7 @@ void GmshTranslator::DisplayNewTagNumbering(){
     return;
 }
 
-void GmshTranslator::AddNodeCommand(const int&i, const int& j){
+void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
 
     ofstream GeometryFile(geometryFile,ios::app); int init=0;int nofRun=0;
     GeometryFile << PrintStartConversion(j);
@@ -257,7 +257,7 @@ void GmshTranslator::AddNodeCommand(const int&i, const int& j){
     return;
 }
 
-void GmshTranslator::ElementalCommand(const int& i, const int& j){
+void gmESSITranslator::ElementalCommand(const int& i, const int& j){
   
     ofstream GeometryFile(geometryFile, ios::app); int init=0;
     GeometryFile << PrintStartConversion(j);
@@ -320,7 +320,7 @@ void GmshTranslator::ElementalCommand(const int& i, const int& j){
     return;
 }
 
-void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
+void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
 
     ofstream LoadFile(loadFile,ios::app); int init=0;
     LoadFile<< PrintStartConversion(j);
@@ -441,7 +441,7 @@ void GmshTranslator::ElementalCompoundCommand(const int& i, const int& j){
     return;
 }
 
-void GmshTranslator::NodalCommand(const int& i, const int& j){
+void gmESSITranslator::NodalCommand(const int& i, const int& j){
 
     ofstream LoadFile(loadFile,ios::app); int init =0;
     LoadFile<< PrintStartConversion(j);
@@ -498,7 +498,7 @@ void GmshTranslator::NodalCommand(const int& i, const int& j){
     return;
 }
 
-void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
+void gmESSITranslator::GeneralElementalCommand(const int& i, const int& j){
 
     ofstream LoadFile(loadFile,ios::app); int init=0;
     LoadFile<< PrintStartConversion(j);
@@ -557,7 +557,7 @@ void GmshTranslator::GeneralElementalCommand(const int& i, const int& j){
     return;
 }
 
-void GmshTranslator::SingularCommand(const int& i, const int& j){
+void gmESSITranslator::SingularCommand(const int& i, const int& j){
 
     ofstream MainFile(mainFile,ios::app);
 
@@ -587,7 +587,7 @@ void GmshTranslator::SingularCommand(const int& i, const int& j){
     return;
 }
 
-void GmshTranslator::ConnectCommand(const int&i, const int& j){
+void gmESSITranslator::ConnectCommand(const int&i, const int& j){
 
     ofstream GeometryFile(geometryFile,ios::app);
     vector<string> Variables = VariableList.at(j);
@@ -628,7 +628,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     int NofLayers = stoi(this->delSpaces(Variables.at(5))); // Number of layers
     string algo = this->delSpaces(Variables.at(6));      // Algo 
     double tolerence = stof(this->delSpaces(Variables.at(7))); // Tolerence 
-    string newPhysicalGroupName = this->delSpaces(Variables.at(7)); //new PhysicalGroupName specified by the usrer
+    string newPhysicalGroupName = this->delSpaces(Variables.at(8)); //new PhysicalGroupName specified by the usrer
 
     if(Iterator1==this->EntityMap.end()||Iterator2==this->EntityMap.end()||(Iterator3==this->EntityMap.end() && algo!=("find"))||Iterator1==this->PhysicalGroupMap.end()||Iterator2==this->PhysicalGroupMap.end()||(Iterator3==this->PhysicalGroupMap.end() && algo!=("find"))){
 
@@ -642,12 +642,6 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     int Node1=0,Node2=0,EntityNo = this->NewEntity++;
     int NofElementsCreated=0 , NofNodesCreated = 0;
 
-    // cout << "Vector->" << vec_x << "," << vec_y << "," << vec_z << endl;
-    // cout << "length->" << length << endl;
-    // cout << "NofLayers->" << NofLayers << endl;
-    // cout << "algo->" << algo << endl;
-    // cout << "tolerence->" << tolerence << endl;
-
     for(map<int,int>::iterator It1 = Iterator1Begin; It1!=Iterator1End ;++It1){
 
         NodeMap1 = this->NodeMap.find(It1->second);
@@ -660,7 +654,7 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
             double node1_z = NodeMap1->second.getZcord()+length*(vec_z);
 
             if(!algo.compare("create")){
-                //create node           
+        
                 string str = "node";
                 Node newNode = Node(stoi(getVariable(str)), node1_x, node1_y, node1_z );
                 this->NodeMap.insert(pair<int,Node>(newNode.getId(),newNode)); str = "element";
@@ -680,8 +674,10 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                 NodeMap1 = this->NodeMap.find(newNode.getId());
             }
-            else if (!algo.compare("find")){//find node
+            else if (!algo.compare("find")){
                 
+                int UniqueNodes = 0;
+
                 for(map<int,int>::iterator It3 = Iterator3Begin; It3!=Iterator3End ;++It3){
 
                     NodeMap2 = this->NodeMap.find(It3->second);
@@ -704,21 +700,25 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                         newNodeElement.ElementList.push_back(newElement);
                         newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                         newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
-                        break;
+                        UniqueNodes++;
+                        
+                        if(UniqueNodes>1){ string str =  "\033[1;31mERROR:: More than one node inside tolerence \033[0m\n"; throw str.c_str();}
                     }
                 }
                 NodeMap1 = NodeMap2;
             }
             else {
 
-                string str =  "\033[1;31mError:: Please enter algo as 'find' or 'create' \033[0m\n" ;
+                string str =  "\033[1;31mERROR:: Please enter algo as create or find \033[0m\n";
                 throw str.c_str();
+                exit(EXIT_FAILURE);
             }
         }
 
         double node1_x = NodeMap1->second.getXcord()+length*(vec_x);
         double node1_y = NodeMap1->second.getYcord()+length*(vec_y);
         double node1_z = NodeMap1->second.getZcord()+length*(vec_z);
+        int UniqueNodes = 0;
 
 
         for(map<int,int>::iterator It2 = Iterator2Begin; It2!=Iterator2End ;++It2){
@@ -740,7 +740,9 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
                 newNodeElement.ElementList.push_back(newElement);
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
-                break;
+                UniqueNodes++;
+                
+                if(UniqueNodes>1){ string str =  "\033[1;31mERROR:: More than one node inside tolerence \033[0m\n"; throw str.c_str();}
             }
         }
     }
@@ -760,12 +762,12 @@ void GmshTranslator::ConnectCommand(const int&i, const int& j){
     this->PhysicalStringNameToIdMap.insert(pair<string,int>(newPhysicalGroup.getPhysicTag(),newPhysicalGroup.getId()));
     this->PhysicalStringNameToIdMap.insert(pair<string,int>(to_string(newPhysicalGroup.getId()),newPhysicalGroup.getId()));
 
-    cout << "\033[1;36mNew Physical Group " << newPhysicalGroupTag << " consisting of " << NofNodesCreated <<" Nodes and " << NofElementsCreated << " 2-noded elements created "  << "\033[0m\n";
+    cout << "\033[1;36mNew Physical Group \"" << newPhysicalGroupName << "\" having id " << newPhysicalGroupTag << " consisting of " << NofNodesCreated <<" Nodes and " << NofElementsCreated << " 2-noded elements created "  << "\033[0m\n";
     GeometryFile.close();
     return;
 }
 
-void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
+void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
 
     ofstream GeometryFile(geometryFile, ios::app); int init =1;
     ofstream MainFile(mainFile, ios::app);
@@ -861,7 +863,7 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
                     }
                 }
 
-            } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str();}
+            } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str(); exit(EXIT_FAILURE);}
 
             if(n<Variables.size()){
             
@@ -930,7 +932,7 @@ void GmshTranslator::MaterialVariationalCommand(const int&i, const int& j){
     return;
 }
 
-void GmshTranslator::WriteCommand(const int&i, const int& j){
+void gmESSITranslator::WriteCommand(const int&i, const int& j){
 
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter; int init=0;
@@ -986,7 +988,7 @@ void GmshTranslator::WriteCommand(const int&i, const int& j){
 }
 
 
-string GmshTranslator::getVariable(string& var){
+string gmESSITranslator::getVariable(string& var){
 
     map<string,int>::iterator EssiTagIter = this->EssiTagVariableMap.find(var);
 
@@ -1004,7 +1006,7 @@ string GmshTranslator::getVariable(string& var){
     return  to_string(EssiTagIter->second++);
 }
 
-string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, int j){
+string gmESSITranslator::PrintEssiCommand(string Command, int NofEssiVariables, int j){
 
     stringstream Ecommand; int nofTokens = 0;
     Tokenizer inpString = Tokenizer(Command,"{}") ;
@@ -1029,26 +1031,26 @@ string GmshTranslator::PrintEssiCommand(string Command, int NofEssiVariables, in
     return Ecommand.str();
 }
 
-void GmshTranslator::clear( queue<string> &q ){
+void gmESSITranslator::clear( queue<string> &q ){
 
    queue<string> empty;
    swap( q, empty );
    return;
 }
 
-string GmshTranslator::delSpaces(string str){
+string gmESSITranslator::delSpaces(string str){
 
    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
    return str;
 }
 
-string GmshTranslator::trim(const string& str, const string& delimiters ){
+string gmESSITranslator::trim(const string& str, const string& delimiters ){
     string s=str;
     s.erase( s.find_last_not_of( delimiters ) + 1 ).erase( 0, s.erase( s.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
     return s;
 }
 
-double GmshTranslator::roundToSignificantFigures(double num, int n) {
+double gmESSITranslator::roundToSignificantFigures(double num, int n) {
     
   double RoundedNumber =0;
   
@@ -1058,7 +1060,7 @@ double GmshTranslator::roundToSignificantFigures(double num, int n) {
   return RoundedNumber;
 }
 
-void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const vector<string>& variable,const int& i,const int& j, int &n){
+void gmESSITranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const vector<string>& variable,const int& i,const int& j, int &n){
 
     if(variable.size()>0){
 
@@ -1144,7 +1146,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
     return;
 }
 
-void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
+void gmESSITranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable){
 
     Tokenizer tknzr = Tokenizer((variable),"#");
     int NofTokens = tknzr.countTokens(),tag;
@@ -1202,7 +1204,7 @@ void GmshTranslator::setTypeIter(map<int,NodeElement>::iterator &TypeIter,const 
     return;
 }
 
-string GmshTranslator::PrintStartConversion(const int& j){
+string gmESSITranslator::PrintStartConversion(const int& j){
 
     string str = "\n//*************************************************************************************************************************\n";
     str = str + "//\t\t\t\t\t\t\t" +  this->UserCommandList.at(j) + "Begins\n";
@@ -1210,7 +1212,7 @@ string GmshTranslator::PrintStartConversion(const int& j){
     return str;
 }
 
-string GmshTranslator::PrintEndConversion(const int& nofRun, const int& j){
+string gmESSITranslator::PrintEndConversion(const int& nofRun, const int& j){
 
     if(nofRun==0){
 
@@ -1226,7 +1228,7 @@ string GmshTranslator::PrintEndConversion(const int& nofRun, const int& j){
     return str;
 }
 
-void GmshTranslator::UpdateEssiTags(const string& newVar, const int& l){
+void gmESSITranslator::UpdateEssiTags(const string& newVar, const int& l){
 
     string tempvar;
     try{
@@ -1240,7 +1242,7 @@ void GmshTranslator::UpdateEssiTags(const string& newVar, const int& l){
     return;
 }
 
-void GmshTranslator::Convert(const string& GmssiCommand){
+void gmESSITranslator::Convert(const string& GmssiCommand){
 
     int i = PhytonScriptPhysicalGroupIndex;
     PhysicalGroupList.at(i).Process(GmssiCommand);
@@ -1286,7 +1288,7 @@ void GmshTranslator::Convert(const string& GmssiCommand){
     return;
 }
 
-void GmshTranslator::UpdateGmshFile(){
+void gmESSITranslator::UpdateGmshFile(){
 
 	string UpdatedGmshFile = this->pwd +".msh";
     ofstream UpdateGmshFile(UpdatedGmshFile,ios::out); 

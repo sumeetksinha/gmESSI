@@ -1,5 +1,5 @@
 /********************************************************************************************************
-*  File:        GmshTranslator.h                        | Copyright:: ##############################    *
+*  File:        gmESSITranslator.h                        | Copyright:: ##############################    *
 *  Description: Contains the magic of translation       | BOX 1505                                      *
 *  Rev:         Version 1                               | 125 25 ALVSJO                                 *
 *  Created:     June 28, 2015                           | SWEDEN                                        *
@@ -12,8 +12,8 @@
 *  the program(s) have been supplied.                                                                   *
 ********************************************************************************************************/
 
-#ifndef GMSHTRANSLATOR_H
-#define GMSHTRANSLATOR_H
+#ifndef gmESSITranslator_H
+#define gmESSITranslator_H
 
 #include "Tokenizer.h"
 #include "Semantics.h"
@@ -32,14 +32,14 @@
 
 using namespace::std;
 
-class GmshTranslator{
+class gmESSITranslator{
 
     public:
 
-        GmshTranslator();
-        GmshTranslator(const string& gmshFile, const string& newDir);
-        GmshTranslator(const string& gmshFile, const string& mapppingFile, const string& newDir);
-        ~GmshTranslator();
+        gmESSITranslator();
+        gmESSITranslator(const string& gmshFile, const string& newDir);
+        gmESSITranslator(const string& gmshFile, const string& mapppingFile, const string& newDir);
+        ~gmESSITranslator();
 
         void setGmshFile(const string& gmshFile, const string& newDir);
         void Convert();
@@ -99,4 +99,4 @@ class GmshTranslator{
         queue<string> TempVariable;
 };
 
-#endif //GMSHTRANSLATOR_H
+#endif //gmESSITranslator_H

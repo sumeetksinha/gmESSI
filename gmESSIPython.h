@@ -1,5 +1,5 @@
 /********************************************************************************************************
-*  File:        GmssiPython.h          	        | Copyright:: ##############################    *
+*  File:        gmESSIPython.h          	        | Copyright:: ##############################    *
 *  Description: Contains the magic of translation       | BOX 1505                                      *
 *  Rev:         Version 1                               | 125 25 ALVSJO                                 *
 *  Created:     June 28, 2015                           | SWEDEN                                        *
@@ -11,12 +11,12 @@
 *  or in accordance with the terms and conditions stipulated in the agreement/contract under which      *
 *  the program(s) have been supplied.                                                                   *
 ********************************************************************************************************/
-#ifndef GMSSIPYTHON_H
-#define GMSSIPYTHON_H
+#ifndef gmESSIPython_H
+#define gmESSIPython_H
 
 #include <string>
 #include <vector>
-#include "GmshTranslator.h"
+#include "gmESSITranslator.h"
 #include "Element.h"
 #include "Node.h"
 
@@ -28,11 +28,11 @@ struct SelectionData{
 
 using namespace::std;
 
-class GmssiPython{
+class gmESSIPython{
 
 	public:
-		GmssiPython(); ~GmssiPython();
-		GmssiPython(const string& mshFile, int overwrite = 1);
+		gmESSIPython(); ~gmESSIPython();
+		gmESSIPython(const string& mshFile, int overwrite = 1);
 		void loadMshFile(const string& mshFile, int overwrite = 1);
 		void loadMshFile2(const string& mshFile);
 		void Convert(const string& GmssiCommand);
@@ -45,9 +45,10 @@ class GmssiPython{
 		map<int,Node> getNodeMap();
 		void ConvertFile(const string& mshFile,int overwrite);
 		void UpdateGmshFile();
-		GmshTranslator Translator = GmshTranslator();
-		SelectionData BoxSelection(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);
-		SelectionData SphereSelection(string PhysEntyTag,double radius,double center_x,double center_y,double center_z);
+		gmESSITranslator Translator = gmESSITranslator();
+		SelectionData getGroupData(const string& PhysEntyTag);
+		SelectionData BoxSelectionData(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);
+		SelectionData SphereSelectionData(string PhysEntyTag,double radius,double center_x,double center_y,double center_z);
 		SelectionData getEntityGroupData(const int& tag);
 		SelectionData getPhysicalGroupData(const int& tag);
 		void setLoadFile(const string& loadfile);
@@ -66,4 +67,4 @@ class GmssiPython{
 
 };
 
-#endif //GMSSIPYTHON_H
+#endif //gmESSIPython_H
