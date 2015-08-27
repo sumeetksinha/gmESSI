@@ -96,6 +96,15 @@ vector<Element> gmESSIPython::getPhysicalGroupElements(const int& tag ){
 	else return vector<Element> ();
 }
 
+vector<Element> gmESSIPython::getPhysicalGroupElements2(const string& PhysicalGroupTag ){
+
+	map<string,int>::iterator tagiter = this->Translator.PhysicalStringNameToIdMap.find(PhysicalGroupTag);
+	if(tagiter!=this->Translator.PhysicalStringNameToIdMap.end())
+		return getPhysicalGroupElements(tagiter->second);
+	else return vector<Element> ();
+
+}
+
 vector<Node> gmESSIPython::getPhysicalGroupNodes(const int& tag ){
 
 	map<int,NodeElement>::iterator PhysicalGroupIter = Translator.PhysicalGroupMap.find(tag);
@@ -106,6 +115,15 @@ vector<Node> gmESSIPython::getPhysicalGroupNodes(const int& tag ){
 		return NodeVector;
 	}
 	else return vector<Node> ();
+}
+
+vector<Node> gmESSIPython::getPhysicalGroupNodes2(const string& PhysicalGroupTag ){
+
+	map<string,int>::iterator tagiter = this->Translator.PhysicalStringNameToIdMap.find(PhysicalGroupTag);
+	if(tagiter!=this->Translator.PhysicalStringNameToIdMap.end())
+		return getPhysicalGroupNodes(tagiter->second);
+	else return vector<Node> ();
+
 }
 
 vector<Node> gmESSIPython::getEntityGroupNodes(const int& tag ){
@@ -127,27 +145,6 @@ vector<Element> gmESSIPython::getEntityGroupElements(const int& tag ){
 		return EntityGroupIter->second.ElementList;
 	else return vector<Element> ();
 }
-
-SelectionData gmESSIPython::getEntityGroupData(const int& tag){
-
-	SelectionData newSelectionData;
-
-	newSelectionData.ElementList = getEntityGroupElements(tag);
-	newSelectionData.NodeList = getEntityGroupNodes(tag);
-
-	return newSelectionData;
-}
-
-SelectionData gmESSIPython::getPhysicalGroupData(const int& tag){
-
-	SelectionData newSelectionData;
-
-	newSelectionData.ElementList = getPhysicalGroupElements(tag);
-	newSelectionData.NodeList = getPhysicalGroupNodes(tag);
-
-	return newSelectionData;
-}
-
 
 // map<int,int> gmESSIPython::getPhysicalGroupNodes(const int& tag ){
 
@@ -309,8 +306,6 @@ void gmESSIPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vecto
 	NodeElement newNodeElement; 
 	map<int,int> NodeNumberNodeMap; 
 	int ElementListSize=ElementList.size(), EntityNo=this->Translator.NewEntity++, NodelistSize=NodeList.size(), newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size();
-
-	cout << newPhysicalGroupTag << endl;
 
 	for(int i=0 ; i<ElementListSize ;i++){
 		ElementList.at(i).setPhysicalTag(newPhysicalGroupTag);
@@ -574,13 +569,13 @@ BOOST_PYTHON_MODULE(gmessi)
     	.def("getEntityGroupNodes",&gmESSIPython::getEntityGroupNodes)
     	.def("getPhysicalGroupElements",&gmESSIPython::getPhysicalGroupElements)
     	.def("getPhysicalGroupNodes",&gmESSIPython::getPhysicalGroupNodes)
+    	.def("getPhysicalGroupElements",&gmESSIPython::getPhysicalGroupElements2)
+    	.def("getPhysicalGroupNodes",&gmESSIPython::getPhysicalGroupNodes2)
     	.def("getNodeMap",&gmESSIPython::getNodeMap)
     	.def("getSphereSelectionData",&gmESSIPython::SphereSelectionData)
     	.def("CreatePhysicalGroup",&gmESSIPython::CreatePhysicalGroup)
     	.def("UpdateGmshFile",&gmESSIPython::UpdateGmshFile)
     	.def("BoxSelectionData",&gmESSIPython::BoxSelectionData)
-    	.def("getPhysicalGroupData",&gmESSIPython::getPhysicalGroupData)
-    	.def("getEntityGroupData",&gmESSIPython::getEntityGroupData)
     	.def("getGroupData",&gmESSIPython::getGroupData)
     	.def("DisplayNewTagNumbering",&gmESSIPython::DisplayNewTagNumbering);
 }

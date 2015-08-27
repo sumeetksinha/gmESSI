@@ -39,7 +39,9 @@ class gmESSIPython{
 		int getEssiTag( const string& EssiTag);
 		void DisplayNewTagNumbering();
 		vector<Element> getPhysicalGroupElements(const int& n );
+		vector<Element> getPhysicalGroupElements2(const string& n );
 		vector<Node> getPhysicalGroupNodes(const int& n );
+		vector<Node> getPhysicalGroupNodes2(const string& n );
 		vector<Element> getEntityGroupElements(const int& n );
 		vector<Node> getEntityGroupNodes(const int& n );
 		map<int,Node> getNodeMap();
@@ -49,8 +51,6 @@ class gmESSIPython{
 		SelectionData getGroupData(const string& PhysEntyTag);
 		SelectionData BoxSelectionData(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);
 		SelectionData SphereSelectionData(string PhysEntyTag,double radius,double center_x,double center_y,double center_z);
-		SelectionData getEntityGroupData(const int& tag);
-		SelectionData getPhysicalGroupData(const int& tag);
 		void setLoadFile(const string& loadfile);
 		void setGeometryFile(const string& GeometryFile);
 		void setMainFile(const string& MainFile);
