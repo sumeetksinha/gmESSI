@@ -401,7 +401,16 @@ void gmESSIPython::ConvertFile(const string& mshFile,int overwrite){
 	    this->GeometryFile = this->Translator.geometryFile;
 	    this->MainFile = this->Translator.mainFile;
 	    this->LoadFile = this->Translator.loadFile;
-	    this->pwd = this->Translator.pwd;
+	    // this->pwd = this->Translator.pwd;
+
+	    Tokenizer tknzr = Tokenizer(this->Translator.pwd,slash);
+ 		tknzr.setcurrPos(this->Translator.pwd.length()-1);
+ 		tknzr.setMode(1); tknzr.nextToken();
+
+ 		while(tknzr.hasMoreTokens())
+ 			this->pwd= slash + tknzr.nextToken() + this->pwd;
+ 		this->pwd = this->pwd + slash;
+
 
 	} catch (const char* msg){cerr << msg << endl;}
 
