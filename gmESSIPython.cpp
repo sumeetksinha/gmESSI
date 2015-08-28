@@ -376,7 +376,7 @@ void gmESSIPython::ConvertFile(const string& mshFile,int overwrite){
 
 	    Tokenizer str = Tokenizer(gmshFile,"/ .");
 	    str.setcurrPos(gmshFile.length()-1); str.setMode(1); str.nextToken();gmshFile = str.nextToken();
-	    string newDirectory= getFilePath() + slash + gmshFile+ "_Essi_Simulation";
+	    string newDirectory= getFilePath() + slash + gmshFile+ "_ESSI_Simulation";
 	    gmshFile = mshFile;   
 
 	    int n = 1;string tempDirectory = newDirectory;

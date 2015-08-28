@@ -154,6 +154,10 @@ void PhysicalGroup::Process(const string& Command ){
 
 	for( int i=0 ;i<nofTokens-2; i++){
 		string variable= trim(inpString.nextToken());
+		if(!variable.compare("")){
+			nofVariables = nofVariables -1;
+			continue;
+		}
 		varList.push_back(variable);
 		essiTag = essiTag + " ,";
 	}

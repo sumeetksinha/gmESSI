@@ -1054,7 +1054,8 @@ double gmESSITranslator::roundToSignificantFigures(double num, int n) {
     
   double RoundedNumber =0;
   
-  if(n >=1)  RoundedNumber = floor((num+ 5* pow(10,-n-1))*pow(10,n))/pow(10,n);
+  if(n==0)	RoundedNumber = (int) num;
+  else if(n >=1)  RoundedNumber = floor((num+ 5* pow(10,-n-1))*pow(10,n))/pow(10,n);
   else RoundedNumber = floor((num+5* pow(10,-(n+2)))/pow(10,-n-1))*pow(10,-n-1);
 
   return RoundedNumber;
