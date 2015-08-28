@@ -1,6 +1,6 @@
 /********************************************************************************************************
-*  File:        Tokenizer.cpp          	     		 	| Copyright:: Sumeet Kumar Sinha			    *
-*  Description: Contains the magic of translation       | 513 I street                                  *
+*  File:        Tokenizer.h          	     		 	| Copyright:: Sumeet Kumar Sinha			    *
+*  Description: A general Tokenizer class       		| 513 I street                                  *
 *  Rev:         Version 1                               | App# 207                              		*
 *  Created:     June 28, 2015                           | Davis, California                             *
 *  Author:      Sumeet Kumar Sinha                      | tel int 530-601-8271                          *
