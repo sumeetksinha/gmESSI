@@ -85,7 +85,7 @@ class gmESSITranslator{
         string PrintEndConversion(const int& nofRun, const int& j);
         void UpdateEssiTags(const string& tempvar, const int& l);
 
-        Mapping Map = Mapping("/usr/local/gmssi/bin/mapping.fei");
+        Mapping Map = Mapping("/usr/local/gmESSI/bin/mapping.fei");
         map<string,Semantics> FunctionMap;
         set<string> EssiTagList;
         map<string,Semantics>::iterator FunctionIter;
