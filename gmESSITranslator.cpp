@@ -193,7 +193,7 @@ void gmESSITranslator::DisplayNewTagNumbering(){
     map<string,int>::iterator EssiTagIterBegin = this->EssiTagVariableMap.begin();
     map<string,int>::iterator EssiTagIterEnd = this->EssiTagVariableMap.end();
     
-    cout <<endl << endl<< "\033[1;36m************************ Updated New Tag Numberring *********************" << "\033[0m\n";
+    cout <<endl << endl<< "\033[1;36m************************ Updated New Tag Numbering **********************" << "\033[0m\n";
     for(map<string,int>::iterator it = EssiTagIterBegin ; it!= EssiTagIterEnd ; ++it){
 
         cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
