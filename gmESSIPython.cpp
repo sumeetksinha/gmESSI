@@ -310,9 +310,9 @@ void gmESSIPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vecto
 	for(int i=0 ; i<ElementListSize ;i++){
 		ElementList.at(i).setPhysicalTag(newPhysicalGroupTag);
 		ElementList.at(i).setEntityTag(EntityNo);
-		string str = "element";
-		ElementList.at(i).setId(stoi(this->Translator.getVariable(str)));
+		ElementList.at(i).setId(this->Translator.GmshParse.getElementList().size());
 		this->Translator.GmshParse.addElement(ElementList.at(i));
+		this->Translator.ElementNoMap.insert(pair<int,int>(ElementList.at(i).getId(),0));
 	}
 
 	for(int i=0 ; i<NodelistSize ;i++)

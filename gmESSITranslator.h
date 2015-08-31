@@ -57,6 +57,7 @@ class gmESSITranslator{
         map<int,NodeElement> EntityMap;
         map<string,int> PhysicalStringNameToIdMap;
         map<int,Node> NodeMap;
+        map<int,int> ElementNoMap;
         GmshParser GmshParse = GmshParser ();
         vector<PhysicalGroup> PhysicalGroupList;
         OctParser Evaluate = OctParser();

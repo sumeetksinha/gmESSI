@@ -108,7 +108,7 @@ void gmESSITranslator::GmshToEssi(){
     this->NodeMap = this->GmshParse.getNodeMap();
     this->NewEntity = this->GmshParse.getNewEntity()+1;
 
-    this->EssiTagVariableMap.insert(pair<string,int>("element",this->GmshParse.getNewElement()));
+    this->EssiTagVariableMap.insert(pair<string,int>("element",1));
     this->EssiTagVariableMap.insert(pair<string,int>("node",this->GmshParse.getNewNode()));
     this->EssiTagVariableMap.insert(pair<string,int>("nodes",this->GmshParse.getNewNode()));
     this->EssiTagVariableMap.insert(pair<string,int>("damping",1));
@@ -118,6 +118,13 @@ void gmESSITranslator::GmshToEssi(){
     this->EssiTagVariableMap.insert(pair<string,int>("material",1));
     this->EssiTagVariableMap.insert(pair<string,int>("motion",1));
 
+    /***************ElementNodemap assigning to 0***********************/
+    vector<Element> ElementList= this->GmshParse.getElementList();
+    int ElementListSize = ElementList.size();
+    for (int i =0 ; i< ElementListSize ; i++){
+    	this->ElementNoMap.insert(pair<int,int>(ElementList.at(i).getId(),0));
+    }
+	/*******************************************************************/
     int PhysicalGroupListSize = this->PhysicalGroupList.size();
 
     for (int i=0; i<PhysicalGroupListSize; i++){
@@ -290,7 +297,13 @@ void gmESSITranslator::ElementalCommand(const int& i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
-                    this->TempVariable.push(to_string(ElementList.at(k).getId()));
+                    if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                    	string NewElementNo = this->getVariable(var);
+                    	this->TempVariable.push(NewElementNo);
+                    	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                    }
+                    else
+                    	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
                     this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));                   
@@ -370,7 +383,13 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
-                    this->TempVariable.push(to_string(ElementList.at(k).getId()));
+                    if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                    	string NewElementNo = this->getVariable(var);
+                    	this->TempVariable.push(NewElementNo);
+                    	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                    }
+                    else
+                    	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
 
@@ -528,7 +547,13 @@ void gmESSITranslator::GeneralElementalCommand(const int& i, const int& j){
             string var = tknzr.nextToken();
            
             if(!var.compare("element")){
-                this->TempVariable.push(to_string(ElementList.at(k).getId()));
+                if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                	string NewElementNo = this->getVariable(var);
+                	this->TempVariable.push(NewElementNo);
+                	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                }
+                else
+                	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
             }
             else if(!var.compare("node") || !var.compare("nodes")){
                 this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
@@ -665,10 +690,11 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 // cout << endl << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z;
                 // cout << " New Nodes and Elements Created" << endl;
                 NofElementsCreated+=1; 
-                string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = to_string(this->GmshParse.getElementList().size()) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
+                this->ElementNoMap.insert(pair<int,int>(newElement.getId(),0));
                 newNodeElement.ElementList.push_back(newElement);
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
@@ -693,10 +719,11 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                         NofNodesCreated++;
                         NofElementsCreated+=1;
                         // cout << "New Elements Created from finding nodes" << endl; 
-                        string ElementDesc = this->getVariable(str)+ " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
+                        string ElementDesc = to_string(this->GmshParse.getElementList().size()) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                         // cout << endl << ElementDesc;
                         Element newElement = Element(ElementDesc);
                         this->GmshParse.addElement(newElement);
+                        this->ElementNoMap.insert(pair<int,int>(newElement.getId(),0));
                         newNodeElement.ElementList.push_back(newElement);
                         newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                         newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
@@ -733,10 +760,11 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 Node1=NodeMap1->first; NofElementsCreated+=1;NofNodesCreated++;                   
                 Node2=It2->second; string str = "element";
                 // cout << "New Elements Created" << endl; 
-                string ElementDesc = this->getVariable(str) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo)  + " " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = to_string(this->GmshParse.getElementList().size()) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo)  + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc ;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
+                this->ElementNoMap.insert(pair<int,int>(newElement.getId(),0));
                 newNodeElement.ElementList.push_back(newElement);
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                 newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
@@ -901,7 +929,13 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
-                    this->TempVariable.push(to_string(ElementList.at(k).getId()));
+                    if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                    	string NewElementNo = this->getVariable(var);
+                    	this->TempVariable.push(NewElementNo);
+                    	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                    }
+                    else
+                    	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
                     this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
