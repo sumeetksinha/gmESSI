@@ -121,9 +121,8 @@ void gmESSITranslator::GmshToEssi(){
     /***************ElementNodemap assigning to 0***********************/
     vector<Element> ElementList= this->GmshParse.getElementList();
     int ElementListSize = ElementList.size();
-    for (int i =0 ; i< ElementListSize ; i++){
+    for (int i =0 ; i< ElementListSize ; i++)
     	this->ElementNoMap.insert(pair<int,int>(ElementList.at(i).getId(),0));
-    }
 	/*******************************************************************/
     int PhysicalGroupListSize = this->PhysicalGroupList.size();
 
@@ -447,7 +446,7 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                     Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
                     string var = tknzr.nextToken();
                     map<string,int>:: iterator itr = this->EssiTagVariableMap.find(var);
-                    if(!var.compare("node") || !var.compare("nodes")) continue;
+                    if(!var.compare("node") || !var.compare("nodes") || !var.compare("element")) continue;
                     else if (itr != this->EssiTagVariableMap.end()) itr->second = itr->second -1; 
                 }
 
@@ -690,7 +689,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 // cout << endl << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z;
                 // cout << " New Nodes and Elements Created" << endl;
                 NofElementsCreated+=1; 
-                string ElementDesc = to_string(this->GmshParse.getElementList().size()) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = to_string(this->GmshParse.getElementList().size()+1) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
@@ -719,7 +718,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                         NofNodesCreated++;
                         NofElementsCreated+=1;
                         // cout << "New Elements Created from finding nodes" << endl; 
-                        string ElementDesc = to_string(this->GmshParse.getElementList().size()) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
+                        string ElementDesc = to_string(this->GmshParse.getElementList().size()+1) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                         // cout << endl << ElementDesc;
                         Element newElement = Element(ElementDesc);
                         this->GmshParse.addElement(newElement);
@@ -760,7 +759,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 Node1=NodeMap1->first; NofElementsCreated+=1;NofNodesCreated++;                   
                 Node2=It2->second; string str = "element";
                 // cout << "New Elements Created" << endl; 
-                string ElementDesc = to_string(this->GmshParse.getElementList().size()) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo)  + " " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = to_string(this->GmshParse.getElementList().size()+1) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo)  + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc ;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
