@@ -72,6 +72,10 @@ class gmESSITranslator{
         void SingularCommand(const int& i, const int& j);
         void ConnectCommand(const int&i, const int& j);
         void MaterialVariationalCommand(const int&i, const int& j);
+        void NodalVariationalCommand(const int&i, const int& j);
+        void GeneralElementalVariationalCommand(const int&i, const int& j);
+        void ElementalVariationalCommand(const int&i, const int& j);
+        void ElementalCompoundVariationalCommand(const int&i, const int& j);
         void WriteCommand(const int&i, const int& j);
 
         void clear( queue<string> &q );

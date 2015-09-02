@@ -145,6 +145,10 @@ void gmESSITranslator::GmshToEssi(){
 
                 if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("c")))
                     this->ElementalCompoundCommand(i,j);
+                else if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("vc")))
+                    this->ElementalCompoundVariationalCommand(i,j);
+                else if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("v")))
+                    this->ElementalVariationalCommand(i,j);
                 else if(this->FunctionIter->second.getMatchMode())
                     this->ElementalCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("nc"))
@@ -159,6 +163,10 @@ void gmESSITranslator::GmshToEssi(){
                     this->ConnectCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("mv"))
                     this->MaterialVariationalCommand(i,j);
+                else if (!this->FunctionIter->second.getElementId().compare("nv"))
+                    this->NodalVariationalCommand(i,j);
+                else if (!this->FunctionIter->second.getElementId().compare("ev"))
+                    this->GeneralElementalVariationalCommand(i,j);
                 else if (!this->FunctionIter->second.getElementId().compare("wr"))
                     this->WriteCommand(i,j);
             }
@@ -169,12 +177,6 @@ void gmESSITranslator::GmshToEssi(){
             }
         }
     } 
-
-    // ofstream AgainMainFile(mainFile,ios::app);  
-    // AgainMainFile << "\n" <<"include \"" << this->geometryFile << "\";\n";
-    // AgainMainFile << "\n" <<"new loading stage \"" << "Stage_1 Loading" <<"\";\n";
-    // AgainMainFile << "\n" <<"include \"" << this->loadFile << "\";\n";
-    // AgainMainFile.close();
 
     int newPhysicalGroupTag =-1;NodeElement newNodeElement;
     string PhysicDes = "-1 "+ to_string(newPhysicalGroupTag)+  " \"$PythonScript$\"";
@@ -349,7 +351,6 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
             VariablesToFind++;
     }
 
-    // cout << NofEssiVariables << "  " << VariablesToFind << "  " << VariablesByUser << endl;
     map<int,NodeElement>::iterator TypeIter;
     map<int,NodeElement>::iterator SurfaceIter;
 
@@ -822,11 +823,11 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
         if(tknzr.countTokens()!=2) throw exception();
         gmssiCommandtag =tknzr.nextToken()+"{";
         gmssiArguments = tknzr.nextToken()+"}";
-    } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error in " +  Variables.at(init-1) + " \033[0m\n" ; throw str.c_str(); return;}
+    } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error in " +  Variables.at(init-1) + " \033[0m\n" ; throw str.c_str();}
 
     replace( gmssiArguments.begin(), gmssiArguments.end(), ';', ',' );
     tknzr.set(gmssiArguments,",");
-    if(tknzr.countTokens()>1) gmssiArguments=","+gmssiArguments;
+    if(tknzr.countTokens()>=1) gmssiArguments=","+gmssiArguments;
 
     string ElementalCommand =  gmssiCommandtag +"1"+ gmssiArguments;
     PhysicalGroup TempPhyGroup = PhysicalGroup(); TempPhyGroup.Process(ElementalCommand);
@@ -843,7 +844,7 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
 
         int m =0, n=init, MatTag=0;
 
-        if( !(TempFunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+        if( !(TempFunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType())))){
 
             nofRun++;
 
@@ -890,7 +891,7 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                     }
                 }
 
-            } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str(); exit(EXIT_FAILURE);}
+            } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str(); }
 
             if(n<Variables.size()){
             
@@ -942,16 +943,31 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                     this->TempVariable.push(this->getVariable(var)); 
                 }
-                else{string newVar = NewVariables.at(n++);
-                    this->TempVariable.push(newVar);
+                else{string UserVariable = NewVariables.at(n++);
+	                try{
 
-                    /****************************************************** Updating Essi Tag *********************************************************/
-                    Tokenizer temptknzr = Tokenizer(TempFunctionIter->second.getEssiVarList().at(l),"#");
-                    string tempvar = temptknzr.nextToken(); 
-                    map<string,int>::iterator EssiTagVariableMapIter = this->EssiTagVariableMap.find(tempvar);
-                    if (EssiTagVariableMapIter!= this->EssiTagVariableMap.end()){ EssiTagVariableMapIter->second = stoi(newVar)+1;}
-                   /****************************************************** Updating Essi Tag *********************************************************/
-                }
+	                    string unit="", prec="0", value, function;
+	                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
+	                    string ScriptFunction = tknzr.nextToken();
+	                    function = ScriptVariables + ScriptFunction + ";";
+	                    value = this->Evaluate.eval(function);
+	                    if(tknzr.hasMoreTokens()){
+	                        string temp = delSpaces(tknzr.nextToken()); 
+	                        if (temp.compare("")) prec = temp ;
+	                        value = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)),stoi(prec)));
+	                    }
+	                    if(tknzr.hasMoreTokens()){ unit = unit + "*" + delSpaces(tknzr.nextToken()); }
+
+	                    value = value + unit;          
+	                    this->TempVariable.push(value);  
+	                     /****************************************************** Updating Essi Tag *********************************************************/
+	                   	 Tokenizer temptknzr = Tokenizer(TempFunctionIter->second.getEssiVarList().at(l),"#");
+	                   	 string tempvar = temptknzr.nextToken(); 
+	                   	 map<string,int>::iterator EssiTagVariableMapIter = this->EssiTagVariableMap.find(tempvar);
+	                   	 if (EssiTagVariableMapIter!= this->EssiTagVariableMap.end()){ EssiTagVariableMapIter->second = stoi(UserVariable)+1;}
+	                   	/****************************************************** Updating Essi Tag *********************************************************/
+	                } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str(); }
+              	}
             }
 
             GeometryFile << this->PrintEssiCommand(TempFunctionIter->second.getEssiCommand(),TempFunctionIter->second.getNofEssiVariables(),j);
@@ -964,6 +980,432 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
     MainFile.close();
     return;
 }
+
+void gmESSITranslator::NodalVariationalCommand(const int&i, const int& j){
+
+    ofstream LoadFile(loadFile,ios::app); int init =0;
+    LoadFile<< PrintStartConversion(j);
+
+    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    map<int,NodeElement>::iterator TypeIter;
+    setTypeIter(TypeIter,this->VariableList.at(j),i,j,init);
+    /// Ends Initialization here
+
+    map<int,int> NodeList =TypeIter->second.NodeList;
+    vector<string> Variables = this->VariableList.at(j);
+    vector<string> EssiVariables= this->FunctionIter->second.getVarList();
+    map<int,int> ::iterator NodeListBegin = NodeList.begin();
+    map<int,int> ::iterator NodeListEnd = NodeList.end();
+    int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+
+    int nofRun=0;double x_cord=0, y_cord=0, z_cord=0;
+
+    for(map<int,int>::iterator it=NodeListBegin; it!=NodeListEnd; ++it){
+
+        int n=init;
+        x_cord = NodeMap.find(it->second)->second.getXcord();
+        y_cord = NodeMap.find(it->second)->second.getYcord();
+        z_cord = NodeMap.find(it->second)->second.getZcord();
+        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+
+        for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+            nofRun++;
+
+            Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+            string var = tknzr.nextToken();
+             
+            if(!var.compare("node") || !var.compare("nodes")){
+                this->TempVariable.push(to_string(it->second));  
+            }
+            else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
+                this->TempVariable.push(this->getVariable(var)); 
+            }
+            else {string UserVariable = Variables.at(n++);
+
+                try{
+
+                    string unit="", prec="0", value, function;
+                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
+                    string ScriptFunction = tknzr.nextToken();
+                    function = ScriptVariables + ScriptFunction + ";";
+                    value = this->Evaluate.eval(function);
+                    if(tknzr.hasMoreTokens()){
+                        string temp = delSpaces(tknzr.nextToken()); 
+                        if (temp.compare("")) prec = temp ;
+                        value = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)),stoi(prec)));
+                    }
+                    if(tknzr.hasMoreTokens()){ unit = unit + "*" + delSpaces(tknzr.nextToken()); }
+
+                    value = value + unit;          
+                    this->TempVariable.push(value);  
+                    UpdateEssiTags(value,l);
+                } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str(); }
+            }
+        }
+
+        if(n<Variables.size()){
+
+            string msg = "\033[1;31mERROR:: The command1 \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ; 
+            this->clear(this->TempVariable);
+            throw msg.c_str();
+        }
+
+        LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+    }
+
+    LoadFile << PrintEndConversion(nofRun,j);
+    LoadFile.close();
+    remove( "script" );
+    return;
+
+}
+
+void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int& j){
+
+    ofstream LoadFile(loadFile,ios::app); int init=0;
+    LoadFile<< PrintStartConversion(j);
+
+    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    map<int,NodeElement>::iterator TypeIter;
+    setTypeIter(TypeIter,this->VariableList.at(j),i,j,init);
+    /// Ends Initialization here
+
+    vector<Element> ElementList =TypeIter->second.ElementList;
+    vector<string> Variables = VariableList.at(j);
+    vector<string> EssiVariables= this->FunctionIter->second.getVarList();
+    int ElementListSize = ElementList.size();
+    int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+
+    int nofRun=0;
+
+    for(int k =0;k<ElementListSize ; k++){
+
+        int m =0, n=init, ElemNodeSize = ElementList.at(k).getNodeList().size();
+        double x_cord=0, y_cord=0, z_cord=0;
+
+        for(int z=0 ; z<ElemNodeSize ;z++ ){
+
+            map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
+            x_cord = x_cord + NodeInfo->second.getXcord();
+            y_cord = y_cord + NodeInfo->second.getYcord();
+            z_cord = z_cord + NodeInfo->second.getZcord();
+        }
+
+        x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+
+        for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+            nofRun++;
+
+            Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+            string var = tknzr.nextToken();
+           
+            if(!var.compare("element")){
+                if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                	string NewElementNo = this->getVariable(var);
+                	this->TempVariable.push(NewElementNo);
+                	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                }
+                else
+                	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+            }
+            else if(!var.compare("node") || !var.compare("nodes")){
+                this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+            }
+            else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
+                this->TempVariable.push(this->getVariable(var)); 
+            }
+            else {string UserVariable = Variables.at(n++);
+                try{
+
+                    string unit="", prec="0", value, function;
+                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
+                    string ScriptFunction = tknzr.nextToken();
+                    function = ScriptVariables + ScriptFunction + ";";
+                    value = this->Evaluate.eval(function);
+                    if(tknzr.hasMoreTokens()){
+                        string temp = delSpaces(tknzr.nextToken()); 
+                        if (temp.compare("")) prec = temp ;
+                        value = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)),stoi(prec)));
+                    }
+                    if(tknzr.hasMoreTokens()){ unit = unit + "*" + delSpaces(tknzr.nextToken()); }
+
+                    value = value + unit;          
+                    this->TempVariable.push(value);  
+                    UpdateEssiTags(value,l);
+                } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str(); }
+            }
+        }
+
+        if(n<Variables.size()){
+            
+            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ;
+            this->clear(this->TempVariable);
+            throw msg.c_str();
+        }
+
+        LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+    }
+
+    LoadFile << PrintEndConversion(nofRun,j);
+    LoadFile.close();
+    return;
+}
+
+void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
+
+    ofstream GeometryFile(geometryFile, ios::app); int init=0;
+    GeometryFile << PrintStartConversion(j);
+
+    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    map<int,NodeElement>::iterator TypeIter;
+    setTypeIter(TypeIter,this->VariableList.at(j),i,j,init);
+    /// Ends Initialization here
+
+    vector<Element> ElementList =TypeIter->second.ElementList;
+    map<int,int>  NodeList =TypeIter->second.NodeList;
+    vector<string> Variables = this->VariableList.at(j);
+    vector<string> EssiVariables= this->FunctionIter->second.getVarList();
+    int ElementListSize = ElementList.size();
+    int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+
+    int nofRun=0; 
+
+    for(int k =0;k<ElementListSize ; k++){
+
+        int m =0,n=init , ElemNodeSize = ElementList.at(k).getNodeList().size();
+        double x_cord=0, y_cord=0, z_cord=0;
+
+        for(int z=0 ; z<ElemNodeSize ;z++ ){
+
+            map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
+            x_cord = x_cord + NodeInfo->second.getXcord();
+            y_cord = y_cord + NodeInfo->second.getYcord();
+            z_cord = z_cord + NodeInfo->second.getZcord();
+        }
+
+        x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+
+        if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+
+            nofRun++;
+
+            for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+                Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+                string var = tknzr.nextToken();
+             
+                if(!var.compare("element")){
+                    if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                    	string NewElementNo = this->getVariable(var);
+                    	this->TempVariable.push(NewElementNo);
+                    	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                    }
+                    else
+                    	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                }
+                else if(!var.compare("node") || !var.compare("nodes")){
+                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));                   
+                }
+                else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
+                    this->TempVariable.push(this->getVariable(var)); 
+                }
+                else {string UserVariable = Variables.at(n++);
+	                try{
+
+	                    string unit="", prec="0", value, function;
+	                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
+	                    string ScriptFunction = tknzr.nextToken();
+	                    function = ScriptVariables + ScriptFunction + ";";
+	                    value = this->Evaluate.eval(function);
+	                    if(tknzr.hasMoreTokens()){
+	                        string temp = delSpaces(tknzr.nextToken()); 
+	                        if (temp.compare("")) prec = temp ;
+	                        value = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)),stoi(prec)));
+	                    }
+	                    if(tknzr.hasMoreTokens()){ unit = unit + "*" + delSpaces(tknzr.nextToken()); }
+
+	                    value = value + unit;          
+	                    this->TempVariable.push(value);  
+	                    UpdateEssiTags(value,l);
+	                } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  Variables.at(n-1) + " \033[0m\n" ; throw str.c_str(); }
+                }
+            }
+
+            if(n<Variables.size()){
+            
+                string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ;
+                this->clear(this->TempVariable); 
+                throw msg.c_str();
+            }
+
+            GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+        }
+    }
+
+    GeometryFile << PrintEndConversion(nofRun,j);
+    GeometryFile.close();
+    return;
+}
+
+void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const int& j){
+
+	cout << "Elemental variation Command" << endl;
+
+    ofstream LoadFile(loadFile,ios::app); int init=0;
+    LoadFile<< PrintStartConversion(j);
+
+    vector<string> Variables = this->VariableList.at(j);
+    vector<string> EssiVariables= this->FunctionIter->second.getVarList();
+    int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
+    int VariablesByUser=Variables.size(), VariablesToFind=0;
+
+    for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+        Tokenizer temptknzr = Tokenizer(this->FunctionIter->second.getVarList().at(l),"#");
+        if(temptknzr.countTokens()==2)
+            VariablesToFind++;
+    }
+
+    map<int,NodeElement>::iterator TypeIter;
+    map<int,NodeElement>::iterator SurfaceIter;
+
+    if(VariablesToFind+VariablesByUser > NofEssiVariables+1){
+        setTypeIter(TypeIter,this->VariableList.at(j),i,j,init); 
+        setTypeIter(SurfaceIter,this->VariableList.at(j).at(1));
+    }
+    else{
+        TypeIter = this->PhysicalGroupMap.find(this->PhysicalGroupList.at(i).getId());
+        setTypeIter(SurfaceIter,this->VariableList.at(j).at(0));
+    }
+
+    vector<Element> ElementList =TypeIter->second.ElementList;
+    map<int,int>  NodeList =TypeIter->second.NodeList;
+    int ElementListSize = ElementList.size();
+
+    int nofRun=0;
+
+    for(int k =0;k<ElementListSize ; k++){
+
+        int m =0, n=init+1 , ElemNodeSize = ElementList.at(k).getNodeList().size();
+        double x_cord=0, y_cord=0, z_cord=0;
+
+        for(int z=0 ; z<ElemNodeSize ;z++ ){
+
+            map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
+            x_cord = x_cord + NodeInfo->second.getXcord();
+            y_cord = y_cord + NodeInfo->second.getYcord();
+            z_cord = z_cord + NodeInfo->second.getZcord();
+        }
+
+        x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+
+        if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+
+            nofRun++;
+
+            for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+                Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+                string var = tknzr.nextToken();
+             
+                if(!var.compare("element")){
+                    if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                    	string NewElementNo = this->getVariable(var);
+                    	this->TempVariable.push(NewElementNo);
+                    	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                    }
+                    else
+                    	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                }
+                else if(!var.compare("node") || !var.compare("nodes")){
+
+                    bool loop=true; int loopMax =  ElementList.at(k).getNodeList().size();
+
+                    while(loop && m<loopMax){
+                         
+                        if(SurfaceIter==this->PhysicalGroupMap.end()||SurfaceIter==this->EntityMap.end()){
+
+                            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " failed to convert as there is no such Physical/Entity Group" + " \033[0m\n";
+                            throw msg.c_str(); 
+                        }
+
+                        map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+                        map<int,int>::iterator NodeIterEnd = SurfaceIter->second.NodeList.end();
+
+                        // if(NodeIter==SurfaceIter->second.NodeList.end()){
+
+                        //     string msg = "\033[1;33mWARNING:: The command \'" + this->UserCommandList.at(j) + "\'" + " could not find any nodes/elements on which it operates" + " \033[0m\n" ; 
+                        //     cout <<  msg;   
+                        // }
+
+                        if(NodeIter!= NodeIterEnd){
+                            this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
+                            loop = false;
+                        }
+
+                        m++;
+                    
+                    }
+                }
+                else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){ 
+                    this->TempVariable.push(this->getVariable(var)); 
+                }
+                else {
+                    string UserVariable = Variables.at(n++);
+	                try{
+
+	                    string unit="", prec="0", value, function;
+	                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
+	                    string ScriptFunction = tknzr.nextToken();
+	                    function = ScriptVariables + ScriptFunction + ";";
+	                    value = this->Evaluate.eval(function);
+	                    if(tknzr.hasMoreTokens()){
+	                        string temp = delSpaces(tknzr.nextToken()); 
+	                        if (temp.compare("")) prec = temp ;
+	                        	value = to_string(roundToSignificantFigures(stof(this->Evaluate.eval(function)),stoi(prec)));
+	                    }
+	                    if(tknzr.hasMoreTokens()){ unit = unit + "*" + delSpaces(tknzr.nextToken()); }
+
+	                    value = value + unit;          
+	                    this->TempVariable.push(value);  
+	                    UpdateEssiTags(value,l);
+	                } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error " +  UserVariable + " \033[0m\n" ; throw str.c_str();}
+                }
+            }
+
+            if(n<Variables.size()){
+                string msg = "\033[1;31mERROR:: The command1 \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ; 
+                this->clear(this->TempVariable);
+                throw msg.c_str();
+            }
+
+            if (this->TempVariable.size() == this->FunctionIter->second.getNofEssiVariables())  
+                LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+            else{
+                this->clear(this->TempVariable);
+                for(int l=0 ; l<NofEssiVariables ;l++ ){
+
+                    Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
+                    string var = tknzr.nextToken();
+                    map<string,int>:: iterator itr = this->EssiTagVariableMap.find(var);
+                    if(!var.compare("node") || !var.compare("nodes") || !var.compare("element")) continue;
+                    else if (itr != this->EssiTagVariableMap.end()) itr->second = itr->second -1; 
+                }
+
+            }
+        }
+    }
+
+    LoadFile << PrintEndConversion(nofRun,j);
+    LoadFile.close();
+    return;
+}
+
 
 void gmESSITranslator::WriteCommand(const int&i, const int& j){
 
@@ -1296,6 +1738,10 @@ void gmESSITranslator::Convert(const string& GmssiCommand){
 
         if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("c")))
             this->ElementalCompoundCommand(i,j);
+        else if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("vc")))
+            this->ElementalCompoundVariationalCommand(i,j);
+        else if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("v")))
+            this->ElementalVariationalCommand(i,j);
         else if(this->FunctionIter->second.getMatchMode())
             this->ElementalCommand(i,j);
         else if (!this->FunctionIter->second.getElementId().compare("nc"))
@@ -1310,6 +1756,10 @@ void gmESSITranslator::Convert(const string& GmssiCommand){
             this->ConnectCommand(i,j);
         else if (!this->FunctionIter->second.getElementId().compare("mv"))
             this->MaterialVariationalCommand(i,j);
+        else if (!this->FunctionIter->second.getElementId().compare("nv"))
+            this->NodalVariationalCommand(i,j);
+        else if (!this->FunctionIter->second.getElementId().compare("ev"))
+            this->GeneralElementalVariationalCommand(i,j);
         else if (!this->FunctionIter->second.getElementId().compare("wr"))
             this->WriteCommand(i,j);
     }
