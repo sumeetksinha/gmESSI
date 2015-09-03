@@ -178,6 +178,6 @@ void PhysicalGroup::Process(const string& Command ){
 }
 
 string PhysicalGroup::delSpaces(string str){
-   // str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+   str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
    return str;
 }
