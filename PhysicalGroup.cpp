@@ -16,6 +16,8 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <boost/regex.hpp>
+
 using namespace::std;
 
 string trim(const string& str, const string& delimiters = " \f\n\r\t\v" ){
@@ -141,49 +143,33 @@ void PhysicalGroup::setContents(const string& PhysicDesc){
 
 void PhysicalGroup::Process(const string& Command ){
 
-	// cout << "Command String :: " << Command << endl;
-
-	int nofTokens = 0, nofVariables=0; 
+	string gmESSI_Command = Command, essiTag =""; int nofVariables = 0;
 	vector<string> varList;
-	string essiTag="";
-	// Tokenizer inpString = Tokenizer(Command,"  \t\v\n\r\f{,}()");
-	Tokenizer inpString = Tokenizer(trim(Command),"{,}");
-	nofTokens = inpString.countTokens()-1;
-	nofVariables = nofTokens-2;
-	essiTag = essiTag + trim(inpString.nextToken()) + "{";
 
-	for( int i=0 ;i<nofTokens-2; i++){
-		string variable= trim(inpString.nextToken());
-		if(!variable.compare("")){
-			nofVariables = nofVariables -1;
-			continue;
+	boost::regex FunRegex("(\\d|\\w)*\\{");
+	boost::sregex_iterator it(gmESSI_Command.begin(), gmESSI_Command.end(), FunRegex);
+	essiTag = trim(it->str());
+
+	gmESSI_Command = gmESSI_Command.substr(it->str().length()-1,gmESSI_Command.length());
+	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '}'), gmESSI_Command.end());
+	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '{'), gmESSI_Command.end());
+
+	boost::sregex_iterator end;
+	boost::regex  ArgRegex("[^,]*\\(([^()]|(?R))*\\)[^,]*|[^,]*");
+	boost::sregex_iterator its(gmESSI_Command.begin(), gmESSI_Command.end(), ArgRegex);
+
+	for (; its != end; ++its) 
+		if(its->str().compare("")){
+    		varList.push_back(trim(its->str()));
+    		essiTag = essiTag + " ,";
+    		nofVariables++;
 		}
-		varList.push_back(variable);
-		essiTag = essiTag + " ,";
-	}
 
-	string variable= trim(inpString.nextToken());
-	varList.push_back(variable);
+	if(nofVariables==0)
+    	essiTag = essiTag+ " }"+to_string(nofVariables);
+    else 
+    	essiTag = essiTag.substr(0,essiTag.length()-1)+ "}"+to_string(nofVariables);
 
-	if(inpString.hasMoreTokens()){
-		
-		string nextvariable= trim(inpString.nextToken());
-
-		if(nextvariable.compare("")){
-			nofVariables++;
-			essiTag = essiTag + " ,";
-			varList.push_back(nextvariable);
-		}
-	}
-
-	if(variable.compare("")){
-		nofVariables++;
-	}
-
-	if(nofVariables == 0 )	nofVariables=1;
-	else if (nofVariables < 0 ){ nofVariables=0; vector<string> emptyvarList; varList = emptyvarList;}
-
-	essiTag = essiTag + " }"+to_string(nofVariables);
 	this->VariableList.push_back(varList);
 	this->CommandList.push_back(essiTag);
 	this->NofVariables.push_back(nofVariables);
