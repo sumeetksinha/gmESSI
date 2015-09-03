@@ -235,7 +235,6 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
 
     map<int,int> NodeList = TypeIter->second.NodeList;
     vector<string> Variables = this->VariableList.at(j);
-    // int NofVariables = NofVariablesList.at(j);
     map<int,int> ::iterator NodeListBegin = NodeList.begin();
     map<int,int> ::iterator NodeListEnd = NodeList.end();
 
@@ -250,12 +249,12 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
         this->TempVariable.push(to_string(NodeInfo->second.getZcord())+"*"+this->VariableList.at(j).at(n)); 
         this->TempVariable.push(Variables.at(n+1)); 
 
-        if(n<Variables.size()){
+        // if(n<Variables.size()){
             
-            string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ; 
-            this->clear(this->TempVariable);
-            throw msg.c_str();
-        }
+        //     string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ; 
+        //     this->clear(this->TempVariable);
+        //     throw msg.c_str();
+        // }
 
         GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
     }
