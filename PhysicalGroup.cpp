@@ -160,7 +160,12 @@ void PhysicalGroup::Process(const string& Command ){
 
 	for (; its != end; ++its) 
 		if(its->str().compare("")){
-    		varList.push_back(trim(its->str()));
+    		boost::regex  AssignRegex("[^(:=)]*:=\\s*");
+    		string variable = trim(its->str());
+			boost::sregex_iterator it(variable.begin(), variable.end(), AssignRegex);
+    		if(it!= end)
+    			 variable = variable.substr(it->str().length()-1,variable.length());
+    		varList.push_back(trim(variable));
     		essiTag = essiTag + " ,";
     		nofVariables++;
 		}
