@@ -826,9 +826,14 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
 
     replace( gmssiArguments.begin(), gmssiArguments.end(), ';', ',' );
     tknzr.set(gmssiArguments,",");
+
+    // cout << gmssiCommandtag << endl;
+    // cout << gmssiArguments << endl;
+
     if(tknzr.countTokens()>=1) gmssiArguments=","+gmssiArguments;
 
     string ElementalCommand =  gmssiCommandtag +"1"+ gmssiArguments;
+    // cout << ElementalCommand << endl;
     PhysicalGroup TempPhyGroup = PhysicalGroup(); TempPhyGroup.Process(ElementalCommand);
     TempFunctionIter = this->FunctionMap.find(TempPhyGroup.getCommandList().at(0));
 
