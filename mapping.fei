@@ -58,6 +58,9 @@
 	section
 #ENDESSI_TAGS
 
+	// find := \$\{([0-9#]*):([a-zA-Z0-9_#]*)\s*\}
+	// replace := $2:= ${$1:<> } 
+
 // Write Commands
 
 	!wr <Write_Data{filename}|Write_Data{phyEntyTag,filename}>		 																																							{} {};
@@ -185,7 +188,7 @@
 	//Elemental Commands  --- 16 8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
 	//Elemental Commands  --- 17 20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
 
-		!17-v <Vary_20NodeBrick_upU{material#1,porosity,alpha,rho_s,rho_f,k_x,k_y,k_z,K_s,K_f}|Vary_20NodeBrick_upU{PhyEntTag,material#1,porosity,alpha,rho_s,rho_f,k_x,k_y,k_z,K_s,K_f}>								add element #{} type 20NodeBrick_upU with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} and porosity = {} alpha = {} rho_s = {} rho_f = {} k_x = {} k_y = {} k_z = {} K_s = {}	K_f = {};
+		!17-v  <Vary_20NodeBrick_upU{material#1,porosity,alpha,rho_s,rho_f,k_x,k_y,k_z,K_s,K_f}|Vary_20NodeBrick_upU{PhyEntTag,material#1,porosity,alpha,rho_s,rho_f,k_x,k_y,k_z,K_s,K_f}>								add element #{} type 20NodeBrick_upU with nodes ({},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}) use material #{} and porosity = {} alpha = {} rho_s = {} rho_f = {} k_x = {} k_y = {} k_z = {} K_s = {}	K_f = {};
 		!17-vc <Vary_20NodeBrick_SurfaceLoad{PhyEntTag,magnitude}|Vary_20NodeBrick_SurfaceLoad{PhyEntTag,PhyEntTag,magnitude}>																							add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{}) with magnitude ({});
 		!17-vc <Vary_20NodeBrick_SurfaceLoad{PhyEntTag,m1,m2,m3,m4,m5,m6,m7,m8}|Vary_20NodeBrick_SurfaceLoad{PhyEntTag,PhyEntTag,m1,m2,m3,m4,m5,m6,m7,m8}>				 												add load #{} to element #{} type surface at nodes ({},{},{},{},{},{},{},{},{}) with magnitudes ({},{},{},{},{},{},{},{},{});
 		

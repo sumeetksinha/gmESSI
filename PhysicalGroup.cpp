@@ -144,7 +144,13 @@ void PhysicalGroup::setContents(const string& PhysicDesc){
 void PhysicalGroup::Process(const string& Command ){
 
 	string gmESSI_Command = Command, essiTag =""; int nofVariables = 0;
-	vector<string> varList;
+	vector<string> varList; boost::sregex_iterator end;
+
+	try{
+		boost::regex CheckRegex(".*\\{.*\\}");
+		boost::sregex_iterator it(Command.begin(), Command.end(), CheckRegex);
+		if(!(it!= end)) throw exception();
+    } catch (exception& e) { string msg = "\033[1;31mERROR:: The command \'" + Command + "\'" + " has a syntax error" + " \033[0m\n" ; throw msg.c_str();}
 
 	boost::regex FunRegex("(\\d|\\w)*\\{");
 	boost::sregex_iterator it(gmESSI_Command.begin(), gmESSI_Command.end(), FunRegex);
@@ -153,8 +159,7 @@ void PhysicalGroup::Process(const string& Command ){
 	gmESSI_Command = gmESSI_Command.substr(it->str().length()-1,gmESSI_Command.length());
 	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '}'), gmESSI_Command.end());
 	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '{'), gmESSI_Command.end());
-
-	boost::sregex_iterator end;
+	
 	boost::regex  ArgRegex("[^,]*\\(([^()]|(?R))*\\)[^,]*|[^,]*");
 	boost::sregex_iterator its(gmESSI_Command.begin(), gmESSI_Command.end(), ArgRegex);
 
@@ -164,7 +169,7 @@ void PhysicalGroup::Process(const string& Command ){
     		string variable = trim(its->str());
 			boost::sregex_iterator it(variable.begin(), variable.end(), AssignRegex);
     		if(it!= end)
-    			 variable = variable.substr(it->str().length()-1,variable.length());
+    			variable = variable.substr(it->str().length()-1,variable.length());
     		varList.push_back(trim(variable));
     		essiTag = essiTag + " ,";
     		nofVariables++;
