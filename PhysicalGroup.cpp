@@ -109,36 +109,24 @@ vector<int> PhysicalGroup::getNofVariables(){
 void PhysicalGroup::setContents(const string& PhysicDesc){
 
 	this->PhysicDes = PhysicDesc;
-	
-	Tokenizer str = Tokenizer(PhysicDesc,"  \t\v\n\r\f\"$");
-	this->Type = stoi(str.nextToken());
-	this->Id = stoi(str.nextToken());
-	this->PhysicTag = str.nextToken();
 
-	while(str.hasMoreTokens()){
+	Tokenizer tknzr = Tokenizer(PhysicDesc,"  \t\v\n\r\f\"$");
+	this->Type = stoi(tknzr.nextToken());
+	this->Id = stoi(tknzr.nextToken());
+	this->PhysicTag = tknzr.nextToken();
 
-		str.setDelimiter("[]");
-		if(! this->delSpaces(str.nextToken()).compare("\""))
-			break;
+	tknzr.setDelimiter("");
+	boost::sregex_iterator end;string gmESSI_Command = trim(tknzr.nextToken());
+	gmESSI_Command = gmESSI_Command.substr(0,gmESSI_Command.length()-2);
 
-		if(!str.hasMoreTokens())
-		break;
+	boost::regex CheckRegex("\\[([^(\\[\\])]|\\(*\\)*)*(\\[([^(\\[\\])]|\\(*\\)*)*\\])*([^(\\[\\])]|\\(*\\)*)*\\]");
+	boost::sregex_iterator its(gmESSI_Command.begin(), gmESSI_Command.end(), CheckRegex);
 
-		string comm = this->delSpaces(str.nextToken());
-		//cout << comm << endl;
-
-		if(!comm.substr(comm.length()-1,1).compare("\"")){
-
-			string msg = "\033[1;31mERROR:: The command \'" + PhysicDesc + "\'" + " has a syntax error" + " \033[0m\n" ;
-        	throw msg.c_str();
-		}
-
-		if(!str.hasMoreTokens())
-			break;
-
-		this->Process(this->delSpaces(trim(str.currToken())));
+	for (; its != end; ++its){
+		string SubgmESSI_Command = its->str();
+		if(SubgmESSI_Command.compare(""))
+    		this->Process(SubgmESSI_Command.substr(1,SubgmESSI_Command.length()-2));
 	}
-
 }
 
 void PhysicalGroup::Process(const string& Command ){
@@ -160,7 +148,7 @@ void PhysicalGroup::Process(const string& Command ){
 	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '}'), gmESSI_Command.end());
 	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '{'), gmESSI_Command.end());
 	
-	boost::regex  ArgRegex("[^,]*\\(([^()]|(?R))*\\)[^,]*|[^,]*");
+	boost::regex  ArgRegex("[^,]*(\\(|\\[)([^()]|(?R))*(\\)|\\])[^,]*|[^,]*");
 	boost::sregex_iterator its(gmESSI_Command.begin(), gmESSI_Command.end(), ArgRegex);
 
 	for (; its != end; ++its) 
