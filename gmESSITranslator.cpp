@@ -1032,6 +1032,7 @@ void gmESSITranslator::NodalVariationalCommand(const int&i, const int& j){
                     string unit="", prec="0", value, function;
                     Tokenizer tknzr = Tokenizer(UserVariable,"\\");
                     string ScriptFunction = tknzr.nextToken();
+                    // cout << UserVariable << " " <<  ScriptFunction << endl;;
                     function = ScriptVariables + ScriptFunction + ";";
                     value = this->Evaluate.eval(function);
                     if(tknzr.hasMoreTokens()){

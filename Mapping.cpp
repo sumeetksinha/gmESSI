@@ -13,10 +13,14 @@
 *********************************************************************************************************/
 
 #include "Mapping.h"
+#include "Embedded.h"
+#include <stdio.h>
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <sstream>
 
 /******************************************************************************
 ****************************** Constructor ************************************
@@ -64,7 +68,9 @@ map<string,Semantics> Mapping::getFunction(){
 
 void Mapping::mapFile(){
 
-	fstream mapFile(this->FileName, fstream::in);
+	Embedded EmbeddedFiles = Embedded();
+  	string filedata =string(EmbeddedFiles.ReadFile("mapping.fei"));
+  	stringstream mapFile(filedata);
 	string line;
 
 	while(getline(mapFile,line)){
@@ -143,8 +149,6 @@ void Mapping::mapFile(){
 
 		this->makeFunction(Id, GmshCommandList,EssiCommand);
 	}
-
-	mapFile.close();
 }
 
 void Mapping::makeFunction(string Id, string GmshCommandList, string EssiCommand){

@@ -22,6 +22,7 @@
 #include "Mapping.h"
 #include "GmshParser.h"
 #include "OctParser.h"
+#include "Embedded.h"
 #include <cstdlib>
 #include <iostream>
 #include <fstream>

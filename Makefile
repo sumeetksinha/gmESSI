@@ -4,9 +4,9 @@ CFLAGS = -c
 
 all: gmessi
 
-gmessi: Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o gmESSI.o
-		mkoctfile --link-stand-alone -I/usr/local/include/octave-3.8.0/octave  -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7  gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
-		mkoctfile -I/usr/local/include/octave-3.8.0/octave  -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7 Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi.so
+gmessi: mapping.fei EmbeddFile Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o gmESSI.o 
+		mkoctfile --link-stand-alone -I/usr/local/include/octave-3.8.0/octave  -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7  Embedded.o gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
+		mkoctfile -I/usr/local/include/octave-3.8.0/octave  -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7 Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi.so
 		mv gmessi.so.oct gmessi.so
 
 gmESSI.o: gmESSI.cpp
@@ -31,22 +31,25 @@ OctParser.o: OctParser.cpp
 		mkoctfile -I/usr/local/include/octave-3.8.0/octave -c OctParser.cpp
 gmESSIPython.o: gmESSIPython.cpp
 		$(CC)  -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_regex  -lboost_python -lboost_system $(CFLAGS) gmESSIPython.cpp
+Embedded.o: Embedded.cpp
+		$(CC)  -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I/usr/include/python2.7 -I/usr/local/boost_1_58_0 -I/usr/include/octave/ -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Embedded.cpp
+EmbeddFile: EmbeddFiles.cpp
+		$(CC) EmbeddFiles.cpp -o EmbeddFiles
+		./EmbeddFiles mapping.fei > Embedded.cpp
 clean:
 		-rm *.o *.so gmessi
 
 install:
-		if [ -d "/usr/local/gmESSI" ]; then	sudo rm -r /usr/local/gmESSI; fi
+		if [ -d "/usr/local/gmESSI" ]; then	rm -r /usr/local/gmESSI; fi
 		echo "creating directory in usr/local/gmESSI"
-		sudo mkdir /usr/local/gmESSI
-		sudo mkdir /usr/local/gmESSI/src
-		sudo mkdir /usr/local/gmESSI/bin
-		sudo mkdir /usr/local/gmESSI/lib
-		sudo cp *.cpp *.h mapping.fei Makefile /usr/local/gmESSI/src
-		sudo cp mapping.fei gmessi /usr/local/gmESSI/bin
-		sudo cp gmessi.so mapping.fei /usr/local/gmESSI/lib
-		if [ -d "/usr/lib/python2.7/gmessi.so" ]; then sudo rm  /usr/lib/python2.7/gmessi.so ; fi
-		if [ -d "/usr/lib/python2.7/mapping.fei" ]; then sudo rm  /usr/lib/python2.7/mapping.fei; fi
-		sudo cp gmessi.so mapping.fei /usr/lib/python2.7	
-		sudo ln -s -f /usr/local/gmESSI/bin/mapping.fei /usr/local/bin/mapping.fei
-		sudo ln -s -f /usr/local/gmESSI/bin/gmessi /usr/local/bin/gmessi
+		mkdir /usr/local/gmESSI
+		mkdir /usr/local/gmESSI/src
+		mkdir /usr/local/gmESSI/bin
+		mkdir /usr/local/gmESSI/lib
+		cp *.cpp *.h mapping.fei Makefile /usr/local/gmESSI/src
+		cp gmessi /usr/local/gmESSI/bin
+		cp gmessi.so /usr/local/gmESSI/lib
+		if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
+		cp gmessi.so /usr/lib/python2.7	
+		ln -s -f /usr/local/gmESSI/bin/gmessi /usr/local/bin/gmessi
 		
