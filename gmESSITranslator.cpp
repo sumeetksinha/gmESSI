@@ -1156,6 +1156,7 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
 
     LoadFile << PrintEndConversion(nofRun,j);
     LoadFile.close();
+    remove( "script" );
     return;
 }
 
@@ -1253,6 +1254,7 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
 
     GeometryFile << PrintEndConversion(nofRun,j);
     GeometryFile.close();
+    remove( "script" );
     return;
 }
 
@@ -1408,6 +1410,7 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
 
     LoadFile << PrintEndConversion(nofRun,j);
     LoadFile.close();
+    remove( "script" );
     return;
 }
 
