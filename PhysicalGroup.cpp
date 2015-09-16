@@ -117,7 +117,7 @@ void PhysicalGroup::setContents(const string& PhysicDesc){
 
 	tknzr.setDelimiter("");
 	boost::sregex_iterator end;string gmESSI_Command = trim(tknzr.nextToken());
-	gmESSI_Command = gmESSI_Command.substr(0,gmESSI_Command.length()-2);
+	gmESSI_Command = gmESSI_Command.substr(0,gmESSI_Command.length()-1);
 
 	boost::regex CheckRegex("\\[([^(\\[\\])]|\\(*\\)*)*(\\[([^(\\[\\])]|\\(*\\)*)*\\])*([^(\\[\\])]|\\(*\\)*)*\\]");
 	boost::sregex_iterator its(gmESSI_Command.begin(), gmESSI_Command.end(), CheckRegex);
