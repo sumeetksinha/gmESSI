@@ -501,12 +501,12 @@ void gmESSITranslator::NodalCommand(const int& i, const int& j){
             }
         }
 
-        // if(n<Variables.size()){
+        if(n<Variables.size()){
 
-        //     string msg = "\033[1;31mERROR:: The command1 \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ; 
-        //     this->clear(this->TempVariable);
-        //     throw msg.c_str();
-        // }
+            string msg = "\033[1;31mERROR:: The command1 \'" + this->UserCommandList.at(j) + "\'" + " has syntaxERROR in Phy/Enty# tag" + " \033[0m\n" ; 
+            this->clear(this->TempVariable);
+            throw msg.c_str();
+        }
 
         LoadFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
     }
