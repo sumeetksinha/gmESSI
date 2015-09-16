@@ -47,7 +47,7 @@ install:
 		mkdir /usr/local/gmESSI/bin
 		mkdir /usr/local/gmESSI/lib
 		cp *.cpp *.h mapping.fei Makefile /usr/local/gmESSI/src
-		cp gmessi /usr/local/gmESSI/bin
+		cp gmessi EmbeddFiles /usr/local/gmESSI/bin
 		cp gmessi.so /usr/local/gmESSI/lib
 		if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
 		cp gmessi.so /usr/lib/python2.7	
