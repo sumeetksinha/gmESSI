@@ -3,8 +3,8 @@ $MeshFormat
 $EndMeshFormat
 $PhysicalNames
 3
-2 1 "$Surface1$ "
-2 2 "$Surface2$[Connect{Physical_Group#1,Physical_Group#2,Physical_Group#3,0\0\1,1,1,find,0.005,My_New_Physical_Group}]"
+2 1 "$Surface1$ [New_Line{}]   [Fix{ dofs:= ux}] [Connect{Physical_Group#1,Physical_Group#2,Physical_Group#3,0\0\1,1,1,find,0.005,My_New_Physical_Group}]     "
+2 2 "$Surface2$ "
 3 3 "$Volume$"
 $EndPhysicalNames
 $Nodes

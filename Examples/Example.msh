@@ -3,9 +3,9 @@ $MeshFormat
 $EndMeshFormat
 $PhysicalNames
 3
-1 1 "$ApplyFixities$ [Add_All_Node{m,3}] [Fix{uy}] [Fix{ux}]" 
-1 2 "$ApplyLoad$ [Add_Node_Load_Linear{Fx,1*N}]"
-2 3 "$DeclareShells$ [Add_4NodeShell_ANDES{1,1*cm}]""
+1 1 "$ApplyFixities$ [Add_All_Node{m,3}] [Fix{ux uy}] " 
+1 2 "$ApplyLoad$ [Add_Node_Load_Linear{Fx,1*N}] "
+2 3 "$DeclareShells$ [Add_4NodeShell_ANDES{1,1*cm}]"
 $EndPhysicalNames 
 $Nodes
 121

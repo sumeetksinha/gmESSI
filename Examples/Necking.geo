@@ -8,13 +8,13 @@ Transfinite Surface{5};
 Recombine Surface{5};
 Extrude{0,0,0.25}{Surface{5};Layers{5};Recombine;}
 
-Physical Surface("$-XFace$ <Fix{ux}> <AddAllNode{m,3}>")={26};
-Physical Surface("$+XFace$ <Fix{uz}> <MasterSlave{2,ux}>")={18};
+Physical Surface("$-XFace$ <Fix{ux}> <Add_All_Node{m,3}>")={26};
+Physical Surface("$+XFace$ <Fix{uz}> <Add_Master_Slave{2,ux}>")={18};
 Physical Surface("$-YFace$ <Fix{uz}>")={14};
 Physical Surface("$+YFace$")={22};
 Physical Surface("$-ZFace$ <Fix{uy}>")={5};
 Physical Surface("$+ZFace$")={27};
-Physical Volume("$soil1$ <8NodeBrick{1}>" )={1}; 
+Physical Volume("$soil1$ <Add_8NodeBrick{1}>" )={1}; 
 
 View "comments" {
   // Add a text string in window coordinates, 10 pixels from the left

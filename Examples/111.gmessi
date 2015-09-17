@@ -14,4 +14,4 @@ FreeNode{1,ux}
 Include{"111_geometry.fei"}
 Include{"111_load.fei"}
 Simulate_Steps_Using_Static_Algorithm{2}
-[Add_Node_Load_Linear{ direction:= Fx, magnitude:= 10*kN}]
+[Add_Node_Load_Linear{ Physical_Group#1, direction:= Fx, magnitude:= 10*kN}]

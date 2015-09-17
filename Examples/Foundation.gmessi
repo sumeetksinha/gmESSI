@@ -29,24 +29,24 @@ Add_All_Node{m,3}
 [Add_Node{ Physical_Group#1, unit:= m, nof_dofs:= 5}]
 
 //Neg Y Contact
-[Connect{Physical_Group#1,Physical_Group#6,Physical_Group#6,{0\ -1\ 0},0,1,search,0.9,NegY_ContactGroup}]   
-[Add_Contact{Physical_Group#16,2000e9*N/m,20e9*N/m,0.3,0.1*cm,{0,-1,0}]
+[Connect{Physical_Group#1,Physical_Group#6,Physical_Group#6,0\-1\0,0,1,search,0.9,NegY_ContactGroup}]   
+[Add_Frictional_Penalty_Contact{Physical_Group#16,2000e9*N/m,20e9*N/m,2000e9*N/m,20e9*N/m,0.3,0,-1,0}]
 
 // Neg X Contact
-[Connect{Physical_Group#2,Physical_Group#7,Physical_Group#7,{-1\ 0\ 0},0,1,search,0.9,NegX_ContactGroup}]   
-[Add_Contact{Physical_Group#17,2000e9*N/m,20e9*N/m,0.3,0.1*cm,{-1,0,0}]
+[Connect{Physical_Group#2,Physical_Group#7,Physical_Group#7,-1\0\0,0,1,search,0.9,NegX_ContactGroup}]   
+[Add_Frictional_Penalty_Contact{Physical_Group#17,2000e9*N/m,20e9*N/m,2000e9*N/m,20e9*N/m,0.3,-1,0,0}]
 
 //Pos Y Contact
-[Connect{Physical_Group#3,Physical_Group#8,Physical_Group#8,{0\1\0},0,1,search,0.9,PosY_ContactGroup}]   
-[Add_Contact{Physical_Group#18,2000e9*N/m,20e9*N/m,0.3,0.1*cm,{0,1,0}]
+[Connect{Physical_Group#3,Physical_Group#8,Physical_Group#8,0\1\0,0,1,search,0.9,PosY_ContactGroup}]   
+[Add_Frictional_Penalty_Contact{Physical_Group#18,2000e9*N/m,20e9*N/m,2000e9*N/m,20e9*N/m,0.3,0,1,0}]
 
 //Pos X Contact
-[Connect{Physical_Group#4,Physical_Group#9,Physical_Group#9,{1\ 0\ 0},0,1,search,0.9,PosX_ContactGroup}]   
-[Add_Contact{Physical_Group#19,2000e9*N/m,20e9*N/m,0.3,0.1*cm,{1,0,0}]
+[Connect{Physical_Group#4,Physical_Group#9,Physical_Group#9,1\0\0,0,1,search,0.9,PosX_ContactGroup}]   
+[Add_Frictional_Penalty_Contact{Physical_Group#19,2000e9*N/m,20e9*N/m,2000e9*N/m,20e9*N/m,0.3,1,0,0}]
 
 //Top Soil Contact
-[Connect{Physical_Group#5,Physical_Group#10,Physical_Group#10,{0\ 0\ 1},0,1,search,0.9,Bottom_ContactGroup}]   
-[Add_Contact{Physical_Group#20,2000e9*N/m,20e9*N/m,0.3,0.1*cm,{0,0,1}]
+[Connect{Physical_Group#5,Physical_Group#10,Physical_Group#10,0\0\1,0,1,search,0.9,Bottom_ContactGroup}]   
+[Add_Frictional_Penalty_Contact{Physical_Group#20,2000e9*N/m,20e9*N/m,2000e9*N/m,20e9*N/m,0.3,0,0,1}]
 
 // Raised Platform 
 [Add_Uniaxial_concrete02{1,20e6*Pa,0.002,25e6*Pa,0.02,0.5,2e6*Pa,2.6e6*Pa}]
@@ -59,9 +59,9 @@ Add_All_Node{m,3}
 [Add_8NodeBrick{Physical_Group#11,2}]
 
 //Varying Maperial Assigned to soil
-[Vary_Linear_elastic_isotropic_3d{Physical_Group#15,Add_8NodeBrick(),1600-100*(1-z)\0\kg/m^3,2*10^9-(1-z)*10^8\0\Pa,0.35}]
+[Vary_Linear_elastic_isotropic_3d{Physical_Group#15,Add_8NodeBrick{},1600-100*(1-z)\0\kg/m^3,2*10^9-(1-z)*10^8\0\Pa,0.35}]
 
- //Surface Load on Raised Platform
+//Surface Load on Raised Platform
 [Add_8NodeBrick_SurfaceLoad{Physical_Group#13,Physical_Group#12,10*Pa}]
 
 // Including the files

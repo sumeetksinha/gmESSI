@@ -39,7 +39,7 @@ NodeList = GmshConverter.getSphereSelectionData("Physical_Group#12",5,0,0,5).Nod
 # NodeList = GmshConverter.getSphereSelectionData("All",1.5,0,0,0).NodeList
 
 GmshConverter.CreatePhysicalGroup("HelloWorld",NodeList,ElementList)
-GmshConverter.Convert("[Vary_8NodeBrick_SurfaceLoad{Physical_Group#13,Physical_Group#HelloWorld,10*z+abs(x)\ 0 \ Pa}]")
+GmshConverter.Convert("[Vary_8NodeBrick_SurfaceLoad{Physical_Group#13,Physical_Group#HelloWorld,10*z+abs(x)\\0\Pa}]")
 
 x = """ ewfkhrehf nwehfrewf sndfhndjus  sdh sdfh sdhf sd
 dksjcsdjc
@@ -49,18 +49,15 @@ sljfcklsdf
 jlsdjcfklsdcf
 fh """
 
-# GmshConverter.DisplayNewTagNumbering()
+GmshConverter.DisplayNewTagNumbering()
 
 
-# GmshConverter.Convert("[Add_Node_Load_Linear{Phy#1,Fx,10*N}]")
-# GmshConverter.Convert("Add_20NodeBrick_elastic{Phy1,1}")
-# GmshConverter.Convert("[Add_Self_Weight{Phy#1,1}]")
+GmshConverter.Convert("[Add_Node_Load_Linear{Physical_Group#1,Fx,10*N}]")
+GmshConverter.Convert("Add_20NodeBrick_elastic{Physical_Group#1,1}")
+GmshConverter.Convert("[Add_Element_Self_Weight{Physical_Group#1,1}]")
 
-# GmshConverter.pwd
-# GmshConverter.GmshFile
-# GmshConverter.GeometryFile
-# GmshConverter.LoadFile
-# GmshConverter.MainFile
-
-# sys.exit
-# quit()
+GmshConverter.pwd
+GmshConverter.GmshFile
+GmshConverter.GeometryFile
+GmshConverter.LoadFile
+GmshConverter.MainFile

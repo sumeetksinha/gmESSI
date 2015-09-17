@@ -815,7 +815,10 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
   
-    Tokenizer tknzr = Tokenizer(Variables.at(init-1),"{");
+    string CompoundVariable = Variables.at(init-1); string delimiters = "[]";
+    CompoundVariable.erase( CompoundVariable.find_last_not_of( delimiters ) + 1 ).erase( 0, CompoundVariable.erase( CompoundVariable.find_last_not_of( delimiters ) + 1 ).find_first_not_of( delimiters ) );
+    Tokenizer tknzr = Tokenizer(trim(CompoundVariable),"{");
+
     string gmssiCommandtag, gmssiArguments;
 
     try{
@@ -1262,8 +1265,6 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
 }
 
 void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const int& j){
-
-	cout << "Elemental variation Command" << endl;
 
     ofstream LoadFile(loadFile,ios::app); int init=0;
     LoadFile<< PrintStartConversion(j);

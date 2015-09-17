@@ -9,10 +9,12 @@
 
 [Add_All_Node{m,3}]
 
-[Vary_Linear_elastic_isotropic_3d_LT{Physical_Group#1,Add_8NodeBrickLT(),1600+10*(10-z)\0\kg/m^3,20e9+10e8*(10-z)\-8\Pa,0.3}]
+[Add_All_Node{m,3}]
+
+[Vary_Linear_elastic_isotropic_3d_LT{Physical_Group#1,[Add_8NodeBrickLT{}],1600+10*(10-z)\0\kg/m^3,20e9+10e8*(10-z)\-8\Pa,0.3}]
 [New_Line{}] 
 
-[Fix{Physical_Group#2,all}]
+[Fix{Physical_Group#2,{all}}]
 
 [Include{"PresentationExample_geometry.fei"}]
 
@@ -25,7 +27,7 @@
 
 //[Add_8NodeBrick_SurfaceLoad{Physical_Group#1,Physical_Group#3,10*Pa]
 
-[Vary_8NodeBrick_SurfaceLoad{ Physical_Group#1, PhyEntySurfaceTag:= Physical_Group#3 , magnitude:= 10*(abs(x)+abs(y)+abs(z))\ 0 \ Pa}]
+[Vary_8NodeBrick_SurfaceLoad{ Physical_Group#1, PhyEntySurfaceTag:= Physical_Group#3 , magnitude:= {1};10*(abs(x)+abs(y)+abs(z))\ 0 \ Pa}]
 
 [Include{"PresentationExample_load.fei"}]
 [New_Line{}] 

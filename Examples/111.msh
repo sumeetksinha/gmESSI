@@ -4,7 +4,7 @@ $EndMeshFormat
 $PhysicalNames 
 2 
 2 2 "$surface$ [Add_Node_Load_Linear{Physical_Group#1,Fx,10*m}] "
-3 1 "$Brick$ [Add_20NodeBrick{Physical_Group#1,1}] [Add_Self_Weight{Physical_Group#1,3}] [Add_20NodeBrick_SurfaceLoad{Physical_Group#1,Physical_Group#2,m1}]"
+3 1 "$Brick$ [Add_20NodeBrick{Physical_Group#1,1}] [Add_Element_Self_Weight{Physical_Group#1,3}] [Add_20NodeBrick_SurfaceLoad{Physical_Group#1,Physical_Group#2,m1}]"
 $EndPhysicalNames 
 $Nodes
 4961

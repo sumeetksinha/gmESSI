@@ -3,7 +3,8 @@
 *.lo
 *.o
 *.obj
-
+gmessi
+EmbeddFiles
 # Precompiled Headers
 *.gch
 *.pch
