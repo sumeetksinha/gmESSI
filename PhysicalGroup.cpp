@@ -144,10 +144,12 @@ void PhysicalGroup::Process(const string& Command ){
 	boost::sregex_iterator it(gmESSI_Command.begin(), gmESSI_Command.end(), FunRegex);
 	essiTag = trim(it->str());
 
-	gmESSI_Command = gmESSI_Command.substr(it->str().length()-1,gmESSI_Command.length());
-	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '}'), gmESSI_Command.end());
-	gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '{'), gmESSI_Command.end());
-	
+	gmESSI_Command = trim(gmESSI_Command.substr(it->str().length()-1,gmESSI_Command.length()));
+	gmESSI_Command = trim(gmESSI_Command.substr(1,gmESSI_Command.length()-2));
+
+	// gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '}'), gmESSI_Command.end());
+	// gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '{'), gmESSI_Command.end());
+
 	boost::regex  ArgRegex("[^,]*(\\(|\\[)([^()]|(?R))*(\\)|\\])[^,]*|[^,]*");
 	boost::sregex_iterator its(gmESSI_Command.begin(), gmESSI_Command.end(), ArgRegex);
 
