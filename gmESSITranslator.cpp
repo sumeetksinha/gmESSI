@@ -815,25 +815,28 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
     int ElementListSize = ElementList.size();
     int NofEssiVariables = this->FunctionIter->second.getNofEssiVariables();
   
-    Tokenizer tknzr = Tokenizer(Variables.at(init-1),"()");
+    Tokenizer tknzr = Tokenizer(Variables.at(init-1),"{");
     string gmssiCommandtag, gmssiArguments;
 
     try{
         if(tknzr.countTokens()!=2) throw exception();
         gmssiCommandtag =tknzr.nextToken()+"{";
-        gmssiArguments = tknzr.nextToken()+"}";
+        tknzr.setDelimiter("");
+        gmssiArguments = tknzr.nextToken();
     } catch (exception& e) { string str = "\033[1;31mERROR:: Syntax Error in " +  Variables.at(init-1) + " \033[0m\n" ; throw str.c_str();}
 
-    replace( gmssiArguments.begin(), gmssiArguments.end(), ';', ',' );
-    tknzr.set(gmssiArguments,",");
+    // replace( gmssiArguments.begin(), gmssiArguments.end(), ';', ',' );
+    // tknzr.set(gmssiArguments,",");
 
     // cout << gmssiCommandtag << endl;
     // cout << gmssiArguments << endl;
 
-    if(tknzr.countTokens()>=1) gmssiArguments=","+gmssiArguments;
+    // if(tknzr.countTokens()>=1) gmssiArguments=","+gmssiArguments;
+
+    gmssiArguments=","+gmssiArguments;
 
     string ElementalCommand =  gmssiCommandtag +"1"+ gmssiArguments;
-    // cout << ElementalCommand << endl;
+    cout << ElementalCommand << endl;
     PhysicalGroup TempPhyGroup = PhysicalGroup(); TempPhyGroup.Process(ElementalCommand);
     TempFunctionIter = this->FunctionMap.find(TempPhyGroup.getCommandList().at(0));
 

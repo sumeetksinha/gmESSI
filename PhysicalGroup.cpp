@@ -150,7 +150,8 @@ void PhysicalGroup::Process(const string& Command ){
 	// gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '}'), gmESSI_Command.end());
 	// gmESSI_Command.erase(std::remove(gmESSI_Command.begin(), gmESSI_Command.end(), '{'), gmESSI_Command.end());
 
-	boost::regex  ArgRegex("[^,]*(\\(|\\[)([^()]|(?R))*(\\)|\\])[^,]*|[^,]*");
+	// boost::regex  ArgRegex("[^,]*(\\(|\\[|\\{)([^()]|(?R))*(\\)|\\]|\\})[^,]*|[^,]*");
+	boost::regex  ArgRegex("([^,]*\\{([^\\{\\}]|(?R))*\\}[^,]*)|([^,]*\\[([^\\[\\]]|(?R))*\\][^,]*)|([^,]*\\(([^()]|(?R))*\\)[^,]*)|[^,]*");
 	boost::sregex_iterator its(gmESSI_Command.begin(), gmESSI_Command.end(), ArgRegex);
 
 	for (; its != end; ++its) 
