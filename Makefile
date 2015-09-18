@@ -52,7 +52,7 @@ clean:
 
 install:
 		if [ -d "/usr/local/gmESSI" ]; then	rm -r /usr/local/gmESSI; fi
-		echo "creating directory in usr/local/gmESSI"
+		@echo "creating directory in usr/local/gmESSI"
 		mkdir /usr/local/gmESSI
 		mkdir /usr/local/gmESSI/src
 		mkdir /usr/local/gmESSI/bin
@@ -63,4 +63,10 @@ install:
 		if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
 		cp gmessi.so /usr/lib/python2.7	
 		ln -s -f /usr/local/gmESSI/bin/gmessi /usr/local/bin/gmessi
+
+uninstall:
+		if [ -d "/usr/local/gmESSI" ]; then	rm -r /usr/local/gmESSI; fi
+		@echo "removing directory in usr/local/gmESSI"
+		if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
+		rm -f /usr/local/bin/gmessi
 		
