@@ -46,7 +46,7 @@ EmbeddFile: EmbeddFiles.cpp
 		$(CC) EmbeddFiles.cpp -o EmbeddFiles
 		./EmbeddFiles mapping.fei > Embedded.cpp
 clean:
-		-rm *.o *.so gmessi
+		-rm *.o *.so gmessi EmbeddFiles
 		cd docs && $(MAKE) clean
 		cd Examples && $(MAKE) clean
 
