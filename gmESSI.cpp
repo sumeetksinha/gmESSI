@@ -50,11 +50,11 @@ int main(int argc, char* argv[]){
 			start =2;
 		}
 
-		for (int i =start ;i <argc ; i++){
+		gmESSIPython gmessi = gmESSIPython ();
 
+		for (int i =start ;i <argc ; i++){
 		    string gmshFile = argv[i];
-		    // cout << gmshFile << endl;
-		    gmESSIPython gmssi = gmESSIPython (gmshFile);
+		    gmessi.loadMshFile(gmshFile);
 		}
 
 	} catch (const char* msg){cerr << msg << endl;}
