@@ -8,10 +8,10 @@ gmessi: mapping.fei EmbeddFile Embedded.o Element.o GmshParser.o gmESSITranslato
 		mkoctfile --link-stand-alone -I/usr/local/include/octave-3.8.0/octave  -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7  Embedded.o gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
 		mkoctfile -I/usr/local/include/octave-3.8.0/octave  -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7 Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi.so
 		mv gmessi.so.oct gmessi.so
-		@echo "***************************************************************************************************************************************"
-		@echo "**************************************************** Running some Examples*************************************************************"
-		@echo "***************************************************************************************************************************************"
-		cd Examples && $(MAKE)
+		# @echo "***************************************************************************************************************************************"
+		# @echo "**************************************************** Running some Examples*************************************************************"
+		# @echo "***************************************************************************************************************************************"
+		# cd Examples && $(MAKE)
 		@echo "***************************************************************************************************************************************"
 		@echo "****************************************************Started Building Document**********************************************************"
 		@echo "***************************************************************************************************************************************"
