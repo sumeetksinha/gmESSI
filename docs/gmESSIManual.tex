@@ -49,7 +49,7 @@
 \lstset{escapeinside={<@}{@>}}
 
 \title{gmESSI Manual}
-% \author{Sumeet Kumar Sinha \\ {\dn \7{s}Emt \7{k}mAr Es\306whA }  }
+\author{Sumeet Kumar Sinha } % \\ {\dn \7{s}Emt \7{k}mAr Es\306whA }  }
 \date{\today}
 
 \begin{document}
@@ -166,14 +166,24 @@ Installation of the gmESSI translator is really easy. Just follow the steps as
 shown below.\href{http://beta.sumeetsinha.in/gmESSI/Install.sh}{ Script}
 
 \begin{lstlisting}[language=bash]
-# go to the folder where you want to store the gmESSI software and run this script
-#Download the latest version of the package from github
+# go to folder where you want to store gmESSI software and run this script there
+
+#Download the latest version of the package from the github
 git clone https://github.com/SumeetSinha/gmESSI.git
 cd ~/gmESSI
 
 # install the package 
 make
 make install
+
+############## For installation of gmESSI plugin in sublime ##############
+# open sublime-text
+# make sure you have installed package control 
+# if not then install it first from https://packagecontrol.io/installation
+# go to Preferences->PackageControl->InstallPackage
+# search for gmESSI-gmsh Tools and install it
+# restart sublime
+#########################################################################
 
 \end{lstlisting}
 
@@ -512,10 +522,11 @@ The gmESSI translator reads the command
 \textcolor{violet}{\textit{\textbf{[Add\_Node\_Load\_Linear\{Fx,10*kN\}]}}}
 and applies nodal force $\textbf{Fx=10*kN}$ to all the nodes of the physical
 group i.e (id $\textbf{2}$ or \textbf{ApplyForce}) alongwith which the command
-was written.
+was written.\\
 
-\textbf{Note:- } For textit{textbf{Gmsh}}
-\textcolor{violet}{textbf{"$ApplyForce$ [Add_Node_Load_Linear{Fx,10*kN}]"}} is
+
+\noindent \textbf{Note:- } For \textit{\textbf{Gmsh}}
+\textcolor{violet}{\textbf{"$ApplyForce$ [Add_Node_Load_Linear{Fx,10*kN}]"}} is
 nothing but a name for the Physical group having id $2$. Whereas, for
 \textit{textbf{gmESSI}} its a command for textit{adding uniform nodal load} to
 that physical group.
@@ -761,12 +772,12 @@ Entity group}}. Let us look at them one by one
 
   Whereas a \textbf{physical group} is a group of point, line, surface or
   volume defined by the user which contains all the geometrical entities that
-  falls under that domain/group. Figure~\ref{4-physical-groups} shows physical groups.
+  falls under that domain/group. Figure~\ref{4-physical-groups} shows physical groups.\\
 
   \textbf{Note:- } When the user \textit{explicitly} defines a
   \textit{physical/entity group} for the command, the command now \textbf{can
   be written anywhere} alongwith any physical group in the \textbf{.msh}
-  file.
+  file.\\
 
   \textbf{Note:- } Whenever one is applying an \textbf{General Elemental
   Command} or \textbf{Nodal Command} on an \textbf{entity group}, the user should be
@@ -1927,7 +1938,7 @@ error message if more than one node is found in the tolerence provided.
 \begin{lstlisting}[language=C]
 $ gmessi Example2.msh
 
-  Connect{Physical_Group#1,Physical_Group#2, Physical_Group#3, {0\0\1}, 1, 1, create, 0.005, My_New_Physical_Group}  Found!!  Sucessfully Converted
+  Connect{Physical_Group#1,Physical_Group#2, Physical_Group#3, 0\0\1, 1, 1, create, 0.005, My_New_Physical_Group}  Found!!  Sucessfully Converted
   <@\textcolor{blue}{New Physical Group "My_New_Physical_Group" having id 3 consisting of 242 Nodes and 121 2-noded elements created }@>
 
 \end{lstlisting}
@@ -1997,7 +2008,7 @@ Figure~\ref{Example-3-Connect-Command} shows the new nodes found and creation of
 \begin{lstlisting}[language=C]
 $ gmESSI Example3.msh
 
-  Connect{Physical_Group#1, Physical_Group#2, Physical_Group#3, {0\0\1}, 1, 1, find, 0.005, My_New_Physical_Group}  Found!!
+  Connect{Physical_Group#1, Physical_Group#2, Physical_Group#3, 0\0\1, 1, 1, find, 0.005, My_New_Physical_Group}  Found!!
   <@\textcolor{blue}{New Physical Group "My_New_Physical_Group" having id 4 consisting of 242 Nodes and 121 2-noded elements created }@>
 
 \end{lstlisting}
@@ -2008,7 +2019,7 @@ $ cat Example3_ESSI_Simulation\Example3.msh
   $PhysicalNames
   3
   2 1 "$Surface1$ "
-  2 2 "$Surface2$ [Connect{Physical_Group#1, Physical_Group#2, Physical_Group#3,{0\0\1}, 1, 1, find, 0.005, My_New_Physical_Group}]"
+  2 2 "$Surface2$ [Connect{Physical_Group#1, Physical_Group#2, Physical_Group#3,0\0\1, 1, 1, find, 0.005, My_New_Physical_Group}]"
   3 3 "$Volume$"
   1 4 "$My_New_Physical_Group$"
   $EndPhysicalNames
