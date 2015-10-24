@@ -27,6 +27,8 @@
 
 using namespace::std;
 
+int GMSH_to_ESSI_NODE_CONNECTIVITY[18][28];
+
 /******************************************************************************
 ****************************** Constructor ************************************
 ******************************************************************************/
@@ -89,6 +91,7 @@ string gmESSITranslator::getFileName(){
 
 void gmESSITranslator::GmshToEssi(){
 
+    this->GMSH_to_ESSI_NODE_Mapping();
     ofstream MainFile(mainFile,ios::out);  
 
     // MainFile << "\n" <<"model name \"" << this->GmshFile << "\";\n"; MainFile.close();
@@ -306,7 +309,8 @@ void gmESSITranslator::ElementalCommand(const int& i, const int& j){
                     	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
-                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));                   
+                    // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][++m]-1)));                
                 }
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                     this->TempVariable.push(this->getVariable(var)); 
@@ -948,7 +952,8 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                     	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
-                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+                    // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));
+                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][++m]-1)));  
                 }
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                     this->TempVariable.push(this->getVariable(var)); 
@@ -1732,6 +1737,7 @@ void gmESSITranslator::UpdateEssiTags(const string& newVar, const int& l){
 
 void gmESSITranslator::Convert(const string& GmssiCommand){
 
+    this->GMSH_to_ESSI_NODE_Mapping();
     int i = PhytonScriptPhysicalGroupIndex;
     PhysicalGroupList.at(i).Process(GmssiCommand);
 
@@ -1823,3 +1829,144 @@ void gmESSITranslator::UpdateGmshFile(){
 
     return;
 }
+
+
+void gmESSITranslator::GMSH_to_ESSI_NODE_Mapping(){
+
+    // int GMSH_to_ESSI_NODE_CONNECTIVITY[18][28];
+
+    // for (int i=0;i<18;i++){
+    //     for (int j=0;j<28;j++){
+    //         GMSH_to_ESSI_NODE_CONNECTIVITY[i][j]=0;
+    //         // cout << i << " " << j << endl;
+    //     }
+    // }
+
+    // Elemental Commands  --- 1 2-node line.
+
+        GMSH_to_ESSI_NODE_CONNECTIVITY [1][1]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [1][2]=2;
+   
+    //Elemental Commands  --- 2 3-node triangle.
+        
+        GMSH_to_ESSI_NODE_CONNECTIVITY [2][1]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [2][2]=2;  GMSH_to_ESSI_NODE_CONNECTIVITY [2][3]=3;  
+
+    //Elemental Commands  --- 3 4-node quadrangle.
+
+        GMSH_to_ESSI_NODE_CONNECTIVITY [3][1]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [3][2]=2;  GMSH_to_ESSI_NODE_CONNECTIVITY [3][3]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [3][4]=4;     
+
+    //Elemental Commands  --- 4 4-node tetrahedron.
+    //Elemental Commands  --- 5 8-node hexahedron.
+        
+        GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=6; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=2;
+
+    //Elemental Commands  --- 6 6-node prism.
+    //Elemental Commands  --- 7 5-node pyramid.
+    //Elemental Commands  --- 8 3-node second order line (2 nodes associated with the vertices and 1 with the edge).
+    //Elemental Commands  --- 9 6-node second order triangle (3 nodes associated with the vertices and 3 with the edges).
+    //Elemental Commands  --- 10 9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face).
+
+        GMSH_to_ESSI_NODE_CONNECTIVITY [10][1]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [10][2]=2;  GMSH_to_ESSI_NODE_CONNECTIVITY [10][3]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [10][4]=4; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [10][5]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [10][6]=6;  GMSH_to_ESSI_NODE_CONNECTIVITY [10][7]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [10][8]=8;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [10][9]=9;
+
+    //Elemental Commands  --- 11 10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).u
+    //Elemental Commands  --- 12 27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
+
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][4]=6; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][8]=2;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][9]=15;   GMSH_to_ESSI_NODE_CONNECTIVITY [12][10]=14;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][11]=19;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][12]=16;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][13]=20;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][14]=13;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][15]=17;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][16]=18;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][17]=11;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][18]=10;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][19]=12;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][20]=9;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][21]=27;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][22]=24;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][23]=23;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][24]=25;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][25]=22;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][26]=26;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][27]=21;
+        
+    //Elemental Commands  --- 13 18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces).
+    //Elemental Commands  --- 14 14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
+    //Elemental Commands  --- 15 1-node point.
+    //Elemental Commands  --- 16 8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
+    //Elemental Commands  --- 17 20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
+
+        GMSH_to_ESSI_NODE_CONNECTIVITY [17][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [17][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [17][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [17][4]=6; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [17][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [17][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [17][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [17][8]=2;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [17][9]=15;   GMSH_to_ESSI_NODE_CONNECTIVITY [17][10]=14;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][11]=19;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][12]=16;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [17][13]=20;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][14]=13;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][15]=17;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][16]=18;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [17][17]=11;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][18]=10;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][19]=12;  GMSH_to_ESSI_NODE_CONNECTIVITY [17][20]=9;
+
+    //Elemental Commands  --- 18 15-node second order prism (6 nodes associated with the vertices and 9 with the edges).
+    //Elemental Commands  --- 19 13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges).
+    //Elemental Commands  --- 20 9-node third order incomplete triangle (3 nodes associated with the vertices, 6 with the edges)
+    //Elemental Commands  --- 21 10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)
+    //Elemental Commands  --- 22 12-node fourth order incomplete triangle (3 nodes associated with the vertices, 9 with the edges)
+    //Elemental Commands  --- 23 15-node fourth order triangle (3 nodes associated with the vertices, 9 with the edges, 3 with the face)
+    //Elemental Commands  --- 24 15-node fifth order incomplete triangle (3 nodes associated with the vertices, 12 with the edges)
+    //Elemental Commands  --- 25 21-node fifth order complete triangle (3 nodes associated with the vertices, 12 with the edges, 6 with the face)
+    //Elemental Commands  --- 26 4-node third order edge (2 nodes associated with the vertices, 2 internal to the edge)
+    //Elemental Commands  --- 27 5-node fourth order edge (2 nodes associated with the vertices, 3 internal to the edge)
+    //Elemental Commands  --- 28 6-node fifth order edge (2 nodes associated with the vertices, 4 internal to the edge)
+    //Elemental Commands  --- 29 20-node third order tetrahedron (4 nodes associated with the vertices, 12 with the edges, 4 with the faces)
+    //Elemental Commands  --- 30 35-node fourth order tetrahedron (4 nodes associated with the vertices, 18 with the edges, 12 with the faces, 1 in the volume)
+    //Elemental Commands  --- 31 56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)
+    //Elemental Commands  --- 92 64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)
+    //Elemental Commands  --- 93 125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)
+}
+
+// ESSI Node Numbering 
+
+// 1   ->  1, 1, 1
+// 2   -> -1, 1, 1
+// 3   -> -1,-1, 1
+// 4   ->  1,-1, 1 
+// 5   ->  1, 1,-1
+// 6   -> -1, 1,-1
+// 7   -> -1,-1,-1
+// 8   ->  1,-1,-1
+// 9   ->  0, 1, 1
+// 10  -> -1, 0, 1
+// 11  ->  0,-1, 1
+// 12  ->  1, 0, 1
+// 13  ->  0, 1,-1
+// 14  -> -1, 0,-1
+// 15  ->  0,-1,-1
+// 16  ->  1, 0,-1
+// 17  ->  1, 1, 0
+// 18  -> -1, 1, 0
+// 19  -> -1,-1, 0
+// 20  ->  1,-1, 0
+// 21  ->  0, 0, 0
+// 22  ->  0, 1, 0
+// 23  -> -1, 0, 0
+// 24  ->  0,-1, 0
+// 25  ->  1, 0, 0
+// 26  ->  0, 0, 1
+// 27  ->  0, 0,-1
+
+// Gmsh Node Numbering 
+
+// 1   -> -1,-1,-1 -> 7
+// 2   ->  1,-1,-1 -> 8
+// 3   ->  1, 1,-1 -> 5
+// 4   -> -1, 1,-1 -> 6
+// 5   -> -1,-1, 1 -> 3
+// 6   ->  1,-1, 1 -> 4
+// 7   ->  1, 1, 1 -> 1
+// 8   -> -1, 1, 1 -> 2
+// 9   ->  0,-1,-1 -> 15
+// 10  -> -1, 0,-1 -> 14
+// 11  -> -1,-1, 0 -> 19
+// 12  ->  1, 0,-1 -> 16
+// 13  ->  1,-1, 0 -> 20
+// 14  ->  0, 1,-1 -> 13
+// 15  ->  1, 1, 0 -> 17
+// 16  -> -1, 1, 0 -> 18
+// 17  ->  0,-1, 1 -> 11
+// 18  -> -1, 0, 1 -> 10
+// 19  ->  1, 0, 1 -> 12
+// 20  ->  0, 1, 1 -> 9
+// 21  ->  0, 0,-1 -> 27
+// 22  ->  0,-1, 0 -> 24
+// 23  -> -1, 0, 0 -> 23
+// 24  ->  1, 0, 0 -> 25
+// 25  ->  0, 1, 0 -> 22
+// 26  ->  0, 0, 1 -> 26
+// 27  ->  0, 0, 0 -> 21

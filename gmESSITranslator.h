@@ -78,6 +78,7 @@ class gmESSITranslator{
         void ElementalVariationalCommand(const int&i, const int& j);
         void ElementalCompoundVariationalCommand(const int&i, const int& j);
         void WriteCommand(const int&i, const int& j);
+        void GMSH_to_ESSI_NODE_Mapping();
 
         void clear( queue<string> &q );
         string delSpaces(string str);
@@ -103,6 +104,8 @@ class gmESSITranslator{
         vector<string> UserCommandList;
         map<string,int> EssiTagVariableMap;
         queue<string> TempVariable;
+
+        // int GMSH_to_ESSI_NODE_CONNECTIVITY[18][28]; 
 };
 
 #endif //gmESSITranslator_H
