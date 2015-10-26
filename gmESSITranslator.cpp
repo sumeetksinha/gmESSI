@@ -731,11 +731,15 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                         newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                         newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
                         UniqueNodes++;
+                        NodeMap1 = NodeMap2;
                         
                         if(UniqueNodes>1){ string str =  "\033[1;31mERROR:: More than one node inside tolerence \033[0m\n"; throw str.c_str();}
                     }
                 }
-                NodeMap1 = NodeMap2;
+
+                // cout <<  NodeMap2->second.getXcord() << " " << NodeMap2->second.getYcord() << " " << NodeMap2->second.getZcord()<<endl;
+                // NodeMap1 = NodeMap2;
+                // cout <<  NodeMap1->second.getXcord() << " " << NodeMap1->second.getYcord() << " " << NodeMap1->second.getZcord()<<endl;
             }
             else {
 

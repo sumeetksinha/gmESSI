@@ -305,7 +305,7 @@ void gmESSIPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vecto
 
 	NodeElement newNodeElement; 
 	map<int,int> NodeNumberNodeMap; 
-	int ElementListSize=ElementList.size(), EntityNo=this->Translator.NewEntity++, NodelistSize=NodeList.size(), newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size();
+	int ElementListSize=ElementList.size(), EntityNo=this->Translator.NewEntity++, NodelistSize=NodeList.size(), newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size()+1;
 
 	for(int i=0 ; i<ElementListSize ;i++){
 		ElementList.at(i).setPhysicalTag(newPhysicalGroupTag);
@@ -532,6 +532,7 @@ BOOST_PYTHON_MODULE(gmessi)
 	    .def_readonly("ElementList",&SelectionData::ElementList);
 
     class_<Element>("Element")
+    	.def("setElement",&Element::setElement)
     	.def("getId",&Element::getId)
     	.def("getType",&Element::getType)
     	.def("getEntityTag",&Element::getEntityTag) 
