@@ -112,8 +112,10 @@ void gmESSITranslator::GmshToEssi(){
     this->NewEntity = this->GmshParse.getNewEntity()+1;
 
     this->EssiTagVariableMap.insert(pair<string,int>("element",1));
-    this->EssiTagVariableMap.insert(pair<string,int>("node",this->GmshParse.getNewNode()));
-    this->EssiTagVariableMap.insert(pair<string,int>("nodes",this->GmshParse.getNewNode()));
+    // this->EssiTagVariableMap.insert(pair<string,int>("node",this->GmshParse.getNewNode()));
+    // this->EssiTagVariableMap.insert(pair<string,int>("nodes",this->GmshParse.getNewNode()));
+    this->EssiTagVariableMap.insert(pair<string,int>("node",1));
+    this->EssiTagVariableMap.insert(pair<string,int>("nodes",1));
     this->EssiTagVariableMap.insert(pair<string,int>("damping",1));
     this->EssiTagVariableMap.insert(pair<string,int>("displacement",1));
     this->EssiTagVariableMap.insert(pair<string,int>("field",1));
@@ -124,9 +126,15 @@ void gmESSITranslator::GmshToEssi(){
     /***************ElementNodemap assigning to 0***********************/
     vector<Element> ElementList= this->GmshParse.getElementList();
     int ElementListSize = ElementList.size();
-    for (int i =0 ; i< ElementListSize ; i++)
+    for (int i =0 ; i < ElementListSize ; i++)
     	this->ElementNoMap.insert(pair<int,int>(ElementList.at(i).getId(),0));
 	/*******************************************************************/
+
+    /***************NodeNodemap assigning to 0***********************/
+    int NodeListSize = this->NodeMap.size();
+    for (int i =1 ; i <= NodeListSize+1 ; i++)
+        this->NodeNoMap.insert(pair<int,int>(i,0));
+    /*******************************************************************/
     int PhysicalGroupListSize = this->PhysicalGroupList.size();
 
     for (int i=0; i<PhysicalGroupListSize; i++){
@@ -196,19 +204,36 @@ void gmESSITranslator::DisplayNewTagNumbering(){
 
     map<string,int>::iterator EssiTagIterBegin = this->EssiTagVariableMap.begin();
     map<string,int>::iterator EssiTagIterEnd = this->EssiTagVariableMap.end();
+
+    // /***************ElementNodemap assigning to 0***********************/
+    // map<int,int>::iterator ElementNoMapBegin = this->ElementNoMap.begin();
+    // map<int,int>::iterator ElementNoMapEnd = this->ElementNoMap.end();
+    // int noe =0; int non=0;
+    // for(map<int,int>::iterator it = ElementNoMapBegin ; it!= ElementNoMapEnd ; ++it)
+    //     if (it->second!=0) noe=noe+1;
+    // *****************************************************************
+
+    // /***************NodeNodemap assigning to 0***********************/
+    // map<int,int>::iterator NodeNoMapBegin = this->NodeNoMap.begin();
+    // map<int,int>::iterator NodeNoMapEnd = this->NodeNoMap.end();
+    // for(map<int,int>::iterator it = NodeNoMapBegin ; it!= NodeNoMapEnd ; ++it)
+    //     if (it->second!=0) non=non+1;
+    // /*******************************************************************/
     
     cout <<endl << endl<< "\033[1;36m************************ Updated New Tag Numbering **********************" << "\033[0m\n";
     for(map<string,int>::iterator it = EssiTagIterBegin ; it!= EssiTagIterEnd ; ++it){
 
         cout << "\033[1;36m" << setw(15) << it->first << " = " << it->second << "\033[0m\n";
     }
+    cout << "\033[1;36m" << setw(15) << "Gmsh_Elements" << " = " << this->GmshParse.getElementList().size()+1 << "\033[0m\n";
+    cout << "\033[1;36m" << setw(15) << "Gmsh_Nodes" << " = " << this->NodeMap.size()+1 << "\033[0m\n";
     return;
 }
 
 void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
 
     ofstream GeometryFile(geometryFile,ios::app); int init=0;int nofRun=0;
-    GeometryFile << PrintStartConversion(j);
+    GeometryFile << PrintStartConversion(j);  string node = "node";
 
     if(!(this->UserCommandList.at(j).substr(4,3).compare("All"))){
 
@@ -216,8 +241,18 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
         map<int,Node> ::iterator AllNodeEnd = this->NodeMap.end();
 
         for(map<int,Node>::iterator it=AllNodeBegin; it!=AllNodeEnd; ++it){
+
+            /******************************** OPtimizing Nodes for ESSI *****************************************/
+            if(this->NodeNoMap.find(it->second.getId())->second==0){
+                string NewNodeNo = this->getVariable(node);
+                this->TempVariable.push(NewNodeNo);
+                this->NodeNoMap.find(it->second.getId())->second = stoi(NewNodeNo);nofRun++;
+            }
+            else
+                this->TempVariable.push(to_string(this->NodeNoMap.find(it->second.getId())->second));nofRun++;
+            /****************************************************************************************************/
         
-            this->TempVariable.push(to_string(it->second.getId()));nofRun++;
+            // this->TempVariable.push(to_string(it->second.getId()));nofRun++;
             this->TempVariable.push(to_string(it->second.getXcord())+"*"+this->VariableList.at(j).at(0)); 
             this->TempVariable.push(to_string(it->second.getYcord())+"*"+this->VariableList.at(j).at(0));
             this->TempVariable.push(to_string(it->second.getZcord())+"*"+this->VariableList.at(j).at(0)); 
@@ -246,7 +281,17 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
         int n = init; nofRun++;
         map<int,Node>::iterator NodeInfo = this->NodeMap.find(it->second);
 
-        this->TempVariable.push(to_string(it->second));
+        /******************************** OPtimizing Nodes for ESSI *****************************************/
+        if(this->NodeNoMap.find(it->second)->second==0){
+            string NewNodeNo = this->getVariable(node);
+            this->TempVariable.push(NewNodeNo);
+            this->NodeNoMap.find(it->second)->second = stoi(NewNodeNo);
+        }
+        else
+            this->TempVariable.push(to_string(this->NodeNoMap.find(it->second)->second));
+        /****************************************************************************************************/
+
+        // this->TempVariable.push(to_string(it->second));
         this->TempVariable.push(to_string(NodeInfo->second.getXcord())+"*"+this->VariableList.at(j).at(n)); 
         this->TempVariable.push(to_string(NodeInfo->second.getYcord())+"*"+this->VariableList.at(j).at(n));
         this->TempVariable.push(to_string(NodeInfo->second.getZcord())+"*"+this->VariableList.at(j).at(n)); 
@@ -300,6 +345,8 @@ void gmESSITranslator::ElementalCommand(const int& i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
+
+                    /******************************** OPtimizing Elements for ESSI *****************************************/
                     if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
                     	string NewElementNo = this->getVariable(var);
                     	this->TempVariable.push(NewElementNo);
@@ -307,10 +354,22 @@ void gmESSITranslator::ElementalCommand(const int& i, const int& j){
                     }
                     else
                     	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                    /******************************************************************************************************/
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
+
+                    /******************************** OPtimizing for ESSI *****************************************/
+                    m=m+1;if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second==0){
+                        string NewNodeNo = this->getVariable(var);
+                        this->TempVariable.push(NewNodeNo);
+                        this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second = stoi(NewNodeNo);
+                    }
+                    else
+                        this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second));
+                    /*********************************************************************************************/
+
                     // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
-                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][++m]-1)));                
+                    // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][++m]-1)));                
                 }
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                     this->TempVariable.push(this->getVariable(var)); 
@@ -386,6 +445,7 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
+                    /******************************** OPtimizing Elements for ESSI *****************************************/
                     if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
                     	string NewElementNo = this->getVariable(var);
                     	this->TempVariable.push(NewElementNo);
@@ -393,6 +453,7 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                     }
                     else
                     	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                    /******************************************************************************************************/
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
 
@@ -406,7 +467,9 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                             throw msg.c_str(); 
                         }
 
-                        map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+                        map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1));
+
+                        // map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
                         map<int,int>::iterator NodeIterEnd = SurfaceIter->second.NodeList.end();
 
                         // if(NodeIter==SurfaceIter->second.NodeList.end()){
@@ -416,7 +479,17 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                         // }
 
                         if(NodeIter!= NodeIterEnd){
-                            this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
+
+                            /******************************** OPtimizing Nodes for ESSI *****************************************/
+                            if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second==0){
+                                string NewNodeNo = this->getVariable(var);
+                                this->TempVariable.push(NewNodeNo);
+                                this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second = stoi(NewNodeNo);
+                            }
+                            else
+                                this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second));
+                            /*********************************************************************************************/
+                            // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
                             loop = false;
                         }
 
@@ -494,7 +567,18 @@ void gmESSITranslator::NodalCommand(const int& i, const int& j){
             string var = tknzr.nextToken();
              
             if(!var.compare("node") || !var.compare("nodes")){
-                this->TempVariable.push(to_string(it->second));  
+
+                /******************************** OPtimizing Nodes for ESSI *****************************************/
+                if(this->NodeNoMap.find(it->second)->second==0){
+                    string NewNodeNo = this->getVariable(var);
+                    this->TempVariable.push(NewNodeNo);
+                    this->NodeNoMap.find(it->second)->second = stoi(NewNodeNo);
+                }
+                else
+                    this->TempVariable.push(to_string(this->NodeNoMap.find(it->second)->second));
+                /***************************************************************************************************/
+
+                // this->TempVariable.push(to_string(it->second));  
             }
             else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                 this->TempVariable.push(this->getVariable(var)); 
@@ -550,6 +634,9 @@ void gmESSITranslator::GeneralElementalCommand(const int& i, const int& j){
             string var = tknzr.nextToken();
            
             if(!var.compare("element")){
+
+                /******************************** OPtimizing Elements for ESSI *****************************************/
+
                 if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
                 	string NewElementNo = this->getVariable(var);
                 	this->TempVariable.push(NewElementNo);
@@ -557,9 +644,22 @@ void gmESSITranslator::GeneralElementalCommand(const int& i, const int& j){
                 }
                 else
                 	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+
+                /******************************************************************************************************/
             }
             else if(!var.compare("node") || !var.compare("nodes")){
-                this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+
+                /******************************** OPtimizing Nodes for ESSI *****************************************/
+                if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second==0){
+                    string NewNodeNo = this->getVariable(var);
+                    this->TempVariable.push(NewNodeNo);
+                    this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second = stoi(NewNodeNo);
+                }
+                else
+                    this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second));
+                /***************************************************************************************************/
+
+                // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
             }
             else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                 this->TempVariable.push(this->getVariable(var)); 
@@ -947,6 +1047,8 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
+
+                    /******************************** OPtimizing Elements for ESSI *****************************************/
                     if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
                     	string NewElementNo = this->getVariable(var);
                     	this->TempVariable.push(NewElementNo);
@@ -954,10 +1056,22 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                     }
                     else
                     	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                    /******************************************************************************************************/
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
+
+                    /******************************** OPtimizing Nodes for ESSI *****************************************/
+                    m=m+1;if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second==0){
+                        string NewNodeNo = this->getVariable(var);
+                        this->TempVariable.push(NewNodeNo);
+                        this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second = stoi(NewNodeNo);
+                    }
+                    else
+                        this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second));
+                    /*********************************************************************************************/
+
                     // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));
-                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][++m]-1)));  
+                    // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][++m]-1)));  
                 }
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                     this->TempVariable.push(this->getVariable(var)); 
@@ -1035,7 +1149,19 @@ void gmESSITranslator::NodalVariationalCommand(const int&i, const int& j){
             string var = tknzr.nextToken();
              
             if(!var.compare("node") || !var.compare("nodes")){
-                this->TempVariable.push(to_string(it->second));  
+
+                /******************************** OPtimizing Nodes for ESSI *****************************************/
+                if(this->NodeNoMap.find(it->second)->second==0){
+                    string NewNodeNo = this->getVariable(var);
+                    this->TempVariable.push(NewNodeNo);
+                    this->NodeNoMap.find(it->second)->second = stoi(NewNodeNo);
+                }
+                else
+                    this->TempVariable.push(to_string(this->NodeNoMap.find(it->second)->second));
+                /*********************************************************************************************/
+
+
+                // this->TempVariable.push(to_string(it->second));  
             }
             else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                 this->TempVariable.push(this->getVariable(var)); 
@@ -1123,6 +1249,8 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
             string var = tknzr.nextToken();
            
             if(!var.compare("element")){
+
+                /******************************** OPtimizing Elements for ESSI *****************************************/
                 if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
                 	string NewElementNo = this->getVariable(var);
                 	this->TempVariable.push(NewElementNo);
@@ -1130,9 +1258,21 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
                 }
                 else
                 	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                /******************************************************************************************************/
             }
             else if(!var.compare("node") || !var.compare("nodes")){
-                this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
+
+                /******************************** OPtimizing Nodes for ESSI *****************************************/
+                if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second==0){
+                    string NewNodeNo = this->getVariable(var);
+                    this->TempVariable.push(NewNodeNo);
+                    this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second = stoi(NewNodeNo);
+                }
+                else
+                    this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second));
+                /*********************************************************************************************/
+
+                // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
             }
             else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                 this->TempVariable.push(this->getVariable(var)); 
@@ -1220,6 +1360,8 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
+
+                    /******************************** OPtimizing Elements for ESSI *****************************************/
                     if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
                     	string NewElementNo = this->getVariable(var);
                     	this->TempVariable.push(NewElementNo);
@@ -1227,9 +1369,21 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
                     }
                     else
                     	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                    /******************************************************************************************************/
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
-                    this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));                   
+
+                    /******************************** OPtimizing Nodes for ESSI *****************************************/
+                    if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second==0){
+                        string NewNodeNo = this->getVariable(var);
+                        this->TempVariable.push(NewNodeNo);
+                        this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second = stoi(NewNodeNo);
+                    }
+                    else
+                        this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second));
+                    /*********************************************************************************************/
+
+                    // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));                   
                 }
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                     this->TempVariable.push(this->getVariable(var)); 
@@ -1334,6 +1488,8 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
+
+                    /******************************** OPtimizing Elements for ESSI *****************************************/
                     if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
                     	string NewElementNo = this->getVariable(var);
                     	this->TempVariable.push(NewElementNo);
@@ -1341,6 +1497,7 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
                     }
                     else
                     	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                    /******************************************************************************************************/
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
 
@@ -1354,7 +1511,9 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
                             throw msg.c_str(); 
                         }
 
-                        map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
+                        map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1));
+                        
+                        // map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
                         map<int,int>::iterator NodeIterEnd = SurfaceIter->second.NodeList.end();
 
                         // if(NodeIter==SurfaceIter->second.NodeList.end()){
@@ -1364,7 +1523,18 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
                         // }
 
                         if(NodeIter!= NodeIterEnd){
-                            this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
+
+                            /******************************** OPtimizing Nodes for ESSI *****************************************/
+                            if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second==0){
+                                string NewNodeNo = this->getVariable(var);
+                                this->TempVariable.push(NewNodeNo);
+                                this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second = stoi(NewNodeNo);
+                            }
+                            else
+                                this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second));
+                            /*********************************************************************************************/
+                                    
+                            // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
                             loop = false;
                         }
 
@@ -1431,7 +1601,7 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
 void gmESSITranslator::WriteCommand(const int&i, const int& j){
 
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
-    map<int,NodeElement>::iterator TypeIter; int init=0;
+    map<int,NodeElement>::iterator TypeIter; int init=0; string node = "node", element="element"; 
     setTypeIter(TypeIter,this->VariableList.at(j),i,j,init);
     /// Ends Initialization here
 
@@ -1446,12 +1616,33 @@ void gmESSITranslator::WriteCommand(const int&i, const int& j){
 
     for(int i=0; i<ElementListSize ; i++){
         
-        ElementsFile << ElementList.at(i).getId() << "\t";
+        /******************************** OPtimizing Elements for ESSI *****************************************/
+        if(this->ElementNoMap.find(ElementList.at(i).getId())->second==0){
+            string NewElementNo = this->getVariable(element);
+            ElementsFile << NewElementNo << "\t";
+            this->ElementNoMap.find(ElementList.at(i).getId())->second = stoi(NewElementNo);
+        }
+        else
+           ElementsFile << this->ElementNoMap.find(ElementList.at(i).getId())->second << "\t";
+        /******************************************************************************************************/
+       
+        // ElementsFile << ElementList.at(i).getId() << "\t";
         ElementsFile << ElementList.at(i).getType() << "\t";
         int size =  ElementList.at(i).getNodeList().size();
 
-        for( int j =0 ;j<size ; j++ )            
-            ElementsFile << ElementList.at(i).getNodeList().at(j) << "\t";
+        for( int j =0 ;j<size ; j++ ){            
+            
+            /******************************** OPtimizing Nodes for ESSI *****************************************/
+            if(this->NodeNoMap.find(ElementList.at(i).getNodeList().at(j))->second==0){
+                string NewNodeNo = this->getVariable(node);
+                ElementsFile << NewNodeNo << "\t";
+                this->NodeNoMap.find(ElementList.at(i).getNodeList().at(j))->second = stoi(NewNodeNo);
+            }
+            else
+                ElementsFile << this->NodeNoMap.find(ElementList.at(i).getNodeList().at(j))->second << "\t";
+            /*********************************************************************************************/
+            // ElementsFile << ElementList.at(i).getNodeList().at(j) << "\t";
+        }
         ElementsFile << "\n";
     }
 
@@ -1465,7 +1656,16 @@ void gmESSITranslator::WriteCommand(const int&i, const int& j){
         nofRun++;
         map<int,Node>::iterator NodeInfo = this->NodeMap.find(it->second);
 
-        NodesFile << to_string(NodeInfo->second.getId()) << "\t";
+        /******************************** OPtimizing Nodes for ESSI *****************************************/
+        if(this->NodeNoMap.find(NodeInfo->second.getId())->second==0){
+            string NewNodeNo = this->getVariable(node);
+            NodesFile << NewNodeNo << "\t";
+            this->NodeNoMap.find(NodeInfo->second.getId())->second = stoi(NewNodeNo);
+        }
+        else
+            NodesFile << to_string(this->NodeNoMap.find(NodeInfo->second.getId())->second) << "\t";
+        /*********************************************************************************************/
+        // NodesFile << to_string(NodeInfo->second.getId()) << "\t";
         NodesFile << to_string(NodeInfo->second.getXcord())<< "\t"; 
         NodesFile << to_string(NodeInfo->second.getYcord())<< "\t"; 
         NodesFile << to_string(NodeInfo->second.getZcord())<< "\n"; 
@@ -1861,8 +2061,11 @@ void gmESSITranslator::GMSH_to_ESSI_NODE_Mapping(){
     //Elemental Commands  --- 4 4-node tetrahedron.
     //Elemental Commands  --- 5 8-node hexahedron.
         
-        GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=6; 
-        GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=2;
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=6; 
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=2;
+
+        GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=2;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=4; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=6;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=8;
 
     //Elemental Commands  --- 6 6-node prism.
     //Elemental Commands  --- 7 5-node pyramid.
@@ -1876,6 +2079,14 @@ void gmESSITranslator::GMSH_to_ESSI_NODE_Mapping(){
 
     //Elemental Commands  --- 11 10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).u
     //Elemental Commands  --- 12 27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
+
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][4]=6; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][8]=2;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][9]=15;   GMSH_to_ESSI_NODE_CONNECTIVITY [12][10]=14;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][11]=19;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][12]=16;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][13]=20;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][14]=13;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][15]=17;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][16]=18;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][17]=11;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][18]=10;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][19]=12;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][20]=9;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][21]=27;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][22]=24;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][23]=23;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][24]=25;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][25]=22;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][26]=26;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][27]=21;
 
         GMSH_to_ESSI_NODE_CONNECTIVITY [12][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][4]=6; 
         GMSH_to_ESSI_NODE_CONNECTIVITY [12][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][8]=2;
