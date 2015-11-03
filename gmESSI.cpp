@@ -59,7 +59,7 @@ int main(int argc, char* argv[]){
 
 	} catch (const char* msg){cerr << msg << endl;}
 
-	return 0;
+	return 1;
 }
 
 string getFilePath(){

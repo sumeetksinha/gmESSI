@@ -55,6 +55,13 @@ class gmESSIPython{
 		void setGeometryFile(const string& GeometryFile);
 		void setMainFile(const string& MainFile);
 
+		/******************** Optimizing Functions for ESSI *******************************************/
+		map<int,int> getNodeNoMap();
+		map<int,int> getElementNoMap();
+		void setNodeNoMap(map<int,int> NodeNoMap);
+		void setElementNoMap(map<int,int> ElementNoMap);
+		/*********************************************************************************************/
+		
 		void CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList);
 		string GmshFile="", pwd="", GeometryFile="", MainFile="", LoadFile="";
 

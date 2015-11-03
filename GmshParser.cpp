@@ -21,9 +21,7 @@
 ****************************** Constructor ************************************
 ******************************************************************************/
 
-GmshParser::GmshParser(){
-
-}
+GmshParser::GmshParser(){}
 
 GmshParser::GmshParser(const string& filename){
 

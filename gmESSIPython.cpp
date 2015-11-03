@@ -343,6 +343,27 @@ void gmESSIPython::UpdateGmshFile(){
 	return;
 }
 
+map<int,int> gmESSIPython::getNodeNoMap(){
+
+	return Translator.NodeNoMap;
+}
+
+map<int,int> gmESSIPython::getElementNoMap(){
+
+	return Translator.ElementNoMap;
+}
+
+void gmESSIPython::setNodeNoMap(map<int,int> NodeNoMap){
+
+	Translator.NodeNoMap = NodeNoMap;
+}
+
+void gmESSIPython::setElementNoMap(map<int,int> ElementNoMap){
+
+	Translator.ElementNoMap = ElementNoMap;
+}
+
+
 /*******************************************************************************
 ********************************* Private Function *****************************
 *******************************************************************************/
@@ -587,5 +608,9 @@ BOOST_PYTHON_MODULE(gmessi)
     	.def("UpdateGmshFile",&gmESSIPython::UpdateGmshFile)
     	.def("BoxSelectionData",&gmESSIPython::BoxSelectionData)
     	.def("getGroupData",&gmESSIPython::getGroupData)
-    	.def("DisplayNewTagNumbering",&gmESSIPython::DisplayNewTagNumbering);
+    	.def("DisplayNewTagNumbering",&gmESSIPython::DisplayNewTagNumbering)
+    	.def("getNodeNoMap",&gmESSIPython::getNodeNoMap)
+    	.def("getElementNoMap",&gmESSIPython::getElementNoMap)
+    	.def("setNodeNoMap",&gmESSIPython::setNodeNoMap)
+    	.def("setElementNoMap",&gmESSIPython::setElementNoMap);
 }

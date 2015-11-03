@@ -158,6 +158,7 @@ void PhysicalGroup::Process(const string& Command ){
 		if(its->str().compare("")){
     		boost::regex  AssignRegex("[^(:=)]*:=\\s*");
     		string variable = trim(its->str());
+    		// cout << variable << " " ;
 			boost::sregex_iterator it(variable.begin(), variable.end(), AssignRegex);
     		if(it!= end)
     			variable = variable.substr(it->str().length()-1,variable.length());

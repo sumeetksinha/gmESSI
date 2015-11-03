@@ -24,6 +24,7 @@
 #include <iomanip> 
 #include <sstream>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 using namespace::std;
 
@@ -131,9 +132,13 @@ void gmESSITranslator::GmshToEssi(){
 	/*******************************************************************/
 
     /***************NodeNodemap assigning to 0***********************/
-    int NodeListSize = this->NodeMap.size();
-    for (int i =1 ; i <= NodeListSize+1 ; i++)
-        this->NodeNoMap.insert(pair<int,int>(i,0));
+    // int NodeListSize = this->NodeMap.size();
+    // for (int i =1 ; i <= NodeListSize ; i++)
+    //     this->NodeNoMap.insert(pair<int,int>(NodeMap,0));
+
+    for (map<int,Node>::iterator it=NodeMap.begin(); it!=NodeMap.end(); ++it)
+        this->NodeNoMap.insert(pair<int,int>(it->second.getId(),0));
+
     /*******************************************************************/
     int PhysicalGroupListSize = this->PhysicalGroupList.size();
 
@@ -750,7 +755,15 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
         throw msg.c_str();
     }
 
-    double vec_x = stof(trim(tkr.nextToken())),vec_y = stof(trim(tkr.nextToken())),vec_z = stof(trim(tkr.nextToken()));double sum = vec_x*vec_x+vec_y*vec_y+vec_z*vec_z;
+    double vec_x = 0, vec_y = 0, vec_z =0; vec_x = stof(trim(tkr.nextToken())); boost::regex  AssignRegex("[^(:=)]*:=\\s*"); boost::sregex_iterator end;
+    string variable = trim(tkr.nextToken()); /*cout << variable << " " ;*/ boost::sregex_iterator it(variable.begin(), variable.end(), AssignRegex);  if(it!= end)  variable = variable.substr(it->str().length(),variable.length()); vec_y= stof(trim(variable));
+    variable = trim(tkr.nextToken()); /*cout << variable << " " ;*/ boost::sregex_iterator its(variable.begin(), variable.end(), AssignRegex); if(its!= end)  variable = variable.substr(its->str().length(),variable.length()); vec_z= stof(trim((variable)));
+
+    // cout << "***********************************************************************************" << endl;
+    // cout << " " << vec_x ; cout  << " " << vec_y; cout << " " << vec_z  << endl;
+    // cout << "***********************************************************************************" << endl;
+
+    double sum = vec_x*vec_x+vec_y*vec_y+vec_z*vec_z;
     vec_x=vec_x/sqrt(sum);vec_y=vec_y/sqrt(sum);vec_z=vec_z/sqrt(sum);
     double length = stof(this->delSpaces(Variables.at(4))); // Magnitude of vector
     int NofLayers = stoi(this->delSpaces(Variables.at(5))); // Number of layers
@@ -2064,8 +2077,11 @@ void gmESSITranslator::GMSH_to_ESSI_NODE_Mapping(){
         // GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=6; 
         // GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=2;
 
-        GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=2;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=4; 
-        GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=6;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=8;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=2;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=4; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=6;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=8;
+
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [5][1]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][2]=2;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][3]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][4]=4; 
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [5][5]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][6]=6;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][7]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [5][8]=8;
 
     //Elemental Commands  --- 6 6-node prism.
     //Elemental Commands  --- 7 5-node pyramid.
@@ -2080,21 +2096,21 @@ void gmESSITranslator::GMSH_to_ESSI_NODE_Mapping(){
     //Elemental Commands  --- 11 10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).u
     //Elemental Commands  --- 12 27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
 
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][4]=6; 
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][8]=2;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][9]=15;   GMSH_to_ESSI_NODE_CONNECTIVITY [12][10]=14;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][11]=19;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][12]=16;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][13]=20;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][14]=13;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][15]=17;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][16]=18;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][17]=11;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][18]=10;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][19]=12;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][20]=9;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][21]=27;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][22]=24;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][23]=23;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][24]=25;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][25]=22;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][26]=26;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][27]=21;
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [12][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][4]=6; 
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [12][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][8]=2;
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [12][9]=15;   GMSH_to_ESSI_NODE_CONNECTIVITY [12][10]=14;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][11]=19;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][12]=16;
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [12][13]=20;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][14]=13;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][15]=17;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][16]=18;
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [12][17]=11;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][18]=10;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][19]=12;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][20]=9;
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [12][21]=27;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][22]=24;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][23]=23;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][24]=25;
+        // GMSH_to_ESSI_NODE_CONNECTIVITY [12][25]=22;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][26]=26;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][27]=21;
 
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][1]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][2]=8;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][3]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][4]=6; 
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][5]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][6]=4;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][7]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][8]=2;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][9]=15;   GMSH_to_ESSI_NODE_CONNECTIVITY [12][10]=14;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][11]=19;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][12]=16;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][13]=20;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][14]=13;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][15]=17;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][16]=18;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][17]=11;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][18]=10;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][19]=12;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][20]=9;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][21]=27;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][22]=24;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][23]=23;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][24]=25;
-        GMSH_to_ESSI_NODE_CONNECTIVITY [12][25]=22;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][26]=26;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][27]=21;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][1]=1;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][2]=2;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][3]=3;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][4]=4; 
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][5]=5;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][6]=6;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][7]=7;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][8]=8;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][9]=9;    GMSH_to_ESSI_NODE_CONNECTIVITY [12][10]=10;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][11]=11;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][12]=12;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][13]=13;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][14]=14;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][15]=15;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][16]=16;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][17]=17;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][18]=18;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][19]=19;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][20]=20;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][21]=21;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][22]=22;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][23]=23;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][24]=24;
+        GMSH_to_ESSI_NODE_CONNECTIVITY [12][25]=25;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][26]=26;  GMSH_to_ESSI_NODE_CONNECTIVITY [12][27]=27;
         
     //Elemental Commands  --- 13 18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces).
     //Elemental Commands  --- 14 14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
