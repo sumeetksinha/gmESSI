@@ -654,15 +654,15 @@ void gmESSITranslator::GeneralElementalCommand(const int& i, const int& j){
             }
             else if(!var.compare("node") || !var.compare("nodes")){
 
-                /******************************** OPtimizing Nodes for ESSI *****************************************/
-                if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second==0){
+                /******************************** OPtimizing for ESSI *****************************************/
+                m=m+1;if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second==0){
                     string NewNodeNo = this->getVariable(var);
                     this->TempVariable.push(NewNodeNo);
-                    this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second = stoi(NewNodeNo);
+                    this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second = stoi(NewNodeNo);
                 }
                 else
-                    this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second));
-                /***************************************************************************************************/
+                    this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second));
+                /*********************************************************************************************/
 
                 // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
             }
@@ -867,13 +867,14 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
         double node1_z = NodeMap1->second.getZcord()+length*(vec_z);
         int UniqueNodes = 0;
 
-
         for(map<int,int>::iterator It2 = Iterator2Begin; It2!=Iterator2End ;++It2){
 
             NodeMap2 = this->NodeMap.find(It2->second);
             double modx = abs(node1_x-NodeMap2->second.getXcord());
             double mody = abs(node1_y-NodeMap2->second.getYcord());
             double modz = abs(node1_z-NodeMap2->second.getZcord());
+
+            // cout << "modx " << modx << " mody " << mody << " modz " << modz << endl;
 
             if(sqrt(modx*modx+ mody*mody +modz*modz)<=tolerence){
                     
@@ -1225,6 +1226,8 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
     ofstream LoadFile(loadFile,ios::app); int init=0;
     LoadFile<< PrintStartConversion(j);
 
+    // cout << "I am in General Element Variational Command" << endl;
+
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     setTypeIter(TypeIter,this->VariableList.at(j),i,j,init);
@@ -1275,14 +1278,14 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
             }
             else if(!var.compare("node") || !var.compare("nodes")){
 
-                /******************************** OPtimizing Nodes for ESSI *****************************************/
-                if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second==0){
+                /******************************** OPtimizing for ESSI *****************************************/
+                m=m+1;if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second==0){
                     string NewNodeNo = this->getVariable(var);
                     this->TempVariable.push(NewNodeNo);
-                    this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second = stoi(NewNodeNo);
+                    this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second = stoi(NewNodeNo);
                 }
                 else
-                    this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second));
+                    this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second));
                 /*********************************************************************************************/
 
                 // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));  
@@ -1332,6 +1335,8 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
 
     ofstream GeometryFile(geometryFile, ios::app); int init=0;
     GeometryFile << PrintStartConversion(j);
+
+    // cout << "I am in Elemental Variational Command" << endl;
 
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
@@ -1386,14 +1391,14 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
 
-                    /******************************** OPtimizing Nodes for ESSI *****************************************/
-                    if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second==0){
+                    /******************************** OPtimizing for ESSI *****************************************/
+                    m=m+1;if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second==0){
                         string NewNodeNo = this->getVariable(var);
                         this->TempVariable.push(NewNodeNo);
-                        this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second = stoi(NewNodeNo);
+                        this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second = stoi(NewNodeNo);
                     }
                     else
-                        this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(m++))->second));
+                        this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m]-1))->second));
                     /*********************************************************************************************/
 
                     // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m++)));                   
@@ -1401,13 +1406,14 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){
                     this->TempVariable.push(this->getVariable(var)); 
                 }
-                else {string UserVariable = Variables.at(n++);
+                else {string UserVariable = Variables.at(n++); 
 	                try{
 
 	                    string unit="", prec="0", value, function;
 	                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
 	                    string ScriptFunction = tknzr.nextToken();
 	                    function = ScriptVariables + ScriptFunction + ";";
+	                    // cout << "function " << function << endl;
 	                    value = this->Evaluate.eval(function);
 	                    if(tknzr.hasMoreTokens()){
 	                        string temp = delSpaces(tknzr.nextToken()); 
