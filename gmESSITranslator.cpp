@@ -764,12 +764,17 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
     // cout << "***********************************************************************************" << endl;
 
     double sum = vec_x*vec_x+vec_y*vec_y+vec_z*vec_z;
-    vec_x=vec_x/sqrt(sum);vec_y=vec_y/sqrt(sum);vec_z=vec_z/sqrt(sum);
+    if (sum==0){vec_x=1.0/sqrt(3);vec_y=1.0/sqrt(3);vec_z=1.0/sqrt(3);}
+    else { vec_x=vec_x/sqrt(sum);vec_y=vec_y/sqrt(sum);vec_z=vec_z/sqrt(sum);}
+
     double length = stof(this->delSpaces(Variables.at(4))); // Magnitude of vector
-    int NofLayers = stoi(this->delSpaces(Variables.at(5))); // Number of layers
+    int NofLayers = stoi(this->delSpaces(Variables.at(7))); // Number of layers
     string algo = this->delSpaces(Variables.at(6));      // Algo 
-    double tolerence = stof(this->delSpaces(Variables.at(7))); // Tolerence 
+    double tolerence = stof(this->delSpaces(Variables.at(5))); // Tolerence 
     string newPhysicalGroupName = this->delSpaces(Variables.at(8)); //new PhysicalGroupName specified by the usrer
+
+    // cout << "Length= " << length << " NofLayers= " << NofLayers << "algo= " << algo << " tolerence= " << tolerence << endl;
+    // cout << (Variables.at(5)) << endl;
 
     if(Iterator1==this->EntityMap.end()||Iterator2==this->EntityMap.end()||(Iterator3==this->EntityMap.end() && algo!=("find"))||Iterator1==this->PhysicalGroupMap.end()||Iterator2==this->PhysicalGroupMap.end()||(Iterator3==this->PhysicalGroupMap.end() && algo!=("find"))){
 
@@ -867,6 +872,8 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
         double node1_z = NodeMap1->second.getZcord()+length*(vec_z);
         int UniqueNodes = 0;
 
+        // cout << "I am here" << endl;
+
         for(map<int,int>::iterator It2 = Iterator2Begin; It2!=Iterator2End ;++It2){
 
             NodeMap2 = this->NodeMap.find(It2->second);
@@ -875,7 +882,8 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
             double modz = abs(node1_z-NodeMap2->second.getZcord());
 
             // cout << "modx " << modx << " mody " << mody << " modz " << modz << endl;
-
+            // cout << "Tolerence " << sqrt(modx*modx+ mody*mody +modz*modz) << endl;
+            // cout << "Tolerence by user " << tolerence << endl;
             if(sqrt(modx*modx+ mody*mody +modz*modz)<=tolerence){
                     
                 Node1=NodeMap1->first; NofElementsCreated+=1;NofNodesCreated++;                   
