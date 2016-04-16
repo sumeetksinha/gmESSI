@@ -17,7 +17,7 @@ gmessi: mapping.fei EmbeddFile Embedded.o Element.o GmshParser.o gmESSITranslato
 		@echo "***************************************************************************************************************************************"
 		@echo "****************************************************Started Building Document**********************************************************"
 		@echo "***************************************************************************************************************************************"
-		cd docs && $(MAKE)
+		# cd docs && $(MAKE)
 		@echo "Sucessfully Completed"
 
 gmESSI.o: gmESSI.cpp
@@ -61,14 +61,18 @@ install:
 		mkdir /usr/local/gmESSI/lib
 		cp *.cpp *.h mapping.fei Makefile /usr/local/gmESSI/src
 		cp gmessi EmbeddFiles /usr/local/gmESSI/bin
+		cp gmessy.py /usr/local/gmESSI/bin
 		cp gmessi.so /usr/local/gmESSI/lib
 		if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
 		cp gmessi.so /usr/lib/python2.7	
 		ln -s -f /usr/local/gmESSI/bin/gmessi /usr/local/bin/gmessi
-
+		ln -s -f /usr/local/gmESSI/bin/gmessy.py /usr/local/bin/gmessy
+		chmod +x /usr/local/bin/gmessy
 uninstall:
 		if [ -d "/usr/local/gmESSI" ]; then	rm -r /usr/local/gmESSI; fi
 		@echo "removing directory in usr/local/gmESSI"
 		if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
 		rm -f /usr/local/bin/gmessi
+		rm -f /usr/local/bin/gmessy
+		rm -f /usr/local/bin/gmessy.py
 		
