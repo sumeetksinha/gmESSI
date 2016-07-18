@@ -165,7 +165,7 @@ void PhysicalGroup::Process(const string& Command ){
     		varList.push_back(trim(variable));
     		essiTag = essiTag + " ,";
     		nofVariables++;
-    		// cout << variable << endl;
+    		// cout << trim(variable) << endl;
 		}
 
 	if(nofVariables==0)

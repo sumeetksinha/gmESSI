@@ -546,6 +546,8 @@ void gmESSITranslator::NodalCommand(const int& i, const int& j){
     ofstream LoadFile(loadFile,ios::app); int init =0;
     LoadFile<< PrintStartConversion(j);
 
+    cout << "Nodal Command" << endl;
+
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     setTypeIter(TypeIter,this->VariableList.at(j),i,j,init);
