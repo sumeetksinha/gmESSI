@@ -129,7 +129,8 @@
 
 		!1-v <Vary_Beam_Elastic_Lumped_Mass{cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}|Vary_Beam_Elastic_Lumped_Mass{PhyEntTag,cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}>									add element #{} type beam_elastic_lumped_mass with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} bending_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{}); 
 		!1-v <Vary_Truss{material#1,cs,md}|Vary_Truss{PhyEntTag,material#1,cs,md}>								    																									add element #{} type truss with nodes ({},{}) use material #{} cross_section ={} mass_density={} ; 
-		!1-v <Vary_Frictional_Penalty_Contact{ns,ts,nd,td,fr,cp1,cp2,cp3}|Vary_Frictional_Penalty_Contact{PhyEntTag,ns,ts,nd,td,fr,cp1,cp2,cp3}>																		add element #{} type FrictionalPenaltyContact with nodes ({},{}) normal_stiffness={} tangential_stiffness={} normal_damping={} tangential_damping={} friction_ratio={} contact_plane_vector=({},{},{});			
+		!1-v <Vary_HardContact{ns,ts,nd,td,fr,cp1,cp2,cp3}|Vary_HardContact{PhyEntTag,ns,ts,nd,td,fr,cp1,cp2,cp3}>																										add element #{} type HardContact with nodes ({},{}) normal_stiffness={} tangential_stiffness={} normal_damping={} tangential_damping={} friction_ratio={} contact_plane_vector=({},{},{});			
+		!1-v <Vary_SoftContact{ns,sr,ts,nd,td,fr,cp1,cp2,cp3}|Vary_SoftContact{PhyEntTag,ns,sr,ts,nd,td,fr,cp1,cp2,cp3}>																								add element #{} type SoftContact with nodes ({},{}) initial_normal_stiffness={}  stiffning_rate={} tangential_stiffness={} normal_damping={} tangential_damping={} friction_ratio={} contact_plane_vector=({},{},{});			
 		!1-v <Vary_Beam_Elastic{cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}|Vary_Beam_Elastic{PhyEntTag,cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}>															add element #{} type beam_elastic with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} bending_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});
 		!1-v <Vary_Beam_Displacement_Based{material#1,section,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13}|Vary_Beam_Displacement_Based{PhyEntTagmaterial#1,section,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13}>						add element #{} type beam_displacement_based with nodes ({},{}) with #{}  integration_points use section #{} mass_density={} IntegrationRule={}			  xz_plane_vector= ({},{},{}) joint_1_offset= ({},{},{}) joint_2_offset= ({},{},{});
 		!1-v <Vary_Beam_9dof_Elastic{cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}|Vary_Beam_9dof_Elastic{PhyEntTag,cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}>													add element #{} type beam_9dof_elastic with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} bending_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});
@@ -203,7 +204,7 @@
 
 // Connect Commands
 
-	!cc <Connect{PhyEntTag,PhyEntTag,PhyEntyTag,dv1,mag,noT,algo,Tolerence,PhysicalGroupName}>							{} {};				
+	!cc <Connect{PhyEntTag,PhyEntTag,PhyEntyTag,dv1,mag,Tolerence,algo,noT,PhysicalGroupName}>							{} {};				
 
 // Singular Commands 
 
@@ -224,6 +225,7 @@
 	//Acceleration field
 
 		!sc <Add_Acceleration_Field{field#1,ax,ay,az}|Add_Acceleration_Field{ax,ay,az}>									add acceleration field #{} ax={} ay={} az={};		
+		!sc <Add_All_Element_Self_Weight{acc_field}>																	add load #{} to all elements type self_weight use acceleration field #{};
 
 	// Simulation Commands
 
@@ -287,6 +289,7 @@
 		!sc <Add_Uniaxial_steel02{material#1,par1,par2,par3,par4,par5,par6,par7,par8,par9,par10}|Add_Uniaxial_steel02{par1,par2,par3,par4,par5,par6,par7,par8,par9,par10}>																																																													add material #{} type uniaxial_steel02 yield_strength={} elastic_modulus={} strain_hardening_ratio={} R0={} cR1={} cR2={} a1={} a2={} a3={} a4={};
 		!sc <Add_New_PisanoLT{material#1,par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11,par12}|Add_New_PisanoLT{par1,par2,par3,par4,par5,par6,par7,par8,par9,par10,par11,par12}>																																																									add material #{} type New_PisanoLT mass_density={} elastic_modulus_1atm={} poisson_ratio={} M_in={} kd_in={} xi_in={} h_in={} m_in={} initial_confining_stress={} n_in={} a_in={} eplcum_cr_in={};
 		!sc <Add_Linear_elastic_isotropic_3d_LT{material#1,par1,par2,par3}|Add_Linear_elastic_isotropic_3d_LT{par1,par2,par3}>																																																																								add material #{} type linear_elastic_isotropic_3d_LT mass_density={} elastic_modulus={} poisson_ratio={};	
+		!sc <Define_Constitutive_Integration_Algorithm{algorithm,yf_tolerence,sigma_tolerence,max_iter}>																																																																													define NDMaterialLT constitutive integration algorithm {} yield_function_relative_tolerance={}   stress_relative_tolerance={} maximum_iterations={};
 
 	// Section Definition
 
@@ -392,7 +395,7 @@
 
 // General Elemental Commands
 
-	!ec <Add_Element_Self_Weight{field#1}|Add_Element_Self_Weight{PhyEntTag,field#1}>							    																											add load #{} to element #{} type self_weight use acceleration field #{} ;
+	!ec <Add_Element_Self_Weight{field#1}|Add_Element_Self_Weight{PhyEntTag,field#1}>							    																							add load #{} to element #{} type self_weight use acceleration field #{} ;
 	!ec <Add_Element_Damping{damping#1}|Add_Element_Damping{PhyEntTag,damping#1}>				    																											add damping #{} to element #{};
 	!ec <Check_Element{}|Check_Element{PhyEntTag}>																																								check element #{};
 	!ec <Print_Element{}|Print_Element{PhyEntTag}>																																								print element #{};
@@ -401,7 +404,8 @@
 
 	!1 <Add_Beam_Elastic_Lumped_Mass{cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}|Add_Beam_Elastic_Lumped_Mass{PhyEntTag,cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}>									add element #{} type beam_elastic_lumped_mass with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} bending_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{}); 
 	!1 <Add_Truss{material#1,cs,md}|Add_Truss{PhyEntTag,material#1,cs,md}>								    																									add element #{} type truss with nodes ({},{}) use material #{} cross_section ={} mass_density={} ; 
-	!1 <Add_Frictional_Penalty_Contact{ns,ts,nd,td,fr,cp1,cp2,cp3}|Add_Frictional_Penalty_Contact{PhyEntTag,ns,ts,nd,td,fr,cp1,cp2,cp3}>																		add element #{} type FrictionalPenaltyContact with nodes ({},{}) normal_stiffness={} tangential_stiffness={} normal_damping={} tangential_damping={} friction_ratio={} contact_plane_vector=({},{},{});			
+	!1 <Add_HardContact{ns,ts,nd,td,fr,cp1,cp2,cp3}|Add_HardContact{PhyEntTag,ns,ts,nd,td,fr,cp1,cp2,cp3}>																										add element #{} type HardContact with nodes ({},{}) normal_stiffness={} tangential_stiffness={} normal_damping={} tangential_damping={} friction_ratio={} contact_plane_vector=({},{},{});			
+	!1 <Add_SoftContact{ns,sr,ts,nd,td,fr,cp1,cp2,cp3}|Add_SoftContact{PhyEntTag,ns,sr,ts,nd,td,fr,cp1,cp2,cp3}>																								add element #{} type SoftContact with nodes ({},{}) initial_normal_stiffness={}  stiffning_rate={} tangential_stiffness={} normal_damping={} tangential_damping={} friction_ratio={} contact_plane_vector=({},{},{});
 	!1 <Add_Beam_Elastic{cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}|Add_Beam_Elastic{PhyEntTag,cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}>															add element #{} type beam_elastic with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} bending_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});
 	!1 <Add_Beam_Displacement_Based{material#1,section,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13}|Add_Beam_Displacement_Based{PhyEntTagmaterial#1,section,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13}>						add element #{} type beam_displacement_based with nodes ({},{}) with #{}  integration_points use section #{} mass_density={} IntegrationRule={}			  xz_plane_vector= ({},{},{}) joint_1_offset= ({},{},{}) joint_2_offset= ({},{},{});
 	!1 <Add_Beam_9dof_Elastic{cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}|Add_Beam_9dof_Elastic{PhyEntTag,cs,em,sm,Jx,Iy,Iz,m,xz,xz,xz,j1,j1,j1,j2,j2,j2}>													add element #{} type beam_9dof_elastic with nodes ({},{}) cross_section={} elastic_modulus={} shear_modulus={} torsion_Jx={} bending_Iy={} bending_Iz={} mass_density={}  xz_plane_vector=({},{},{}) joint_1_offset=({},{},{}) joint_2_offset=({},{},{});
@@ -501,3 +505,7 @@
 //Elemental Commands  --- 31 56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)
 //Elemental Commands  --- 92 64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)
 //Elemental Commands  --- 93 125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)
+
+
+// Global Elements 
+
