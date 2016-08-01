@@ -39,6 +39,7 @@ gmESSITranslator::gmESSITranslator(){}
 gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& newDir){
 
     GmshFile = gmshFile;
+    ESSI_Simulation_Dir = newDir;
     Tokenizer tknzr = Tokenizer(gmshFile,"/ ."); 
     tknzr.setcurrPos(gmshFile.length()-1);tknzr.setMode(1);tknzr.nextToken();tknzr.nextToken();
     this->pwd = newDir+tknzr.currToken(); 
@@ -50,6 +51,7 @@ gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& newDir)
 gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
 
     GmshFile = gmshFile;
+    ESSI_Simulation_Dir = newDir;
     Tokenizer tknzr = Tokenizer(gmshFile,"/ "); tknzr.setMode(1);tknzr.nextToken();
     MappingFile = mappingFile;
     this->pwd = newDir+tknzr.currToken(); 
@@ -67,6 +69,7 @@ gmESSITranslator::~gmESSITranslator(){ }
 void gmESSITranslator::setGmshFile(const string& gmshFile, const string& newDir){
 
     GmshFile = gmshFile;
+    ESSI_Simulation_Dir = newDir;
     Tokenizer tknzr = Tokenizer(gmshFile,"/ "); tknzr.setMode(1);tknzr.nextToken();
     this->pwd = newDir+tknzr.currToken(); 
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
@@ -91,6 +94,8 @@ string gmESSITranslator::getFileName(){
 ******************************************************************************/
 
 void gmESSITranslator::GmshToEssi(){
+
+    this->Generate_Make_File();
 
     this->GMSH_to_ESSI_NODE_Mapping();
     ofstream MainFile(mainFile,ios::out);  
@@ -2059,6 +2064,24 @@ void gmESSITranslator::UpdateGmshFile(){
 		UpdateGmshFile << "\n";
 	}
 	UpdateGmshFile << "$EndElements\n";
+
+    return;
+}
+
+void gmESSITranslator::Generate_Make_File(){
+
+    string MakeFile_File = this->ESSI_Simulation_Dir +"Makefile";
+    ofstream Makefile(MakeFile_File,ios::out);  
+    Makefile << endl << "# Default Makefile Variables " << endl;
+    Makefile << "NP=4 " << endl << endl;
+    Makefile << "all: " << endl;
+    Makefile << "\t essi -f " << mainFile << endl << endl;
+    Makefile << "serial: " << endl;
+    Makefile << "\t essi -f " << mainFile << endl << endl;   
+    Makefile << "parallel: " << endl;
+    Makefile << "\t mpirun -np ${NP} pessi -f " << mainFile << endl << endl; 
+    Makefile << "clean: " << endl;
+    Makefile << "\t rm *.feioutput "<< endl << endl; 
 
     return;
 }

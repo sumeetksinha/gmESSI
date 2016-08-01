@@ -53,7 +53,7 @@ class gmESSITranslator{
         void DisplayNewTagNumbering();
 
         int NewEntity =0;
-        string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile;
+        string GmshFile, MappingFile, pwd, geometryFile, mainFile, loadFile, ESSI_Simulation_Dir;
         map<int,NodeElement> PhysicalGroupMap;
         map<int,NodeElement> EntityMap;
         map<string,int> PhysicalStringNameToIdMap;
@@ -82,6 +82,7 @@ class gmESSITranslator{
         void GMSH_to_ESSI_NODE_Mapping();
 
         void clear( queue<string> &q );
+        void Generate_Make_File();
         string delSpaces(string str);
         string trim(const string& str, const string& delimiters = " \f\n\r\t\v" );
         string PrintEssiCommand(string Command, int NofEssiVariables, int j);
