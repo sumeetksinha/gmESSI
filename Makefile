@@ -19,7 +19,7 @@ GmshParser.o: GmshParser.cpp
 Mapping.o: Mapping.cpp
 		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Mapping.cpp
 PhysicalGroup.o: PhysicalGroup.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex -lboost_regex-mt -lboost_python -lboost_system $(CFLAGS) PhysicalGroup.cpp
+		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_regex-mt -lboost_python -lboost_system $(CFLAGS) PhysicalGroup.cpp
 Node.o: Node.cpp
 		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Node.cpp
 Element.o: Element.cpp 
@@ -32,13 +32,13 @@ OctParser.o: OctParser.cpp
 		mkoctfile -c OctParser.cpp
 gmESSIPython.o: gmESSIPython.cpp
 		$(CC)  -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) gmESSIPython.cpp
-Embedded.o: Embedded.cpp
+Embedded.o: EmbeddFile Embedded.cpp
 		$(CC)  -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Embedded.cpp
-EmbeddFile: EmbeddFiles.cpp
+EmbeddFile: EmbeddFiles.cpp mapping.fei
 		$(CC) EmbeddFiles.cpp -o EmbeddFiles
 		./EmbeddFiles mapping.fei > Embedded.cpp
 clean:
-		-rm *.o *.so gmessi EmbeddFiles
+		-rm *.o *.so gmessi ./EmbeddFiles Embedded.cpp
 
 install:
 		if [ -d "/usr/local/gmESSI" ]; then	rm -r /usr/local/gmESSI; fi

@@ -166,29 +166,35 @@ void Semantics::setMatchMode(){
 void Semantics::setEssiCommand(const string& Command){
 
 	int nofTokens = 0;
-	string Ecommand = "";
 	Tokenizer inpString = Tokenizer(Command," ") ;
+	string Ecommand = "";
+	string Fcommand = ""; // Filtered Command with spaces
+
 	while( inpString.hasMoreTokens()){
-		Ecommand = Ecommand + inpString.nextToken()+" ";
+		Fcommand = Fcommand + inpString.nextToken()+" ";
 	}
-	this->EssiCommand = Command;
-	
-	inpString.set(Command,"{}");
+
+	inpString.set(Fcommand,"{}");
 	nofTokens = inpString.countTokens()-1;
 
-	inpString.set(Command,"{}#()=");
 	string prevTag = "variable";
 
 	while(inpString.hasMoreTokens() && nofTokens-->0){
 
 		string variable;
-		Tokenizer Var = Tokenizer(inpString.nextToken()," ,");
+		Tokenizer Var = Tokenizer(inpString.nextToken(),"#()= ,");
 
-		if(!this->delSpaces(inpString.currToken()).compare(";")) break;                        // Termination Condition with ";"
+		if(!(inpString.currToken()).compare(";")) break;                        // Termination Condition with ";"
+		if((inpString.currToken()).back()=='\\'){							   // Escape sequence "\\"
+			Ecommand = Ecommand + inpString.currToken().substr(0,inpString.currToken().length()-1) +Fcommand.substr(inpString.currIndex()-1,1);
+			continue;					   
+		}
+
+		Ecommand = Ecommand + inpString.currToken() + "$";
 
 		Var.setMode(1);
 		Var.setcurrPos(inpString.currToken().length()-1);
-		string currTag = this->delSpaces(Var.nextToken());
+		string currTag = (Var.nextToken());
 
 		if (currTag.length()<=1)
 			variable = prevTag; 		
@@ -214,14 +220,14 @@ void Semantics::setEssiCommand(const string& Command){
 			this->NofTagVariables++;
 		}
 
-		//cout << variable << " ";
-		
 		this->VarList.push_back(variable);
 		this->EssiVarList.push_back(variable);
 		// inpString.setDelimiter("{}#()=");
 	}
 
-	//cout << endl;
+	Ecommand = Ecommand+inpString.nextToken();
+
+	this->EssiCommand = Ecommand;
 
 	this->NofEssiVariables = this->VarList.size();
 }

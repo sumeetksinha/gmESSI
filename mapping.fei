@@ -234,8 +234,8 @@
 		!sc <Define_Hibler_Hughes_Taylor_dynamic_integration{alpha}>													define dynamic integrator Hilber_Hughes_Taylor with alpha={};
 		!sc <Define_Newmark_dynamic_integration{gamma,beta}>															define dynamic integrator Newmark with gamma={}  beta={};
 		!sc <Define_Load_Factor_increament{incr}>																		define load factor increment {};
-		!sc <Define_Solver_ProfileSPD{}>																				if(IS_PARALLEL == 0) define solver ProfileSPD; else define solver parallel; 
-		!sc <Define_Solver_UMFPack{}>																					if(IS_PARALLEL == 0) define solver UMFPack; else define solver parallel; 
+		!sc <Define_Solver_ProfileSPD{}>																				if(IS_PARALLEL == 0) \{define solver ProfileSPD;\} else \{define solver parallel;\} ; 
+		!sc <Define_Solver_UMFPack{}>																					if(IS_PARALLEL == 0) \{define solver UMFPack;\} else \{define solver parallel;\} ; 
 		!sc <Define_Static_Integrator_Displacement_Control{node#1,dof,incr}>											define static integrator displacement_control using node #{}  dof {} increment {} ;
 		!sc <Simulate_Steps_Using_Static_Algorithm{nofsteps}>															simulate {} steps using static algorithm;
 		!sc <Simulate_Steps_Using_Transient_Algorithm{nofsteps,time_step}>												simulate {} steps using transient algorithm time_step={} ;

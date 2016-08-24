@@ -39,6 +39,7 @@ class Tokenizer{
 		string getString();
 		int countTokens();
 		bool hasMoreTokens();
+		int currIndex();
 		string currToken();
 		string nextToken();
 		string prevToken();

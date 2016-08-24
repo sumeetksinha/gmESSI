@@ -212,6 +212,11 @@ vector<string> Tokenizer::split(){
 	return this->strList;
 }
 
+int Tokenizer::currIndex(){
+
+	return std::distance(inpString.begin(), this->currPos);
+}
+
 /******************************************************************************
 ****************************** Private Function*********************************
 ******************************************************************************/

@@ -1739,7 +1739,7 @@ string gmESSITranslator::getVariable(string& var){
 string gmESSITranslator::PrintEssiCommand(string Command, int NofEssiVariables, int j){
 
     stringstream Ecommand; int nofTokens = 0;
-    Tokenizer inpString = Tokenizer(Command,"{}") ;
+    Tokenizer inpString = Tokenizer(Command,"$") ;
 
     if(this->TempVariable.size() > NofEssiVariables) {
         string msg = "\033[1;31mERROR:: The command \'" + this->UserCommandList.at(j) + "\'" + "has more than required variables" + " \033[0m\n" ; 
@@ -1753,7 +1753,7 @@ string gmESSITranslator::PrintEssiCommand(string Command, int NofEssiVariables, 
     
     while(inpString.hasMoreTokens() && nofTokens++<NofEssiVariables){
         Ecommand << inpString.nextToken()  << setw(0);
-        Ecommand << TempVariable.front()   << setw(0) ;
+        Ecommand << TempVariable.front()   << setw(0);
         TempVariable.pop();
     }
     
