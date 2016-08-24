@@ -97,8 +97,6 @@ try:
 			INPUT_FILE.write("\n"+newline.replace("\"","\\\"")+"\n");
 		gmESSI_Command=0;
 
-	INPUT_FILE.close();
-
 	if(not(ne)):
 		execfile(Temp_Input_File)
 
@@ -106,14 +104,16 @@ try:
 		os.remove(Temp_Input_File)
 
 	# if(nm):
-	# 	NodeMap = GmESSI.getNodeMap();
-	# 	NodeNoMap = GmESSI.getNodeNoMap();
-	# 	f = open("SurfaceLoad_Gmsh_To_ESSI_Node_Mapping",'w');
-	# 	for x in NodeNoMap:
-	# 		f.write(str(x)+"\n")
-	# 	f.close();
+	# 	INPUT_FILE("NodeMap = GmESSI.getNodeMap();\n");
+	# 	INPUT_FILE("NodeNoMap = GmESSI.getNodeNoMap();\n");
+	# 	INPUT_FILE("f = open(\"Gmsh_To_ESSI_Node_Mapping\",'w')\n");
+	# 	INPUT_FILE("for x in NodeNoMap:\n");
+	# 	INPUT_FILE("\tf.write(str(x)+\"\n\");\n");
+	# 	INPUT_FILE("f.close();\n");
 	# if(em):
-	# 	os.remove(Temp_Input_File)	
+	# 	# os.remove(Temp_Input_File)	
+
+	INPUT_FILE.close();
 
 except (RuntimeError, TypeError, NameError):
 	print bcolors.FAIL + "ERROR: "+newline+ bcolors.ENDC;
