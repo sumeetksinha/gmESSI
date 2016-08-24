@@ -31,7 +31,7 @@ parser.add_argument('-l', help='generate the log file at the current location',a
 parser.add_argument('-nm', help='generate the node map file at the current location',action="store_true")
 parser.add_argument('-em', help='generate the element map file at the current location',action="store_true")
 parser.add_argument('-ne', help='dont carry out the conversion',action="store_true")
-parser.add_argument('--logfile', help='generate the log file at specified location', type=str, dest='log_file')
+parser.add_argument('--logfile=', help='generate the log file at specified location', type=str, dest='log_file')
 parser.add_argument('--nodemap=', help='generate the nodemap file at specified location', type=str, dest='nm_file')
 parser.add_argument('--elemap=', help='generate the elementmap file at specified location', type=str, dest='elm_file')
 parser.add_argument('gmessi_filename', help='filename containing semantics of conversion', type=str)
@@ -97,6 +97,34 @@ try:
 			INPUT_FILE.write("\n"+newline.replace("\"","\\\"")+"\n");
 		gmESSI_Command=0;
 
+	if(nm):
+		INPUT_FILE.write("NodeNoMap = GmESSI.getNodeNoMap();\n");
+		INPUT_FILE.write("f = open(GmESSI.pwd+\"/Gmsh_To_ESSI_Node_Mapping\",'w')\n");
+		INPUT_FILE.write("for x in NodeNoMap:\n");
+		INPUT_FILE.write("\tf.write(str(x)+\"\\n\");\n");
+		INPUT_FILE.write("f.close();\n");
+
+	if(Temp_Node_Map_File):
+		INPUT_FILE.write("NodeNoMap = GmESSI.getNodeNoMap();\n");
+		INPUT_FILE.write("f = open(\""+os.path.realpath(Temp_Node_Map_File)+"\",'w')\n");
+		INPUT_FILE.write("for x in NodeNoMap:\n");
+		INPUT_FILE.write("\tf.write(str(x)+\"\\n\");\n");
+		INPUT_FILE.write("f.close();\n");
+
+	if(em):
+		INPUT_FILE.write("ElementNoMap = GmESSI.getElementNoMap();\n");
+		INPUT_FILE.write("f = open(GmESSI.pwd+\"/Gmsh_To_ESSI_Element_Mapping\",'w')\n");
+		INPUT_FILE.write("for x in ElementNoMap:\n");
+		INPUT_FILE.write("\tf.write(str(x)+\"\\n\");\n");
+		INPUT_FILE.write("f.close();\n");
+
+	if(Temp_Element_Map_File):
+		INPUT_FILE.write("ElementNoMap = GmESSI.getElementNoMap();\n");
+		INPUT_FILE.write("f = open(\""+os.path.realpath(Temp_Element_Map_File)+"\",'w')\n");
+		INPUT_FILE.write("for x in ElementNoMap:\n");
+		INPUT_FILE.write("\tf.write(str(x)+\"\\n\");\n");
+		INPUT_FILE.write("f.close();\n");
+
 	INPUT_FILE.close();
 
 	if(not(ne)):
@@ -104,16 +132,6 @@ try:
 
 	if(not(l)):
 		os.remove(Temp_Input_File)
-
-	# if(nm):
-	# 	NodeMap = GmESSI.getNodeMap();
-	# 	NodeNoMap = GmESSI.getNodeNoMap();
-	# 	f = open("SurfaceLoad_Gmsh_To_ESSI_Node_Mapping",'w');
-	# 	for x in NodeNoMap:
-	# 		f.write(str(x)+"\n")
-	# 	f.close();
-	# if(em):
-	# 	os.remove(Temp_Input_File)	
 
 except (RuntimeError, TypeError, NameError):
 	print bcolors.FAIL + "ERROR: "+newline+ bcolors.ENDC;
