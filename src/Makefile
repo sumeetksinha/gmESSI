@@ -68,7 +68,7 @@ EmbeddFile: EmbeddFiles.cpp mapping.fei
 
 clean:##@Default Clean the application build files
 		@-rm -rf *.o *.so gmessi ./EmbeddFiles Embedded.cpp
-		@-rm -rf $(realpath $(CURDIR))/build
+		@-rm -rf $(BUILD_DIR) 
 
 wipe: clean uninstall
 
