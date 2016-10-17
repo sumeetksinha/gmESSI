@@ -25,15 +25,18 @@
 CC= g++ -O3 -std=c++11
 CFLAGS = -c
 
-INSTALL_DIR = /usr/local
+INSTALL_DIR = /usr/local/
+BUILD_DIR   = $(realpath $(CURDIR))/../build
+OCTAVE_DIR  = $(shell ls /usr/lib | grep -E "octave-.\..\..")
 
-all: gmessi
+
+all: build
 
 gmessi: mapping.fei EmbeddFile Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o gmESSI.o  ##@Default Build gmESSI 
-		mkoctfile --link-stand-alone -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7  Embedded.o gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
+		mkoctfile --link-stand-alone -Wl,-rpath=/usr/lib/$(OCTAVE_DIR)/ -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7  Embedded.o gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
 		mkoctfile -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7 Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi.so
-		mv gmessi.so.oct gmessi.so
-		cat success
+		cp -f gmessi.so.oct gmessi.so &>/dev/null
+		chmod +x gmessy.py 
 
 gmESSI.o: gmESSI.cpp
 		$(CC) $(CFLAGS) gmESSI.cpp
@@ -65,30 +68,32 @@ EmbeddFile: EmbeddFiles.cpp mapping.fei
 
 clean:##@Default Clean the application build files
 		@-rm -rf *.o *.so gmessi ./EmbeddFiles Embedded.cpp
+		@-rm -rf $(realpath $(CURDIR))/build
+
+wipe: clean uninstall
+
+build: gmessi
+		@echo "creating directory in $(BUILD_DIR)"
+		@mkdir -p $(BUILD_DIR)/	
+		@mkdir -p $(BUILD_DIR)/include
+		@mkdir -p $(BUILD_DIR)/bin
+		@cp *.cpp *.h mapping.fei Makefile $(BUILD_DIR)/include
+		@cp gmessy.py $(BUILD_DIR)/bin/gmessy
+		@cp gmessi gmessi.so EmbeddFiles $(BUILD_DIR)/bin
+		@cat success
 
 install:##@Default Install the application
-		@ if [ -d "$(INSTALL_DIR)/gmESSI" ]; then	rm -r $(INSTALL_DIR)/gmESSI; fi
 		@echo "creating directory in $(INSTALL_DIR)/gmESSI"
 		@mkdir -p $(INSTALL_DIR)/gmESSI
-		@mkdir -p $(INSTALL_DIR)/gmESSI/src
+		@mkdir -p $(INSTALL_DIR)/gmESSI/include
 		@mkdir -p $(INSTALL_DIR)/gmESSI/bin
-		@mkdir -p $(INSTALL_DIR)/gmESSI/lib
-		@cp *.cpp *.h mapping.fei Makefile $(INSTALL_DIR)/gmESSI/src
-		@cp gmessi EmbeddFiles $(INSTALL_DIR)/gmESSI/bin
+		@cp *.cpp *.h mapping.fei Makefile $(INSTALL_DIR)/gmESSI/include
 		@cp gmessy.py $(INSTALL_DIR)/gmESSI/bin/gmessy
-		@chmod +x $(INSTALL_DIR)/gmESSI/bin/gmessy
-		@cp gmessi.so $(INSTALL_DIR)/gmESSI/lib
-		@ if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
-		@cp $(INSTALL_DIR)/gmESSI/lib/gmessi.so /usr/lib/python2.7	
-		@ln -s -f $(INSTALL_DIR)/gmESSI/bin/gmessi /usr/local/bin/gmessi
-		@ln -s -f $(INSTALL_DIR)/gmESSI/bin/gmessy /usr/local/bin/gmessy
+		@cp gmessi gmessi.so EmbeddFiles $(INSTALL_DIR)/gmESSI/bin
 
 uninstall:##@Default Uninstall the application
-		@ if [ -d "$(INSTALL_DIR)/gmESSI" ]; then	rm -r $(INSTALL_DIR)/gmESSI; fi
 		@ echo "removing directory in $(INSTALL_DIR)/gmESSI"
-		@ if [ -d "/usr/lib/python2.7/gmessi.so" ]; then rm  /usr/lib/python2.7/gmessi.so ; fi
-		@rm -rf /usr/local/bin/gmessi
-		@rm -rf /usr/local/bin/gmessy
+		@ if [ -d "$(INSTALL_DIR)/gmESSI" ]; then rm -r $(INSTALL_DIR)/gmESSI; fi
 
 help: ##@Default Show this help.
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)

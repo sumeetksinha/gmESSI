@@ -27,3 +27,6 @@ EmbeddFiles
 *.exe
 *.out
 *.app
+
+#build folder 
+build

@@ -31,8 +31,17 @@ using namespace::std;
 ******************************************************************************/
 
 OctParser::OctParser(){
-	char *oct_argv[3] = {(char*)"embeded",(char*)"-q",(char*)"--interactive"}; 
-    octave_main(3,oct_argv,true);
+
+    // Disable warning printing from octave 
+    std::ofstream error("/dev/null");
+    std::streambuf *errbuf = std::cerr.rdbuf(error.rdbuf());
+
+        char *oct_argv[3] = {(char*)"embeded",(char*)"-q",(char*)"--interactive"}; 
+        octave_main(3,oct_argv,true);
+
+    // Enable warning printing from octave 
+    std:cerr.rdbuf(errbuf);
+
 }
 
 OctParser::~OctParser(){

@@ -9,46 +9,21 @@ gmESSI is a finite element translator from [gmsh](http://gmsh.info/) (a three-di
 
 #### Building Dependencies
 
-1) Boost
+1) Boost and Python
 
 ```bash
-sudo apt-get install boost-all-dev
+sudo apt-get install libboost1.48-all-dev
+sudo apt-get install build-essential
+sudo apt-get install python-dev 
 ```
 
 2) Octave
 
 ```bash
-# Building Octave dependencies
-sudo apt-get install libpcre3 libpcre3-dev
-sudo apt-get build-dep octave
-
-# Compiling Octave
-wget ftp://ftp.gnu.org/gnu/octave/octave-4.0.3.tar.gz  (or any other newer version)
-tar -xvf octave-4.0.3.tar.gz
-mv octave-4.0.3 Octave
-cd Octave
-
-# comment out all the warnings of file 
-# ./libinterp/octave-value/ov-typeinfo.cc
-
-# configure octave build
-
-./configure CPPFLAGS=-I/usr/include/hdf5/serial 
-LDFLAGS=-L/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/hdf5/serial --enable-jit 
-make -j 8
-make check
-make install PREFIX=/usr/local
-```
-
-3) Python
-
-```bash
-sudo apt-get install build-essential
-sudo apt-get install boost-all-dev
-sudo apt-get install python-dev 
-sudo apt-get install libqt4-core libqt4-gui qt4-qmake libxt-dev 
-sudo apt-get install g++ gcc cmake-curses-gui libqt4-opengl-dev 
-sudo apt-get install mesa-common-dev python-dev
+# For ubuntu 12
+sudo apt-get install liboctave-pkg-dev 
+# For ubuntu 14 onwards 
+sudo apt-get install liboctave-dev 
 ```
 
 #### Compiling gmESSI translator

@@ -21,22 +21,23 @@
 ###########################################################################################################################
 
 
-PREFIX = /usr/local
+INSTALL_DIR = /usr/local
+BUILD_DIR   = $(realpath $(CURDIR))/build
 
 
 all: gmessi
 
 gmessi:##@Default Build gmESSI
-		@cd ./src && make INSTALL_DIR=$(PREFIX)
+		@cd ./src && make INSTALL_DIR=$(INSTALL_DIR) BUILD_DIR=$(BUILD_DIR)
 
 clean:##@Default Clean the application build files
-		@cd ./src && make clean INSTALL_DIR=$(PREFIX)
+		@cd ./src && make clean INSTALL_DIR=$(INSTALL_DIR) BUILD_DIR=$(BUILD_DIR)
 
 install:##@Default Install the application
-		@cd ./src && make install INSTALL_DIR=$(PREFIX)
+		@cd ./src && make install INSTALL_DIR=$(INSTALL_DIR) BUILD_DIR=$(BUILD_DIR)
 
 uninstall:##@Default Uninstall the application
-		@cd ./src && make uninstall INSTALL_DIR=$(PREFIX)
+		@cd ./src && make uninstall INSTALL_DIR=$(INSTALL_DIR) BUILD_DIR=$(BUILD_DIR)
 
 help: ##@Default Show this help.
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
