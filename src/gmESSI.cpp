@@ -19,8 +19,6 @@
 #include <sys/stat.h>
 #include <string>
 
-#define _GLIBCXX_USE_CXX11_ABI 0
-
 #ifdef _WIN32 
     #include <direct.h>
     #define GetCurrentDir _getcwd

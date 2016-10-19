@@ -28,7 +28,8 @@ CFLAGS = -c
 INSTALL_DIR = /usr/local/
 BUILD_DIR   = $(realpath $(CURDIR))/../build
 OCTAVE_DIR  = $(shell ls /usr/lib | grep -E "octave-.\..\..")
-ADD_FLAGS   = -D_GLIBCXX_USE_CXX11_ABI=0 -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv  -fPIC  -lboost_regex  -lboost_python -lboost_system 
+GMESSI_GLIBCXX_USE = 1
+ADD_FLAGS   = -D_GLIBCXX_USE_CXX11_ABI=$(GMESSI_GLIBCXX_USE) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv  -fPIC  -lboost_regex  -lboost_python -lboost_system 
 
 
 all: build
