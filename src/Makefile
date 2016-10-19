@@ -28,40 +28,41 @@ CFLAGS = -c
 INSTALL_DIR = /usr/local/
 BUILD_DIR   = $(realpath $(CURDIR))/../build
 OCTAVE_DIR  = $(shell ls /usr/lib | grep -E "octave-.\..\..")
+ADD_FLAGS   = -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv  -fPIC  -lboost_regex  -lboost_python -lboost_system 
 
 
 all: build
 
 gmessi: mapping.fei EmbeddFile Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o gmESSI.o  ##@Default Build gmESSI 
-		mkoctfile --link-stand-alone -Wl,-rpath=/usr/lib/$(OCTAVE_DIR)/ -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7  Embedded.o gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
-		mkoctfile -L/usr/bin -lboost_regex  -lboost_python-py27 -lpython2.7 Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi.so
+		mkoctfile --link-stand-alone -Wl,-rpath=/usr/lib/$(OCTAVE_DIR)/ -lboost_regex  -lboost_python-py27 -lpython2.7  Embedded.o gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
+		mkoctfile -lboost_regex -lboost_python-py27 -lpython2.7 Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi.so
 		mv -f gmessi.so.oct gmessi.so &>/dev/null
 		chmod +x gmessy.py 
 
 gmESSI.o: gmESSI.cpp
 		$(CC) $(CFLAGS) gmESSI.cpp
 gmESSITranslator.o: gmESSITranslator.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) gmESSITranslator.cpp 
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7  $(CFLAGS) gmESSITranslator.cpp 
 GmshParser.o: GmshParser.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) GmshParser.cpp
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) GmshParser.cpp
 Mapping.o: Mapping.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Mapping.cpp
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) Mapping.cpp
 PhysicalGroup.o: PhysicalGroup.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_regex-mt -lboost_python -lboost_system $(CFLAGS) PhysicalGroup.cpp
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7 -lboost_regex-mt $(CFLAGS) PhysicalGroup.cpp
 Node.o: Node.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Node.cpp
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) Node.cpp
 Element.o: Element.cpp 
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Element.cpp 
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) Element.cpp 
 Semantics.o: Semantics.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Semantics.cpp
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) Semantics.cpp
 Tokenizer.o: Tokenizer.cpp
-		$(CC) -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Tokenizer.cpp
+		$(CC) $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) Tokenizer.cpp
 OctParser.o: OctParser.cpp
 		mkoctfile -c OctParser.cpp
 gmESSIPython.o: gmESSIPython.cpp
-		$(CC)  -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) gmESSIPython.cpp
+		$(CC)  $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) gmESSIPython.cpp
 Embedded.o: EmbeddFile Embedded.cpp
-		$(CC)  -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -fPIC -I/usr/include/python2.7  -lboost_regex  -lboost_python -lboost_system $(CFLAGS) Embedded.cpp
+		$(CC)  $(ADD_FLAGS) -I/usr/include/python2.7 $(CFLAGS) Embedded.cpp
 EmbeddFile: EmbeddFiles.cpp mapping.fei
 		$(CC) EmbeddFiles.cpp -o EmbeddFiles
 		./EmbeddFiles mapping.fei > Embedded.cpp
