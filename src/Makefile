@@ -36,7 +36,7 @@ all: build
 gmessi: mapping.fei EmbeddFile Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o gmESSI.o  ##@Default Build gmESSI 
 		mkoctfile --link-stand-alone -Wl,-rpath=/usr/lib/$(OCTAVE_DIR)/ -lboost_regex  -lboost_python-py27 -lpython2.7  Embedded.o gmESSI.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi
 		mkoctfile -lboost_regex -lboost_python-py27 -lpython2.7 Embedded.o Element.o GmshParser.o gmESSITranslator.o Mapping.o Node.o PhysicalGroup.o Semantics.o Tokenizer.o OctParser.o gmESSIPython.o -o gmessi.so
-		mv -f gmessi.so.oct gmessi.so &>/dev/null
+		mv -f gmessi.so.oct gmessi.so || true
 		chmod +x gmessy.py 
 
 gmESSI.o: gmESSI.cpp
