@@ -551,8 +551,6 @@ void gmESSITranslator::NodalCommand(const int& i, const int& j){
     ofstream LoadFile(loadFile,ios::app); int init =0;
     LoadFile<< PrintStartConversion(j);
 
-    cout << "Nodal Command" << endl;
-
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     setTypeIter(TypeIter,this->VariableList.at(j),i,j,init);
@@ -968,15 +966,13 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
     // replace( gmssiArguments.begin(), gmssiArguments.end(), ';', ',' );
     // tknzr.set(gmssiArguments,",");
 
-    // cout << gmssiCommandtag << endl;
-    // cout << gmssiArguments << endl;
-
     // if(tknzr.countTokens()>=1) gmssiArguments=","+gmssiArguments;
 
-    gmssiArguments=","+gmssiArguments;
+    if (gmssiArguments.substr(0,gmssiArguments.length()-1).compare(""))
+        gmssiArguments=","+gmssiArguments;
 
-    string ElementalCommand =  gmssiCommandtag +"1"+ gmssiArguments;
-    cout << ElementalCommand << endl;
+    string ElementalCommand =  gmssiCommandtag +"PhyEntyGroup,1"+ gmssiArguments;
+    // cout << ElementalCommand << endl;
     PhysicalGroup TempPhyGroup = PhysicalGroup(); TempPhyGroup.Process(ElementalCommand);
     TempFunctionIter = this->FunctionMap.find(TempPhyGroup.getCommandList().at(0));
 
@@ -1060,7 +1056,8 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                 this->MaterialTag.insert(pair<string,int>(Material,MatTag));
             }
 
-            ElementalCommand = gmssiCommandtag +to_string(MatTag)+ gmssiArguments;
+            ElementalCommand = gmssiCommandtag +"PhyEntyTag,"+to_string(MatTag)+ gmssiArguments;
+
             PhysicalGroup ElemPhyGroup = PhysicalGroup(); ElemPhyGroup.Process(ElementalCommand);
             TempFunctionIter = this->FunctionMap.find(ElemPhyGroup.getCommandList().at(0));
 
@@ -1069,12 +1066,11 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
             int NewNofEssiVariables = TempFunctionIter->second.getNofEssiVariables();
 
             n=0;m=0;
-
             for(int l=0 ; l<NewNofEssiVariables ;l++ ){
 
                 Tokenizer tknzr = Tokenizer(NewEssiVariables.at(l),"#");
                 string var = tknzr.nextToken();
-             
+
                 if(!var.compare("element")){
 
                     /******************************** OPtimizing Elements for ESSI *****************************************/
@@ -1106,8 +1102,10 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                     this->TempVariable.push(this->getVariable(var)); 
                 }
                 else{string UserVariable = NewVariables.at(n++);
-	                try{
+                     if(!UserVariable.compare("PhyEntyTag"))
+                        UserVariable = NewVariables.at(n++);
 
+	                try{
 	                    string unit="", prec="0", value, function;
 	                    Tokenizer tknzr = Tokenizer(UserVariable,"\\");
 	                    string ScriptFunction = tknzr.nextToken();
