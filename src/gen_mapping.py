@@ -25,6 +25,9 @@ import simplejson
 
 # # removing old snippet and keywords
 os.system("rm -r mapping.fei")
+os.system("rm -r gmESSI_Command_Library.pdf")
+
 
 # # updating snippets and keywords
 os.system("svn export --force https://github.com/BorisJeremic/Real-ESSI/branches/sumeet/DSL/GmessiDocs/mapping.fei") 
+os.system("svn export --force https://github.com/BorisJeremic/Real-ESSI/branches/sumeet/DSL/gmESSI_Command_Library.pdf") 

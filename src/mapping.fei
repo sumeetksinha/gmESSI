@@ -1,0 +1,516 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                         //
+//  GMESSI (Gmsh to Real-ESSI Translator) Simulator Utility                                                                //
+//  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                      //
+//                                                                                                                         //
+//  gmESSI is a powerful hybrid python-based translator that takes gmessi as well as python commands                       //
+//  and translates the mesh built in gmsh to ESSI inpute .fei files.                                                       //
+//  linked in lib folder.                                                                                                  //
+//                                                                                                                         //
+//  GitHub         :: https://github.com/SumeetSinha/gmESSI                                                                //
+//  Sublime Plugin :: gmESSI-Tools                                                                                         //
+//                                                                                                                         //
+//  Sumeet Kumar Sinha (November,2016)                                                                                     //
+//  Computational Geomechanics Group                                                                                       //
+//  University of California, Davis                                                                                        //
+//  s u m e e t k s i n h a . c o m                                                                                        //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+#ELEMENT_ID
+    cc  "Connect Commands"
+ 0_9-c  "Elemental Compound Commands"
+    an  "Add Node Commands"
+    nc  "Nodal Commands"
+    ev  "General Elemental Varaiational Commands"
+    wr  "Write Commands"
+    nv  "Nodal Variational Commands"
+   0_9  "Elemental Commands"
+    sc  "Singular Commands"
+    ec  "General Elemental Commands"
+ 0_9-v  "Elemental Varaiational Commands"
+0_9-vc  "Elemental Varaiational Compound Commands"
+    mv  "Material Variational Commands"
+    15  "1-node point."
+    14  "14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face)."
+    17  "20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges)."
+    16  "8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges)."
+    11  "10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges)."
+    10  "9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face)."
+    13  "18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces)."
+    12  "27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume)."
+    19  "13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges)."
+    18  "15-node second order prism (6 nodes associated with the vertices and 9 with the edges)."
+    33  "125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)"
+     1  "2-node line."
+     0  "Element-cum-physicalgroup commands"
+     3  "4-node quadrangle."
+     2  "3-node triangle."
+     5  "8-node hexahedron."
+     4  "4-node tetrahedron."
+     7  "5-node pyramid."
+     6  "6-node prism."
+     9  "6-node second order triangle (3 nodes associated with the vertices and 3 with the edges)."
+     8  "3-node second order line (2 nodes associated with the vertices and 1 with the edge)."
+    32  "64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)"
+    20  "9-node third order incomplete triangle (3 nodes associated with the vertices, 6 with the edges)"
+    21  "10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)"
+    22  "12-node fourth order incomplete triangle (3 nodes associated with the vertices, 9 with the edges)"
+    23  "15-node fourth order triangle (3 nodes associated with the vertices, 9 with the edges, 3 with the face)"
+    24  "15-node fifth order incomplete triangle (3 nodes associated with the vertices, 12 with the edges)"
+    25  "21-node fifth order complete triangle (3 nodes associated with the vertices, 12 with the edges, 6 with the face)"
+    26  "4-node third order edge (2 nodes associated with the vertices, 2 internal to the edge)"
+    27  "5-node fourth order edge (2 nodes associated with the vertices, 3 internal to the edge)"
+    28  "6-node fifth order edge (2 nodes associated with the vertices, 4 internal to the edge)"
+    29  "20-node third order tetrahedron (4 nodes associated with the vertices, 12 with the edges, 4 with the faces)"
+    31  "56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)"
+    30  "35-node fourth order tetrahedron (4 nodes associated with the vertices, 18 with the edges, 12 with the faces, 1 in the volume)"
+#ENDELEMENT_ID
+
+#ESSI_TAGS
+	element
+	damping
+	displacement
+	field
+	load
+	material
+	motion
+	node
+	nodes
+	sections
+#ENDESSI_TAGS
+
+
+//Connect Commands
+
+  !cc <Connect{PhyEntyTag,PhyEntyTag,PhyEntyTag,dv1,mag,Tolerence,algo,noT,PhysicalGroupName}>                                                                                                                 {} {};
+
+
+//Elemental Compound Commands
+
+// Elemental Commands   ------    1-node point.
+// Elemental Commands   ------    14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
+// Elemental Commands   ------    20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
+
+!17-c <Add_20NodeBrick_SurfaceLoad{PhyEntyTag,PhyEntyTag,Pressure}>                                                                                                                                            add load # {} to element # {} type surface at nodes ({} , {} , {} , {}, {}, {}, {}, {}) with magnitude {};
+!17-c <Add_20NodeBrick_SurfaceLoad{PhyEntyTag,PhyEntyTag,Press1,Press2,Press3,Press4,Press5,Press6,Press7,Press8}>                                                                                             add load # {} to element # {} type surface at nodes ({} , {} , {} , {}, {}, {}, {}, {}) with magnitudes ({} , {} , {} , {}, {}, {}, {}, {});
+
+// Elemental Commands   ------    8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
+// Elemental Commands   ------    10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).
+// Elemental Commands   ------    9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face).
+// Elemental Commands   ------    18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces).
+// Elemental Commands   ------    27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
+
+!12-c <Add_27NodeBrick_SurfaceLoad{PhyEntyTag,PhyEntyTag,Pressure}>                                                                                                                                            add load # {} to element # {} type surface at nodes ({} , {} , {} , {}, {}, {}, {}, {}, {}) with magnitude {};
+!12-c <Add_27NodeBrick_SurfaceLoad{PhyEntyTag,PhyEntyTag,Press1,Press2,Press3,Press4,Press5,Press6,Press7,Press8,Press9}>                                                                                      add load # {} to element # {} type surface at nodes ({} , {} , {} , {}, {}, {}, {}, {}, {}) with magnitudes ({} , {} , {} , {}, {}, {}, {}, {}, {});
+
+// Elemental Commands   ------    13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges).
+// Elemental Commands   ------    15-node second order prism (6 nodes associated with the vertices and 9 with the edges).
+// Elemental Commands   ------    125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)
+// Elemental Commands   ------    2-node line.
+// Elemental Commands   ------    Element-cum-physicalgroup commands
+// Elemental Commands   ------    4-node quadrangle.
+// Elemental Commands   ------    3-node triangle.
+// Elemental Commands   ------    8-node hexahedron.
+
+ !5-c <Add_8NodeBrick_SurfaceLoad{PhyEntyTag,PhyEntyTag,Pressure}>                                                                                                                                             add load # {} to element # {} type surface at nodes ({} , {} , {} , {}) with magnitude {};
+ !5-c <Add_8NodeBrick_SurfaceLoad{PhyEntyTag,PhyEntyTag,Press1,Press2,Press3,Press4}>                                                                                                                          add load # {} to element # {} type surface at nodes ({} , {} , {} , {}) with magnitudes ({} , {} , {} , {});
+
+// Elemental Commands   ------    4-node tetrahedron.
+// Elemental Commands   ------    5-node pyramid.
+// Elemental Commands   ------    6-node prism.
+// Elemental Commands   ------    6-node second order triangle (3 nodes associated with the vertices and 3 with the edges).
+// Elemental Commands   ------    3-node second order line (2 nodes associated with the vertices and 1 with the edge).
+// Elemental Commands   ------    64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)
+// Elemental Commands   ------    9-node third order incomplete triangle (3 nodes associated with the vertices, 6 with the edges)
+// Elemental Commands   ------    10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)
+// Elemental Commands   ------    12-node fourth order incomplete triangle (3 nodes associated with the vertices, 9 with the edges)
+// Elemental Commands   ------    15-node fourth order triangle (3 nodes associated with the vertices, 9 with the edges, 3 with the face)
+// Elemental Commands   ------    15-node fifth order incomplete triangle (3 nodes associated with the vertices, 12 with the edges)
+// Elemental Commands   ------    21-node fifth order complete triangle (3 nodes associated with the vertices, 12 with the edges, 6 with the face)
+// Elemental Commands   ------    4-node third order edge (2 nodes associated with the vertices, 2 internal to the edge)
+// Elemental Commands   ------    5-node fourth order edge (2 nodes associated with the vertices, 3 internal to the edge)
+// Elemental Commands   ------    6-node fifth order edge (2 nodes associated with the vertices, 4 internal to the edge)
+// Elemental Commands   ------    20-node third order tetrahedron (4 nodes associated with the vertices, 12 with the edges, 4 with the faces)
+// Elemental Commands   ------    56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)
+// Elemental Commands   ------    35-node fourth order tetrahedron (4 nodes associated with the vertices, 18 with the edges, 12 with the faces, 1 in the volume)
+
+
+//Add Node Commands
+
+  !an <Add_Node{PhyEntyTag,Unit,NumDofs}>                                                                                                                                                                      add node # {} at ({},{},{})  with {} dofs;
+  !an <Add_All_Node{Unit,NumDofs}>                                                                                                                                                                             add node # {} at ({},{},{})  with {} dofs;
+
+
+//Nodal Commands
+
+  !nc <Add_Nodes_To_Physical_Group{PhyEntyTag,PhysicalNodeGroup}>                                                                                                                                              add nodes ({}) to physical_node_group {};
+  !nc <Add_Self_Weight_To_Node{PhyEntyTag,field#1}>                                                                                                                                                            add load # {} to node # {} type self_weight use acceleration field # {};
+  !nc <Add_Node_Load_Linear{PhyEntyTag,ForceType,Mag}>                                                                                                                                                         add load # {} to node # {} type linear {} = {}; 
+  !nc <Add_Node_Load_Path_Time_Series{PhyEntyTag,ForceType,Mag,SeriesFile}>                                                                                                                                    add load # {} to node # {} type path_time_series {} = {} series_file = {};
+  !nc <Add_Node_Load_Path_Series{PhyEntyTag,ForceType,Mag,TimeStep,SeriesFile}>                                                                                                                                add load # {} to node # {} type path_series {} = {} time_step = {} series_file = {};
+  !nc <Add_Node_Load_From_Reaction{PhyEntyTag}>                                                                                                                                                                add load # {} to node # {} type from_reactions;
+  !nc <Add_Node_Load_Imposed_Motion_Time_Series{PhyEntyTag,DofType,TimeStep,DispScale,DispFile,VelScale,VelFile,AccScl,AccFile}>                                                                               add imposed motion # {} to node # {} dof {} time_step = {} displacement_scale_unit = {} displacement_file = {} velocity_scale_unit = {} velocity_file = {} acceleration_scale_unit = {} acceleration_file = {};
+  !nc <Add_Node_Load_Imposed_Motion_Series{PhyEntyTag,DofType,DispScale,DispFile,VelScale,VelFile,AccScale,AccFile}>                                                                                           add imposed motion # {} to node # {} dof {} displacement_scale_unit = {} displacement_file = {} velocity_scale_unit = {} velocity_file = {} acceleration_scale_unit = {} acceleration_file = {};
+  !nc <Add_Damping_To_Node{PhyEntyTag,damping#1}>                                                                                                                                                              add damping # {} to node # {};
+  !nc <Add_Mass_To_Node{PhyEntyTag,MassX,MassY,MassZ}>                                                                                                                                                         add mass to node # {} mx = {} my = {} mz = {};
+  !nc <Add_Beam_Mass_To_Node{PhyEntyTag,MassX,MassY,MassZ,ImassX,ImassY,ImassZ}>                                                                                                                               add mass to node # {} mx = {} my = {} mz = {} Imx = {} Imy = {} Imz = {};
+  !nc <Add_Master_Slave{PhyEntyTag,node#1,MasterSlaveDofType}>                                                                                                                                                 add constraint equal_dof with master node # {} and slave node # {} dof to constrain {};
+  !nc <Add_MasterDof_SlaveDof{PhyEntyTag,node#1,MasterDofType,SlaveDofType}>                                                                                                                                   add constraint equal_dof with node # {} dof {} master and node # {} dof {} slave;
+  !nc <Fix_Dofs{PhyEntyTag,DofTypes}>                                                                                                                                                                          fix node # {} dofs {};
+  !nc <Fix_All_Dofs{PhyEntyTag}>                                                                                                                                                                               fix node # {} dofs all;
+  !nc <Add_Single_Point_Constraint{PhyEntyTag,DofType,Val}>                                                                                                                                                    add single point constraint to node # {} dof to constrain {} constraint value of {};
+  !nc <Free_Dofs{PhyEntyTag,DofTypes}>                                                                                                                                                                         free node # {} dofs {};
+  !nc <Remove_Node{PhyEntyTag}>                                                                                                                                                                                remove node # {};
+  !nc <Remove_Equal_Dof_Constrain{PhyEntyTag}>                                                                                                                                                                 remove constraint equal_dof node # {};
+  !nc <Remove_Displacement_From_Node{PhyEntyTag}>                                                                                                                                                              remove displacement from  node # {};
+
+
+//General Elemental Varaiational Commands
+
+  !ev <Vary_Damping_To_Element{PhyEntyTag,damping#1}>                                                                                                                                                          add damping # {} to element # {};
+
+
+//Write Commands
+
+  !wr <Write_Data{PhyEntyTag,FileName}>                                                                                                                                                                        {} {};
+
+
+//Nodal Variational Commands
+
+  !nv <Vary_Damping_To_Node{PhyEntyTag,damping#1}>                                                                                                                                                             add damping # {} to node # {};
+  !nv <Vary_Mass_To_Node{PhyEntyTag,MassX,MassY,MassZ}>                                                                                                                                                        add mass to node # {} mx = {} my = {} mz = {};
+  !nv <Vary_Beam_Mass_To_Node{PhyEntyTag,MassX,MassY,MassZ,ImassX,ImassY,ImassZ}>                                                                                                                              add mass to node # {} mx = {} my = {} mz = {} Imx = {} Imy = {} Imz = {};
+  !nv <Vary_Master_Slave{PhyEntyTag,node#1,MasterSlaveDofType}>                                                                                                                                                add constraint equal_dof with master node # {} and slave node # {} dof to constrain {};
+  !nv <Vary_MasterDof_SlaveDof{PhyEntyTag,node#1,MasterDofType,SlaveDofType}>                                                                                                                                  add constraint equal_dof with node # {} dof {} master and node # {} dof {} slave;
+  !nv <Vary_Fix_Dofs{PhyEntyTag,DofTypes}>                                                                                                                                                                     fix node # {} dofs {};
+  !nv <Vary_Free_Dofs{PhyEntyTag,DofTypes}>                                                                                                                                                                    free node # {} dofs {};
+
+
+//Elemental Commands
+
+// Elemental Commands   ------    1-node point.
+// Elemental Commands   ------    14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
+// Elemental Commands   ------    20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
+
+  !17 <Add_20NodeBrick{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                                                  add element # {} type 20NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+  !17 <Add_20NodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                             add element # {} type 20NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+  !17 <Add_20NodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                             add element # {} type 20NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !17 <Add_20NodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                         add element # {} type 20NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})  use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !17 <Add_20NodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                              add element # {} type 20NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !17 <Add_20NodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                          add element # {} type 20NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+
+// Elemental Commands   ------    8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
+// Elemental Commands   ------    10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).
+// Elemental Commands   ------    9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face).
+// Elemental Commands   ------    18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces).
+// Elemental Commands   ------    27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
+
+  !12 <Add_27NodeBrick{PhyEntyTag,material#1}>                                                                                                                                                                 add element # {} type 27NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+  !12 <Add_VariableNodeBrick{PhyEntyTag,material#1}>                                                                                                                                                           add element # {} type 8_27_NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+  !12 <Add_27NodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                             add element # {} type 27NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+  !12 <Add_VariableNodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                       add element # {} type 8_27_NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+  !12 <Add_27NodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                             add element # {} type 27NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !12 <Add_VariableNodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                       add element # {} type 8_27_NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !12 <Add_27NodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                         add element # {} type 27NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !12 <Add_VariableNodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                   add element # {} type 8_27_NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !12 <Add_27NodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                              add element # {} type 27NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !12 <Add_VariableNodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                        add element # {} type 8_27_NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !12 <Add_27NodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                          add element # {} type 27NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+  !12 <Add_VariableNodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                    add element # {} type 8_27_NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+
+// Elemental Commands   ------    13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges).
+// Elemental Commands   ------    15-node second order prism (6 nodes associated with the vertices and 9 with the edges).
+// Elemental Commands   ------    125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)
+// Elemental Commands   ------    2-node line.
+
+   !1 <Add_ShearBeam{PhyEntyTag,CrossSection,material#1}>                                                                                                                                                      add element # {} type ShearBeam with nodes ({}, {}) cross_section = {} use material # {};
+   !1 <Add_DispBeamColumn3D{PhyEntyTag,NumIntegrPoints,SectionNumber,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                                               add element # {} type BeamColumnDispFiber3d with nodes ({}, {}) number_of_integration_points = {} section_number = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+   !1 <Add_Beam_Elastic{PhyEntyTag,CrossSection,ElasticModulus,ShearModulus,Jx,Iy,Iz,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                               add element # {} type beam_elastic with nodes ({}, {}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+   !1 <Add_Beam_Elastic_LumpedMass{PhyEntyTag,CrossSection,ElasticModulus,ShearModulus,Jx,Iy,Iz,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                    add element # {} type beam_elastic_lumped_mass with nodes ({}, {}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+   !1 <Add_Beam_DisplacementBased{PhyEntyTag,NumIntegrationPoints,SectionNumber,Density}>                                                                                                                      add element # {} type beam_displacement_based with nodes ({}, {}) with # {} integration_points use section # {} mass_density = {} IntegrationRule = "" xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+   !1 <Add_Beam_9Dof_Elastic{PhyEntyTag,CrossSection,ElasticModulus,ShearModulus,Jx,Iy,Iz,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                          add element # {} type beam_9dof_elastic with nodes ({}, {}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+   !1 <Add_HardContact{PhyEntyTag,NormalStiffness,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                                         add element # {} type HardContact with nodes ({}, {}) normal_stiffness = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+   !1 <Add_HardWetContact{PhyEntyTag,NormalStiffness,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                                      add element # {} type HardWetContact with nodes ({}, {}) normal_stiffness = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+   !1 <Add_SoftContact{PhyEntyTag,InitialNormalStiffness,Stiffningrate,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                    add element # {} type SoftContact with nodes ({}, {}) initial_normal_stiffness = {} stiffning_rate = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+   !1 <Add_SoftWetContact{PhyEntyTag,InitialNormalStiffness,Stiffningrate,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                 add element # {} type SoftWetContact with nodes ({}, {}) initial_normal_stiffness = {} stiffning_rate = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+   !1 <Add_Truss{PhyEntyTag,material#1,CrossSectin,Density}>                                                                                                                                                   add element # {} type truss with nodes ({}, {}) use material # {} cross_section = {} mass_density = {} ;
+
+// Elemental Commands   ------    Element-cum-physicalgroup commands
+// Elemental Commands   ------    4-node quadrangle.
+
+   !3 <Add_4NodeShell_MITC4{PhyEntyTag,material#1,Thickness}>                                                                                                                                                  add element # {} type 4NodeShell_MITC4 with nodes ({}, {}, {}, {}) use material # {} thickness = {};
+   !3 <Add_4NodeShell_NewMITC4{PhyEntyTag,material#1,Thickness}>                                                                                                                                               add element # {} type 4NodeShell_NewMITC4 with nodes ({}, {}, {}, {}) use material # {} thickness = {};
+   !3 <Add_4NodeShell_Andes{PhyEntyTag,material#1,Thickness}>                                                                                                                                                  add element # {} type 4NodeShell_ANDES with nodes ({}, {}, {}, {}) use material # {} thickness = {} ;
+
+// Elemental Commands   ------    3-node triangle.
+// Elemental Commands   ------    8-node hexahedron.
+
+   !5 <Add_8NodeBrick{PhyEntyTag,material#1}>                                                                                                                                                                  add element # {} type 8NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+   !5 <Add_8NodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                              add element # {} type 8NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+   !5 <Add_8NodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                              add element # {} type 8NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+   !5 <Add_8NodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                          add element # {} type 8NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+   !5 <Add_8NodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                               add element # {} type 8NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+   !5 <Add_8NodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                           add element # {} type 8NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+
+// Elemental Commands   ------    4-node tetrahedron.
+// Elemental Commands   ------    5-node pyramid.
+// Elemental Commands   ------    6-node prism.
+// Elemental Commands   ------    6-node second order triangle (3 nodes associated with the vertices and 3 with the edges).
+// Elemental Commands   ------    3-node second order line (2 nodes associated with the vertices and 1 with the edge).
+// Elemental Commands   ------    64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)
+// Elemental Commands   ------    9-node third order incomplete triangle (3 nodes associated with the vertices, 6 with the edges)
+// Elemental Commands   ------    10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)
+// Elemental Commands   ------    12-node fourth order incomplete triangle (3 nodes associated with the vertices, 9 with the edges)
+// Elemental Commands   ------    15-node fourth order triangle (3 nodes associated with the vertices, 9 with the edges, 3 with the face)
+// Elemental Commands   ------    15-node fifth order incomplete triangle (3 nodes associated with the vertices, 12 with the edges)
+// Elemental Commands   ------    21-node fifth order complete triangle (3 nodes associated with the vertices, 12 with the edges, 6 with the face)
+// Elemental Commands   ------    4-node third order edge (2 nodes associated with the vertices, 2 internal to the edge)
+// Elemental Commands   ------    5-node fourth order edge (2 nodes associated with the vertices, 3 internal to the edge)
+// Elemental Commands   ------    6-node fifth order edge (2 nodes associated with the vertices, 4 internal to the edge)
+// Elemental Commands   ------    20-node third order tetrahedron (4 nodes associated with the vertices, 12 with the edges, 4 with the faces)
+// Elemental Commands   ------    56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)
+// Elemental Commands   ------    35-node fourth order tetrahedron (4 nodes associated with the vertices, 18 with the edges, 12 with the faces, 1 in the volume)
+
+
+//Singular Commands
+
+  !sc <Print{Exp}>                                                                                                                                                                                             print {};
+  !sc <Print_Node{PhyEntyTag}>                                                                                                                                                                                 print element # {};
+  !sc <Print_Single_Node{node#1}>                                                                                                                                                                              print element # {};
+  !sc <Print_Node{PhyEntyTag}>                                                                                                                                                                                 print node # {};
+  !sc <Print_Single_Node{node#1}>                                                                                                                                                                              print node # {};
+  !sc <Check_Mesh{FileName}>                                                                                                                                                                                   check mesh {};
+  !sc <Add_Acceleration_Field{field#1,AccX,AccY,AccZ}>                                                                                                                                                         add acceleration field # {} ax = {} ay = {} az = {} ;
+  !sc <Add_Self_Weight_To_All_Elements{field#1}>                                                                                                                                                               add load # {} to all elements type self_weight use acceleration field # {};
+  !sc <Add_Uniform_Acceleration_Series_To_All_Nodes{DofType,TimeStep,ScaleFactor,InitialVelocity,AccFile}>                                                                                                     add uniform acceleration # {} to all nodes dof {} time_step = {} scale_factor = {} initial_velocity = {} acceleration_file = {};
+  !sc <Define_Rayleigh_Damping{damping#1,a0,a1,StiffnessToUse}>                                                                                                                                                add damping # {} type Rayleigh with a0 = {} a1 = {} stiffness_to_use = {};
+  !sc <Define_Caughey3rd_Damping{damping#1,a0,a1,a2,StiffnessToUse}>                                                                                                                                           add damping # {} type Caughey3rd with a0 = {} a1 = {} a2 = {} stiffness_to_use = {};
+  !sc <Define_Caughey4th_Damping{damping#1,a0,a1,a2,a3,StiffnessToUse}>                                                                                                                                        add damping # {} type Caughey4th with a0 = {} a1 = {} a2 = {} a3 = {} stiffness_to_use = {};
+  !sc <Add_Domain_Reduction_Method{loading#1,Hdf5InputFile}>                                                                                                                                                   add domain reduction method loading # {} hdf5_file = {};
+  !sc <Add_Scaled_Domain_Reduction_Method{loading#1,Hdf5InputFile,ScaleFactor}>                                                                                                                                add domain reduction method loading # {} hdf5_file = {} scale_factor = {};
+  !sc <Add_Section_Membrane_Plate_Fiber{section#1,Thickness,material#1}>                                                                                                                                       add section # {} type Membrane_Plate_Fiber thickness = {} use material # {};
+  !sc <Add_Section_Elastic_Membrane_Plate{section#1,ElasticModulus,PoissonRatio,Thickness,Density}>                                                                                                            add section # {} type Elastic_Membrane_Plate elastic_modulus = {} poisson_ratio = {} thickness = {} mass_density = {};
+  !sc <Add_Section_Elastic3D{section#1,ElasticModulus,CrossSection,Iz,Iy,Jx}>                                                                                                                                  add section # {} type elastic3d elastic_modulus = {} cross_section = {} bending_Iz = {} bending_Iy={} torsion_Jx={} ;
+  !sc <Add_Section_FiberSection{section#1,TorsionConstantGJ}>                                                                                                                                                  add section # {} type FiberSection TorsionConstant_GJ = {}
+  !sc <Enable_Output{}>                                                                                                                                                                                        enable output;
+  !sc <Disable_Output{}>                                                                                                                                                                                       disable output;
+  !sc <Enable_Asynchronous_Output{}>                                                                                                                                                                           enable asynchronous output;
+  !sc <Disable_Asynchronous_Output{}>                                                                                                                                                                          disable asynchronous output;
+  !sc <Enable_Element_Output{}>                                                                                                                                                                                enable element output;
+  !sc <Disable_Element_Output{}>                                                                                                                                                                               disable element output;
+  !sc <Output_Nth_Steps{Nth}>                                                                                                                                                                                  output every {} steps;
+  !sc <Set_Output_Compression_Level{Level}>                                                                                                                                                                    set output compression level to {};
+  !sc <Define_Load_Factor_Increment{Incr}>                                                                                                                                                                     define load factor increment {};
+  !sc <Define_Constitutive_Integration{IntegrationAlgo}>                                                                                                                                                       define NDMaterial constitutive integration algorithm {};
+  !sc <Define_Constitutive_Integration_With_SubIncrements{IntegrationAlgo,NumSubIncr}>                                                                                                                         define NDMaterial constitutive integration algorithm {} number_of_subincrements ={};
+  !sc <Define_Constitutive_Integration_With_Tolerence{IntegrationAlgo,YfRelTol,StressRelTol,NumSubIncr}>                                                                                                       define NDMaterial constitutive integration algorithm {} yield_function_relative_tolerance  = {} stress_relative_tolerance = {} maximum_iterations = {};
+  !sc <Define_Algorithm{AlgoType}>                                                                                                                                                                             define algorithm {};
+  !sc <Define_Convergence_Test{TestType,Tol,MaxItr,VrbLevl}>                                                                                                                                                   define convergence test {} tolerance = {} maximum_iterations = {} verbose_level = {};
+  !sc <Define_Physical_Node_Group{GroupName}>                                                                                                                                                                  define physical_node_group {};
+  !sc <Remove_Physical_Node_Group{GroupName}>                                                                                                                                                                  remove physical_node_group {};
+  !sc <Define_Physical_Element_Group{GroupName}>                                                                                                                                                               define physical_element_group {};
+  !sc <Remove_Physical_Element_Group{GroupName}>                                                                                                                                                               rempve physical_element_group {};
+  !sc <Print_Physical_Element_Group{GroupName}>                                                                                                                                                                print physical_element_group {};
+  !sc <Print_Physical_Node_Group{GroupName}>                                                                                                                                                                   print physical_node_group {};
+  !sc <Define_Solver{SolverName}>                                                                                                                                                                              define solver {};
+  !sc <Define_Dynamic_Newmark_Integrator{Gamma,Beta}>                                                                                                                                                          define dynamic integrator Newmark with gamma = {} beta = {};
+  !sc <Define_Dynamic_Hilber_Hughes_Taylor_Integrator{Alpha}>                                                                                                                                                  define dynamic integrator Hilber_Hughes_Taylor with alpha = {};
+  !sc <Define_Static_Displacement_Control_Integrator{node#1,DofType,Incr}>                                                                                                                                     define static integrator displacement_control using node # {} dof {} increment {};
+  !sc <Define_Model_Name{ModelName}>                                                                                                                                                                           model name {};
+  !sc <New_Loading_Stage{StageName}>                                                                                                                                                                           new loading stage {};
+  !sc <Simulate_Using_Static_Algorithm{NumSteps}>                                                                                                                                                              simulate {} steps using static algorithm;
+  !sc <Simulate_Using_Transient_Algorithm{NumSteps,TimeIncr}>                                                                                                                                                  simulate {} steps using transient algorithm time_step = {};
+  !sc <Simulate_Using_Variable_Transient_Algorithm{NumSteps,TimeIncr,MinTimeIncr,MaxTimeIncr,NumIter}>                                                                                                         simulate {} steps using variable transient algorithm time_step = {} minimum_time_step = {} maximum_time_step = {} number_of_iterations = {};
+  !sc <Output_Non_Converged_Iterations{}>                                                                                                                                                                      output non_converged_iterations ;
+  !sc <Output_Support_Reactions{}>                                                                                                                                                                             output support reactions;
+  !sc <Simulate_Eigen_Analysis{NumModes}>                                                                                                                                                                      simulate using eigen algorithm number_of_modes = {};
+  !sc <Simulate_Constitutive_Testing_Constant_Mean_Pressure_Triaxial_Strain_Control{material#1,StrainIncr,MaxStrain,NumCycles}>                                                                                simulate constitutive testing constant mean pressure triaxial strain control use material # {} strain_increment_size = {} maximum_strain = {} number_of_times_reaching_maximum_strain = {};
+  !sc <Simulate_Constitutive_Testing_Drained_Triaxial_Strain_Control{material#1,StrainIncr,MaxStrain,NumCycles}>                                                                                               simulate constitutive testing drained triaxial strain control use material # {} strain_increment_size = {} maximum_strain = {} number_of_times_reaching_maximum_strain = {};
+  !sc <Simulate_Constitutive_Testing_Undrained_Triaxial_Stress_Control{material#1,StrainIncr,MaxStrain,NumCycles}>                                                                                             simulate constitutive testing undrained triaxial stress control use material # {} strain_increment_size = {} maximum_strain = {} number_of_times_reaching_maximum_strain = {};
+  !sc <Simulate_Constitutive_Testing_Undrained_Simple_Shear{material#1,StrainIncr,MaxStrain,NumCycles}>                                                                                                        simulate constitutive testing undrained simple shear use material # {} strain_increment_size = {} maximum_strain = {} number_of_times_reaching_maximum_strain = {};
+  !sc <Simulate_Constitutive_Testing_Undrained_Triaxial{material#1,StrainIncr,MaxStrain,NumCycles}>                                                                                                            simulate constitutive testing undrained triaxial use material # {} strain_increment_size = {} maximum_strain = {} number_of_times_reaching_maximum_strain = {};
+  !sc <Simulate_Constitutive_Testing_BardetMethod{material#1,ScaleFactor,SeriesFile,Sigma11,Sigma22,Sigma22,Sigma12,Sigma13,Sigma13,VrbseLevl}>                                                                simulate constitutive testing {} use material # {} scale_factor = {} series_file = {}  sigma0 = ( {} , {} , {} , {} , {} , {} )  verbose_output = {}
+  !sc <Simulate_Constitutive_Testing_Direct_Strain{material#1,ScaleFactor,SeriesFile,Sigma11,Sigma22,Sigma22,Sigma12,Sigma13,Sigma13,VrbseLevl}>                                                               simulate constitutive testing DIRECT_STRAIN use material # {} scale_factor = {} series_file = {}  sigma0 = ( {} , {} , {} , {} , {} , {} ) verbose_output = {}
+  !sc <Compute_Reaction_Forces{}>                                                                                                                                                                              compute reaction forces;
+  !sc <Remove_Imposed_Motion{motion#1}>                                                                                                                                                                        remove imposed motion # {};
+  !sc <Remove_Load{load#1}>                                                                                                                                                                                    remove load # {};
+  !sc <Add_Linear_Elastic_Isotropic_3D{material#1,Density,ElasticModulus,PoissonRatio}>                                                                                                                        add material # {} type linear_elastic_isotropic_3d mass_density = {} elastic_modulus = {} poisson_ratio = {};
+  !sc <Add_VonMises{material#1,Density,ElasticModulus,PoissonRatio,VonMisesRadius,KinematicHardeningRate,IsotropicHardeningRate}>                                                                              add material # {} type VonMises mass_density = {} elastic_modulus = {} poisson_ratio = {} von_mises_radius = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} ;
+  !sc <Add_VonMisesArmstrongFrederick{material#1,Density,ElasticModulus,PoissonRatio,VonMisesRadius,ArmstrongFrederickHa,ArmstrongFrederickCr,IsotropicHardeningRate}>                                         add material # {} type VonMisesArmstrongFrederick mass_density = {} elastic_modulus = {} poisson_ratio = {} von_mises_radius = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} ;
+  !sc <Add_DruckerPrager{material#1,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress}>                                                  add material # {} type DruckerPrager mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} initial_confining_stress = {} ;
+  !sc <Add_DruckerPragerVonMises{material#1,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress}>                                          add material # {} type DruckerPragerVonMises mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} initial_confining_stress = {} ;
+  !sc <Add_DruckerPragerNonAssociativeLinearHardening{material#1,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress,PlasticFlowXi,PlasticFlowKd}> add material # {} type DruckerPragerNonAssociateLinearHardening mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} initial_confining_stress = {} plastic_flow_xi = {} plastic_flow_kd = {} ;
+  !sc <Add_DruckerPragerArmstrongFrederickLE{material#1,Density,ElasticModulus,PoissonRatio,DruckerPragerK,ArmstrongFrederickHa,ArmstrongFrederickCr,IsotropicHardeningRate,InitialConfiningStress}>           add material # {} type DruckerPragerArmstrongFrederickLE mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} initial_confining_stress = {};
+  !sc <Add_DruckerPragerArmstrongFrederickNE{material#1,Density,DuncanChengK,DuncanChengPa,DuncanChengN,DuncanChengSigma3Max,DuncanChengNu,DruckerpragerK,ArmstrongFrederickHa,ArmstrongFrederickCr,IsotropicHardeningRate,InitialConfiningStress}> add material # {} type DruckerPragerArmstrongFrederickNE mass_density = {} DuncanCheng_K = {} DuncanCheng_pa = {} DuncanCheng_n = {} DuncanCheng_sigma3_max = {} DuncanCheng_nu = {} druckerprager_k = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} initial_confining_stress = {};
+  !sc <Add_DruckerPragerNonAssociateArmstrongFrederick{material#1,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress,PlasticFlowXi,PlasticFlowKd}> add material # {} type DruckerPragerNonAssociateArmstrongFrederick mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} initial_confining_stress = {} plastic_flow_xi = {} plastic_flow_kd = {} ;
+  !sc <Add_CamClay{material#1,Density,M,lambda,Kappa,e0,P0,PoissonRatio,InitialConfiningStress}>                                                                                                               add material # {} type CamClay mass_density = {} M = {} lambda = {} kappa = {} e0 = {} p0 = {} Poisson_ratio = {} initial_confining_stress = {}
+  !sc <Add_RoundedMohrCoulomb{material#1,Density,ElasticModulus,PoisonRatio,M,Qa,Pc,Heta,Eta0,InitialConfiningStress}>                                                                                         add material # {} type roundedMohrCoulomb mass_density = {} elastic_modulus = {} poisson_ratio = {} RMC_m = {} RMC_qa = {} RMC_pc = {} RMC_e = {} RMC_eta0 = {} RMC_Heta = {} initial_confining_stress = {}
+  !sc <Add_SaniSand2008{material#1,Density,e0,G0,K0,Pat,Kc,Alpha_cc,c,xi,Lambda,ec_ref,M,h0,ch,nb,A0,nd,p_r,rho_c,theta_c,X,z_max,cz,P0,Algorithm,NumSubIncr,MaxIter,Tol1,Tol2}>                               add material # {} type sanisand2008 mass_density = {}  e0 = {}  sanisand2008_G0 = {}  sanisand2008_K0 = {} sanisand2008_Pat = {} sanisand2008_k_c = {}  sanisand2008_alpha_cc = {} sanisand2008_c = {}  sanisand2008_xi = {}  sanisand2008_lambda = {}  sanisand2008_ec_ref = {}  sanisand2008_m = {}  sanisand2008_h0 = {}  sanisand2008_ch = {}  sanisand2008_nb = {}  sanisand2008_A0 = {} sanisand2008_nd = {}  sanisand2008_p_r = {}  sanisand2008_rho_c = {}  sanisand2008_theta_c = {}  sanisand2008_X = {}  sanisand2008_z_max = {}  sanisand2008_cz = {}  sanisand2008_p0 = {}  sanisand2008_p_in = {}  algorithm = {}  number_of_subincrements = {}  maximum_number_of_iterations = {}  tolerance_1 = {}  tolerance_2 = {};
+  !sc <Add_Linear_Elastic_CrossAnisotropic{material#1,Density,ElasticModulusHor,ElasticModulusVer,PoissonRatioHV,PoissonRatioHH,PoissonRatioVV}>                                                               add material # {} type linear_elastic_crossanisotropic mass_density = {} elastic_modulus_horizontal = {} elastic_modulus_vertical = {} poisson_ratio_h_v = {} poisson_ratio_h_h = {} shear_modulus_h_v = {};
+  !sc <Add_Uniaxial_Elastic1D{material#1,ElasticModulus,ViscoElasticModulus}>                                                                                                                                  add material # {} type uniaxial_elastic elastic_modulus = {} viscoelastic_modulus = {} ;
+  !sc <Add_Uniaxial_Steel01{material#1,YieldStrength,ElasticModulus,StrainHardeningRate,a1,a2,a3,a4}>                                                                                                          add material # {} type uniaxial_steel01 yield_strength = {} elastic_modulus = {} strain_hardening_ratio = {}  a1 = {}  a2 = {}  a3 = {}  a4 = {} ;
+  !sc <Add_Uniaxial_Steel02{material#1,YieldStrength,ElasticModulus,StrainHardeningRate,R0,cR1,cR2,a1,a2,a3,a4}>                                                                                               add material # {} type uniaxial_steel02 yield_strength = {} elastic_modulus = {} strain_hardening_ratio = {} R0 = {} cR1 = {} cR2 = {}  a1 = {}  a2 = {}  a3 = {}  a4 = {} ;
+  !sc <Add_Uniaxial_Concrete02{material#1,CompressiveStrength,StrainAtCompressiveStrength,CrushingStrength,StrainAtCrushingStrength,Lambda,TensileStrength,TensionSofteningStiffness}>                         add material # {} type uniaxial_concrete02 compressive_strength = {} strain_at_compressive_strength = {} crushing_strength = {}  strain_at_crushing_strength = {} lambda = {} tensile_strength = {} tension_softening_stiffness = {};
+  !sc <Add_Fiber{fiber#1,material#1,section#1,CrossSection,FiberLocationX,FiberLocationY}>                                                                                                                     add fiber # {} using material # {} to section # {}  fiber_cross_section = {} fiber_location = ({},{});
+  !sc <Var{variable,value}>                                                                                                                                                                                    {} {} = {};
+  !sc <Include{FileName}>                                                                                                                                                                                      include {};
+  !sc <Bye{}>                                                                                                                                                                                                  {} bye;
+  !sc <Comment{//comment}>                                                                                                                                                                                     {} {};
+  !sc <Newline{}>                                                                                                                                                                                              {} {};
+  !sc <ESSI{EssiCommand}>                                                                                                                                                                                      {} {};
+
+
+//General Elemental Commands
+
+  !ec <Add_Elements_To_Physical_Group{PhyEntyTag,PhysicalElementGroup}>                                                                                                                                        add elements ({}) to physical_element_group {};
+  !ec <Add_Self_Weight_To_Element{PhyEntyTag,field#1}>                                                                                                                                                         add load # {} to element # {} type self_weight use acceleration field # {};
+  !ec <Add_Damping_To_Element{PhyEntyTag,damping#1}>                                                                                                                                                           add damping # {} to element # {};
+  !ec <Remove_Element{PhyEntyTag}>                                                                                                                                                                             remove element # {};
+  !ec <Remove_Strain_From_Element{PhyEntyTag}>                                                                                                                                                                 remove strain from element # {};
+
+
+//Elemental Varaiational Commands
+
+// Elemental Commands   ------    1-node point.
+// Elemental Commands   ------    14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
+// Elemental Commands   ------    20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
+
+!17-v <Vary_20NodeBrick{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                                                 add element # {} type 20NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+!17-v <Vary_20NodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                            add element # {} type 20NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+!17-v <Vary_20NodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                            add element # {} type 20NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!17-v <Vary_20NodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                        add element # {} type 20NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})  use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!17-v <Vary_20NodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                             add element # {} type 20NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!17-v <Vary_20NodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                         add element # {} type 20NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+
+// Elemental Commands   ------    8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
+// Elemental Commands   ------    10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).
+// Elemental Commands   ------    9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face).
+// Elemental Commands   ------    18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces).
+// Elemental Commands   ------    27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
+
+!12-v <Vary_27NodeBrick{PhyEntyTag,material#1}>                                                                                                                                                                add element # {} type 27NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+!12-v <Vary_VariableNodeBrick{PhyEntyTag,material#1}>                                                                                                                                                          add element # {} type 8_27_NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+!12-v <Vary_27NodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                            add element # {} type 27NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+!12-v <Vary_VariableNodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                      add element # {} type 8_27_NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+!12-v <Vary_27NodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                            add element # {} type 27NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!12-v <Vary_VariableNodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                      add element # {} type 8_27_NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!12-v <Vary_27NodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                        add element # {} type 27NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!12-v <Vary_VariableNodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                  add element # {} type 8_27_NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!12-v <Vary_27NodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                             add element # {} type 27NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!12-v <Vary_VariableNodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                       add element # {} type 8_27_NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!12-v <Vary_27NodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                         add element # {} type 27NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+!12-v <Vary_VariableNodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                   add element # {} type 8_27_NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) use material # {} and porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+
+// Elemental Commands   ------    13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges).
+// Elemental Commands   ------    15-node second order prism (6 nodes associated with the vertices and 9 with the edges).
+// Elemental Commands   ------    125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)
+// Elemental Commands   ------    2-node line.
+
+ !1-v <Vary_ShearBeam{PhyEntyTag,CrossSection,material#1}>                                                                                                                                                     add element # {} type ShearBeam with nodes ({}, {}) cross_section = {} use material # {};
+ !1-v <Vary_DispBeamColumn3D{PhyEntyTag,NumIntegrPoints,SectionNumber,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                                              add element # {} type BeamColumnDispFiber3d with nodes ({}, {}) number_of_integration_points = {} section_number = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+ !1-v <Vary_Beam_Elastic{PhyEntyTag,CrossSection,ElasticModulus,ShearModulus,Jx,Iy,Iz,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                              add element # {} type beam_elastic with nodes ({}, {}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+ !1-v <Vary_Beam_Elastic_LumpedMass{PhyEntyTag,CrossSection,ElasticModulus,ShearModulus,Jx,Iy,Iz,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                   add element # {} type beam_elastic_lumped_mass with nodes ({}, {}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+ !1-v <Vary_Beam_DisplacementBased{PhyEntyTag,NumIntegrationPoints,SectionNumber,Density}>                                                                                                                     add element # {} type beam_displacement_based with nodes ({}, {}) with # {} integration_points use section # {} mass_density = {} IntegrationRule = "" xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+ !1-v <Vary_Beam_9Dof_Elastic{PhyEntyTag,CrossSection,ElasticModulus,ShearModulus,Jx,Iy,Iz,Density,XZPlnVect_x,XZPlnVect_y,XZPlnVect_z,J1_x,J1_y,J1_z,J2_x,J2_y,J2_z}>                                         add element # {} type beam_9dof_elastic with nodes ({}, {}) cross_section = {} elastic_modulus = {} shear_modulus = {} torsion_Jx = {} bending_Iy = {} bending_Iz = {} mass_density = {}  xz_plane_vector = ({}, {}, {} ) joint_1_offset = ({}, {}, {} ) joint_2_offset = ({}, {}, {} );
+ !1-v <Vary_HardContact{PhyEntyTag,NormalStiffness,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                                        add element # {} type HardContact with nodes ({}, {}) normal_stiffness = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+ !1-v <Vary_HardWetContact{PhyEntyTag,NormalStiffness,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                                     add element # {} type HardWetContact with nodes ({}, {}) normal_stiffness = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+ !1-v <Vary_SoftContact{PhyEntyTag,InitialNormalStiffness,Stiffningrate,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                   add element # {} type SoftContact with nodes ({}, {}) initial_normal_stiffness = {} stiffning_rate = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+ !1-v <Vary_SoftWetContact{PhyEntyTag,InitialNormalStiffness,Stiffningrate,TangentialStiffness,NormalDamping,TangentialDamping,FrictionRatio,NormVect_x,NormVect_y,NormVect_z}>                                add element # {} type SoftWetContact with nodes ({}, {}) initial_normal_stiffness = {} stiffning_rate = {} tangential_stiffness = {} normal_damping = {} tangential_damping = {}  friction_ratio = {}  contact_plane_vector = ({}, {}, {} );
+ !1-v <Vary_Truss{PhyEntyTag,material#1,CrossSectin,Density}>                                                                                                                                                  add element # {} type truss with nodes ({}, {}) use material # {} cross_section = {} mass_density = {} ;
+
+// Elemental Commands   ------    Element-cum-physicalgroup commands
+// Elemental Commands   ------    4-node quadrangle.
+
+ !3-v <Vary_4NodeShell_MITC4{PhyEntyTag,material#1,Thickness}>                                                                                                                                                 add element # {} type 4NodeShell_MITC4 with nodes ({}, {}, {}, {}) use material # {} thickness = {};
+ !3-v <Vary_4NodeShell_NewMITC4{PhyEntyTag,material#1,Thickness}>                                                                                                                                              add element # {} type 4NodeShell_NewMITC4 with nodes ({}, {}, {}, {}) use material # {} thickness = {};
+ !3-v <Vary_4NodeShell_Andes{PhyEntyTag,material#1,Thickness}>                                                                                                                                                 add element # {} type 4NodeShell_ANDES with nodes ({}, {}, {}, {}) use material # {} thickness = {} ;
+
+// Elemental Commands   ------    3-node triangle.
+// Elemental Commands   ------    8-node hexahedron.
+
+ !5-v <Vary_8NodeBrick{PhyEntyTag,material#1}>                                                                                                                                                                 add element # {} type 8NodeBrick with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+ !5-v <Vary_8NodeBrick_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1}>                                                                                                                             add element # {} type 8NodeBrick using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {};
+ !5-v <Vary_8NodeBrick_upU{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                             add element # {} type 8NodeBrick_upU with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+ !5-v <Vary_8NodeBrick_upU_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                         add element # {} type 8NodeBrick_upU using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+ !5-v <Vary_8NodeBrick_up{PhyEntyTag,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                                                              add element # {} type 8NodeBrick_up with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+ !5-v <Vary_8NodeBrick_up_Variable_GaussPoints{PhyEntyTag,NumGaussPoints,material#1,Porosity,Alpha,SolidDensity,FluidDensity,Perm_X,Perm_Y,Perm_Z,SolidBulkModulus,FluidBulkModulus}>                          add element # {} type 8NodeBrick_up using {} Gauss points each direction with nodes ({}, {}, {}, {}, {}, {}, {}, {}) use material # {} porosity = {} alpha = {}  rho_s = {}  rho_f = {} k_x = {}  k_y = {}  k_z = {}  K_s = {} K_f = {};
+
+// Elemental Commands   ------    4-node tetrahedron.
+// Elemental Commands   ------    5-node pyramid.
+// Elemental Commands   ------    6-node prism.
+// Elemental Commands   ------    6-node second order triangle (3 nodes associated with the vertices and 3 with the edges).
+// Elemental Commands   ------    3-node second order line (2 nodes associated with the vertices and 1 with the edge).
+// Elemental Commands   ------    64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)
+// Elemental Commands   ------    9-node third order incomplete triangle (3 nodes associated with the vertices, 6 with the edges)
+// Elemental Commands   ------    10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)
+// Elemental Commands   ------    12-node fourth order incomplete triangle (3 nodes associated with the vertices, 9 with the edges)
+// Elemental Commands   ------    15-node fourth order triangle (3 nodes associated with the vertices, 9 with the edges, 3 with the face)
+// Elemental Commands   ------    15-node fifth order incomplete triangle (3 nodes associated with the vertices, 12 with the edges)
+// Elemental Commands   ------    21-node fifth order complete triangle (3 nodes associated with the vertices, 12 with the edges, 6 with the face)
+// Elemental Commands   ------    4-node third order edge (2 nodes associated with the vertices, 2 internal to the edge)
+// Elemental Commands   ------    5-node fourth order edge (2 nodes associated with the vertices, 3 internal to the edge)
+// Elemental Commands   ------    6-node fifth order edge (2 nodes associated with the vertices, 4 internal to the edge)
+// Elemental Commands   ------    20-node third order tetrahedron (4 nodes associated with the vertices, 12 with the edges, 4 with the faces)
+// Elemental Commands   ------    56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)
+// Elemental Commands   ------    35-node fourth order tetrahedron (4 nodes associated with the vertices, 18 with the edges, 12 with the faces, 1 in the volume)
+
+
+//Elemental Varaiational Compound Commands
+
+// Elemental Commands   ------    1-node point.
+// Elemental Commands   ------    14-node second order pyramid (5 nodes associated with the vertices, 8 with the edges and 1 with the quadrangular face).
+// Elemental Commands   ------    20-node second order hexahedron (8 nodes associated with the vertices and 12 with the edges).
+// Elemental Commands   ------    8-node second order quadrangle (4 nodes associated with the vertices and 4 with the edges).
+// Elemental Commands   ------    10-node second order tetrahedron (4 nodes associated with the vertices and 6 with the edges).
+// Elemental Commands   ------    9-node second order quadrangle (4 nodes associated with the vertices, 4 with the edges and 1 with the face).
+// Elemental Commands   ------    18-node second order prism (6 nodes associated with the vertices, 9 with the edges and 3 with the quadrangular faces).
+// Elemental Commands   ------    27-node second order hexahedron (8 nodes associated with the vertices, 12 with the edges, 6 with the faces and 1 with the volume).
+// Elemental Commands   ------    13-node second order pyramid (5 nodes associated with the vertices and 8 with the edges).
+// Elemental Commands   ------    15-node second order prism (6 nodes associated with the vertices and 9 with the edges).
+// Elemental Commands   ------    125-node fourth order hexahedron (8 nodes associated with the vertices, 36 with the edges, 54 with the faces, 27 in the volume)
+// Elemental Commands   ------    2-node line.
+// Elemental Commands   ------    Element-cum-physicalgroup commands
+// Elemental Commands   ------    4-node quadrangle.
+// Elemental Commands   ------    3-node triangle.
+// Elemental Commands   ------    8-node hexahedron.
+// Elemental Commands   ------    4-node tetrahedron.
+// Elemental Commands   ------    5-node pyramid.
+// Elemental Commands   ------    6-node prism.
+// Elemental Commands   ------    6-node second order triangle (3 nodes associated with the vertices and 3 with the edges).
+// Elemental Commands   ------    3-node second order line (2 nodes associated with the vertices and 1 with the edge).
+// Elemental Commands   ------    64-node third order hexahedron (8 nodes associated with the vertices, 24 with the edges, 24 with the faces, 8 in the volume)
+// Elemental Commands   ------    9-node third order incomplete triangle (3 nodes associated with the vertices, 6 with the edges)
+// Elemental Commands   ------    10-node third order triangle (3 nodes associated with the vertices, 6 with the edges, 1 with the face)
+// Elemental Commands   ------    12-node fourth order incomplete triangle (3 nodes associated with the vertices, 9 with the edges)
+// Elemental Commands   ------    15-node fourth order triangle (3 nodes associated with the vertices, 9 with the edges, 3 with the face)
+// Elemental Commands   ------    15-node fifth order incomplete triangle (3 nodes associated with the vertices, 12 with the edges)
+// Elemental Commands   ------    21-node fifth order complete triangle (3 nodes associated with the vertices, 12 with the edges, 6 with the face)
+// Elemental Commands   ------    4-node third order edge (2 nodes associated with the vertices, 2 internal to the edge)
+// Elemental Commands   ------    5-node fourth order edge (2 nodes associated with the vertices, 3 internal to the edge)
+// Elemental Commands   ------    6-node fifth order edge (2 nodes associated with the vertices, 4 internal to the edge)
+// Elemental Commands   ------    20-node third order tetrahedron (4 nodes associated with the vertices, 12 with the edges, 4 with the faces)
+// Elemental Commands   ------    56-node fifth order tetrahedron (4 nodes associated with the vertices, 24 with the edges, 24 with the faces, 4 in the volume)
+// Elemental Commands   ------    35-node fourth order tetrahedron (4 nodes associated with the vertices, 18 with the edges, 12 with the faces, 1 in the volume)
+
+
+//Material Variational Commands
+
+  !mv <Vary_Linear_Elastic_Isotropic_3D{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio}>                                                                                                        add material # {} type linear_elastic_isotropic_3d mass_density = {} elastic_modulus = {} poisson_ratio = {};
+  !mv <Vary_VonMises{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio,VonMisesRadius,KinematicHardeningRate,IsotropicHardeningRate}>                                                              add material # {} type VonMises mass_density = {} elastic_modulus = {} poisson_ratio = {} von_mises_radius = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} ;
+  !mv <Vary_VonMisesArmstrongFrederick{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio,VonMisesRadius,ArmstrongFrederickHa,ArmstrongFrederickCr,IsotropicHardeningRate}>                         add material # {} type VonMisesArmstrongFrederick mass_density = {} elastic_modulus = {} poisson_ratio = {} von_mises_radius = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} ;
+  !mv <Vary_DruckerPrager{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress}>                                  add material # {} type DruckerPrager mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} initial_confining_stress = {} ;
+  !mv <Vary_DruckerPragerVonMises{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress}>                          add material # {} type DruckerPragerVonMises mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} initial_confining_stress = {} ;
+  !mv <Vary_DruckerPragerNonAssociativeLinearHardening{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress,PlasticFlowXi,PlasticFlowKd}> add material # {} type DruckerPragerNonAssociateLinearHardening mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} kinematic_hardening_rate = {} isotropic_hardening_rate = {} initial_confining_stress = {} plastic_flow_xi = {} plastic_flow_kd = {} ;
+  !mv <Vary_DruckerPragerArmstrongFrederickLE{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio,DruckerPragerK,ArmstrongFrederickHa,ArmstrongFrederickCr,IsotropicHardeningRate,InitialConfiningStress}> add material # {} type DruckerPragerArmstrongFrederickLE mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} initial_confining_stress = {};
+  !mv <Vary_DruckerPragerArmstrongFrederickNE{PhyEntyTag,ElementCommand,Density,DuncanChengK,DuncanChengPa,DuncanChengN,DuncanChengSigma3Max,DuncanChengNu,DruckerpragerK,ArmstrongFrederickHa,ArmstrongFrederickCr,IsotropicHardeningRate,InitialConfiningStress}> add material # {} type DruckerPragerArmstrongFrederickNE mass_density = {} DuncanCheng_K = {} DuncanCheng_pa = {} DuncanCheng_n = {} DuncanCheng_sigma3_max = {} DuncanCheng_nu = {} druckerprager_k = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} initial_confining_stress = {};
+  !mv <Vary_DruckerPragerNonAssociateArmstrongFrederick{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoissonRatio,DruckerPragerK,KinematicHardeningRate,IsotropicHardeningRate,InitialConfiningStress,PlasticFlowXi,PlasticFlowKd}> add material # {} type DruckerPragerNonAssociateArmstrongFrederick mass_density = {} elastic_modulus = {} poisson_ratio = {} druckerprager_k = {} armstrong_frederick_ha = {} armstrong_frederick_cr = {} isotropic_hardening_rate = {} initial_confining_stress = {} plastic_flow_xi = {} plastic_flow_kd = {} ;
+  !mv <Vary_CamClay{PhyEntyTag,ElementCommand,Density,M,lambda,Kappa,e0,P0,PoissonRatio,InitialConfiningStress}>                                                                                               add material # {} type CamClay mass_density = {} M = {} lambda = {} kappa = {} e0 = {} p0 = {} Poisson_ratio = {} initial_confining_stress = {}
+  !mv <Vary_RoundedMohrCoulomb{PhyEntyTag,ElementCommand,Density,ElasticModulus,PoisonRatio,M,Qa,Pc,Heta,Eta0,InitialConfiningStress}>                                                                         add material # {} type roundedMohrCoulomb mass_density = {} elastic_modulus = {} poisson_ratio = {} RMC_m = {} RMC_qa = {} RMC_pc = {} RMC_e = {} RMC_eta0 = {} RMC_Heta = {} initial_confining_stress = {}
+  !mv <Vary_SaniSand2008{PhyEntyTag,ElementCommand,Density,e0,G0,K0,Pat,Kc,Alpha_cc,c,xi,Lambda,ec_ref,M,h0,ch,nb,A0,nd,p_r,rho_c,theta_c,X,z_max,cz,P0,Algorithm,NumSubIncr,MaxIter,Tol1,Tol2}>               add material # {} type sanisand2008 mass_density = {}  e0 = {}  sanisand2008_G0 = {}  sanisand2008_K0 = {} sanisand2008_Pat = {} sanisand2008_k_c = {}  sanisand2008_alpha_cc = {} sanisand2008_c = {}  sanisand2008_xi = {}  sanisand2008_lambda = {}  sanisand2008_ec_ref = {}  sanisand2008_m = {}  sanisand2008_h0 = {}  sanisand2008_ch = {}  sanisand2008_nb = {}  sanisand2008_A0 = {} sanisand2008_nd = {}  sanisand2008_p_r = {}  sanisand2008_rho_c = {}  sanisand2008_theta_c = {}  sanisand2008_X = {}  sanisand2008_z_max = {}  sanisand2008_cz = {}  sanisand2008_p0 = {}  sanisand2008_p_in = {}  algorithm = {}  number_of_subincrements = {}  maximum_number_of_iterations = {}  tolerance_1 = {}  tolerance_2 = {};
+  !mv <Vary_Linear_Elastic_CrossAnisotropic{PhyEntyTag,ElementCommand,Density,ElasticModulusHor,ElasticModulusVer,PoissonRatioHV,PoissonRatioHH,PoissonRatioVV}>                                               add material # {} type linear_elastic_crossanisotropic mass_density = {} elastic_modulus_horizontal = {} elastic_modulus_vertical = {} poisson_ratio_h_v = {} poisson_ratio_h_h = {} shear_modulus_h_v = {};
+  !mv <Vary_Uniaxial_Elastic1D{PhyEntyTag,ElementCommand,ElasticModulus,ViscoElasticModulus}>                                                                                                                  add material # {} type uniaxial_elastic elastic_modulus = {} viscoelastic_modulus = {} ;
+  !mv <Vary_Uniaxial_Steel01{PhyEntyTag,ElementCommand,YieldStrength,ElasticModulus,StrainHardeningRate,a1,a2,a3,a4}>                                                                                          add material # {} type uniaxial_steel01 yield_strength = {} elastic_modulus = {} strain_hardening_ratio = {}  a1 = {}  a2 = {}  a3 = {}  a4 = {} ;
+  !mv <Vary_Uniaxial_Steel02{PhyEntyTag,ElementCommand,YieldStrength,ElasticModulus,StrainHardeningRate,R0,cR1,cR2,a1,a2,a3,a4}>                                                                               add material # {} type uniaxial_steel02 yield_strength = {} elastic_modulus = {} strain_hardening_ratio = {} R0 = {} cR1 = {} cR2 = {}  a1 = {}  a2 = {}  a3 = {}  a4 = {} ;
+  !mv <Vary_Uniaxial_Concrete02{PhyEntyTag,ElementCommand,CompressiveStrength,StrainAtCompressiveStrength,CrushingStrength,StrainAtCrushingStrength,Lambda,TensileStrength,TensionSofteningStiffness}>         add material # {} type uniaxial_concrete02 compressive_strength = {} strain_at_compressive_strength = {} crushing_strength = {}  strain_at_crushing_strength = {} lambda = {} tensile_strength = {} tension_softening_stiffness = {};
