@@ -1,0 +1,89 @@
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Base_Surface, all}Starts
+//*************************************************************************************************************************
+
+fix node # 1 dofs all; 
+fix node # 2 dofs all; 
+fix node # 3 dofs all; 
+fix node # 4 dofs all; 
+fix node # 9 dofs all; 
+fix node # 10 dofs all; 
+fix node # 11 dofs all; 
+fix node # 12 dofs all; 
+fix node # 13 dofs all; 
+fix node # 14 dofs all; 
+fix node # 15 dofs all; 
+fix node # 16 dofs all; 
+fix node # 33 dofs all; 
+fix node # 34 dofs all; 
+fix node # 35 dofs all; 
+fix node # 36 dofs all; 
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Base_Surface, all}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Add_Node_Load_Linear{Physical_Group#Top_Surface, ForceType:= Fx, Mag:= 10*kN}Starts
+//*************************************************************************************************************************
+
+add load # 1 to node # 5 type linear Fx = 10*kN; 
+add load # 2 to node # 6 type linear Fx = 10*kN; 
+add load # 3 to node # 7 type linear Fx = 10*kN; 
+add load # 4 to node # 8 type linear Fx = 10*kN; 
+add load # 5 to node # 17 type linear Fx = 10*kN; 
+add load # 6 to node # 18 type linear Fx = 10*kN; 
+add load # 7 to node # 19 type linear Fx = 10*kN; 
+add load # 8 to node # 20 type linear Fx = 10*kN; 
+add load # 9 to node # 21 type linear Fx = 10*kN; 
+add load # 10 to node # 22 type linear Fx = 10*kN; 
+add load # 11 to node # 23 type linear Fx = 10*kN; 
+add load # 12 to node # 24 type linear Fx = 10*kN; 
+add load # 13 to node # 53 type linear Fx = 10*kN; 
+add load # 14 to node # 54 type linear Fx = 10*kN; 
+add load # 15 to node # 55 type linear Fx = 10*kN; 
+add load # 16 to node # 56 type linear Fx = 10*kN; 
+
+//*************************************************************************************************************************
+//							Add_Node_Load_Linear{Physical_Group#Top_Surface, ForceType:= Fx, Mag:= 10*kN}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Add_Self_Weight_To_Element{Physical_Group#Soil, FieldNo:= 1}Starts
+//*************************************************************************************************************************
+
+add load # 17 to element # 1 type self_weight use acceleration field # 1; 
+add load # 18 to element # 2 type self_weight use acceleration field # 1; 
+add load # 19 to element # 3 type self_weight use acceleration field # 1; 
+add load # 20 to element # 4 type self_weight use acceleration field # 1; 
+add load # 21 to element # 5 type self_weight use acceleration field # 1; 
+add load # 22 to element # 6 type self_weight use acceleration field # 1; 
+add load # 23 to element # 7 type self_weight use acceleration field # 1; 
+add load # 24 to element # 8 type self_weight use acceleration field # 1; 
+add load # 25 to element # 9 type self_weight use acceleration field # 1; 
+add load # 26 to element # 10 type self_weight use acceleration field # 1; 
+add load # 27 to element # 11 type self_weight use acceleration field # 1; 
+add load # 28 to element # 12 type self_weight use acceleration field # 1; 
+add load # 29 to element # 13 type self_weight use acceleration field # 1; 
+add load # 30 to element # 14 type self_weight use acceleration field # 1; 
+add load # 31 to element # 15 type self_weight use acceleration field # 1; 
+add load # 32 to element # 16 type self_weight use acceleration field # 1; 
+add load # 33 to element # 17 type self_weight use acceleration field # 1; 
+add load # 34 to element # 18 type self_weight use acceleration field # 1; 
+add load # 35 to element # 19 type self_weight use acceleration field # 1; 
+add load # 36 to element # 20 type self_weight use acceleration field # 1; 
+add load # 37 to element # 21 type self_weight use acceleration field # 1; 
+add load # 38 to element # 22 type self_weight use acceleration field # 1; 
+add load # 39 to element # 23 type self_weight use acceleration field # 1; 
+add load # 40 to element # 24 type self_weight use acceleration field # 1; 
+add load # 41 to element # 25 type self_weight use acceleration field # 1; 
+add load # 42 to element # 26 type self_weight use acceleration field # 1; 
+add load # 43 to element # 27 type self_weight use acceleration field # 1; 
+
+//*************************************************************************************************************************
+//							Add_Self_Weight_To_Element{Physical_Group#Soil, FieldNo:= 1}Ends
+//*************************************************************************************************************************
+

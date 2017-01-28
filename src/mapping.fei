@@ -357,7 +357,7 @@
   !sc <Var{variable,value}>                                                                                                                                                                                    {} {} = {};
   !sc <Include{FileName}>                                                                                                                                                                                      include {};
   !sc <Bye{}>                                                                                                                                                                                                  {} bye;
-  !sc <Comment{//comment}>                                                                                                                                                                                     {} {};
+  !sc <Comment{comment}>                                                                                                                                                                                     {} // {};
   !sc <Newline{}>                                                                                                                                                                                              {} {};
   !sc <ESSI{EssiCommand}>                                                                                                                                                                                      {} {};
 

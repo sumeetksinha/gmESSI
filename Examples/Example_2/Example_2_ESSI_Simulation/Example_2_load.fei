@@ -1,0 +1,47 @@
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#SurfaceToBeFixed, all}Starts
+//*************************************************************************************************************************
+
+fix node # 1 dofs all; 
+fix node # 3 dofs all; 
+fix node # 5 dofs all; 
+fix node # 8 dofs all; 
+fix node # 17 dofs all; 
+fix node # 28 dofs all; 
+fix node # 29 dofs all; 
+fix node # 32 dofs all; 
+fix node # 46 dofs all; 
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#SurfaceToBeFixed, all}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Add_Node_Load_Linear{Physical_Group#ApplySurfaceLoad, ForceType:= Fz, Mag:= -10*kN}Starts
+//*************************************************************************************************************************
+
+add load # 1 to node # 5 type linear Fz = -10*kN; 
+add load # 2 to node # 6 type linear Fz = -10*kN; 
+add load # 3 to node # 7 type linear Fz = -10*kN; 
+add load # 4 to node # 8 type linear Fz = -10*kN; 
+add load # 5 to node # 19 type linear Fz = -10*kN; 
+add load # 6 to node # 20 type linear Fz = -10*kN; 
+add load # 7 to node # 21 type linear Fz = -10*kN; 
+add load # 8 to node # 22 type linear Fz = -10*kN; 
+add load # 9 to node # 23 type linear Fz = -10*kN; 
+add load # 10 to node # 24 type linear Fz = -10*kN; 
+add load # 11 to node # 25 type linear Fz = -10*kN; 
+add load # 12 to node # 26 type linear Fz = -10*kN; 
+add load # 13 to node # 27 type linear Fz = -10*kN; 
+add load # 14 to node # 28 type linear Fz = -10*kN; 
+add load # 15 to node # 47 type linear Fz = -10*kN; 
+add load # 16 to node # 48 type linear Fz = -10*kN; 
+add load # 17 to node # 49 type linear Fz = -10*kN; 
+add load # 18 to node # 50 type linear Fz = -10*kN; 
+
+//*************************************************************************************************************************
+//							Add_Node_Load_Linear{Physical_Group#ApplySurfaceLoad, ForceType:= Fz, Mag:= -10*kN}Ends
+//*************************************************************************************************************************
+

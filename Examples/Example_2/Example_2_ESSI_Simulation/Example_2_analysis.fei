@@ -1,0 +1,27 @@
+// My new model
+model name "Cantilever_Analysis"; 
+
+
+// Adding Material
+
+add material # 1 type linear_elastic_isotropic_3d mass_density = 2000*kg/m^3 elastic_modulus = 200*MPa poisson_ratio = 0.2; 
+
+// Applying Fixities
+
+include "Example_2_geometry.fei"; 
+
+new loading stage "Stage1_Uniform_Surface_Load"; 
+
+
+include "Example_2_load.fei"; 
+
+ // Starting the simulation; 
+
+define algorithm With_no_convergence_check; 
+define solver UMFPack; 
+define load factor increment 1; 
+simulate 10 steps using static algorithm; 
+
+ bye; 
+
+

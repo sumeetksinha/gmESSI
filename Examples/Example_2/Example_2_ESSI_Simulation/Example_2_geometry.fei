@@ -1,0 +1,94 @@
+
+//*************************************************************************************************************************
+//							Add_All_Node{Unit:= m, NumDofs:= 3}Starts
+//*************************************************************************************************************************
+
+add node # 1 at (0.000000*m,0.000000*m,0.000000*m) with 3 dofs; 
+add node # 2 at (4.000000*m,0.000000*m,0.000000*m) with 3 dofs; 
+add node # 3 at (0.000000*m,1.000000*m,0.000000*m) with 3 dofs; 
+add node # 4 at (4.000000*m,1.000000*m,0.000000*m) with 3 dofs; 
+add node # 5 at (0.000000*m,0.000000*m,1.000000*m) with 3 dofs; 
+add node # 6 at (4.000000*m,0.000000*m,1.000000*m) with 3 dofs; 
+add node # 7 at (4.000000*m,1.000000*m,1.000000*m) with 3 dofs; 
+add node # 8 at (0.000000*m,1.000000*m,1.000000*m) with 3 dofs; 
+add node # 9 at (0.800000*m,0.000000*m,0.000000*m) with 3 dofs; 
+add node # 10 at (1.600000*m,0.000000*m,0.000000*m) with 3 dofs; 
+add node # 11 at (2.400000*m,0.000000*m,0.000000*m) with 3 dofs; 
+add node # 12 at (3.200000*m,0.000000*m,0.000000*m) with 3 dofs; 
+add node # 13 at (0.800000*m,1.000000*m,0.000000*m) with 3 dofs; 
+add node # 14 at (1.600000*m,1.000000*m,0.000000*m) with 3 dofs; 
+add node # 15 at (2.400000*m,1.000000*m,0.000000*m) with 3 dofs; 
+add node # 16 at (3.200000*m,1.000000*m,0.000000*m) with 3 dofs; 
+add node # 17 at (0.000000*m,0.500000*m,0.000000*m) with 3 dofs; 
+add node # 18 at (4.000000*m,0.500000*m,0.000000*m) with 3 dofs; 
+add node # 19 at (0.800000*m,0.000000*m,1.000000*m) with 3 dofs; 
+add node # 20 at (1.600000*m,0.000000*m,1.000000*m) with 3 dofs; 
+add node # 21 at (2.400000*m,0.000000*m,1.000000*m) with 3 dofs; 
+add node # 22 at (3.200000*m,0.000000*m,1.000000*m) with 3 dofs; 
+add node # 23 at (4.000000*m,0.500000*m,1.000000*m) with 3 dofs; 
+add node # 24 at (3.200000*m,1.000000*m,1.000000*m) with 3 dofs; 
+add node # 25 at (2.400000*m,1.000000*m,1.000000*m) with 3 dofs; 
+add node # 26 at (1.600000*m,1.000000*m,1.000000*m) with 3 dofs; 
+add node # 27 at (0.800000*m,1.000000*m,1.000000*m) with 3 dofs; 
+add node # 28 at (0.000000*m,0.500000*m,1.000000*m) with 3 dofs; 
+add node # 29 at (0.000000*m,0.000000*m,0.500000*m) with 3 dofs; 
+add node # 30 at (4.000000*m,0.000000*m,0.500000*m) with 3 dofs; 
+add node # 31 at (4.000000*m,1.000000*m,0.500000*m) with 3 dofs; 
+add node # 32 at (0.000000*m,1.000000*m,0.500000*m) with 3 dofs; 
+add node # 33 at (0.800000*m,0.500000*m,0.000000*m) with 3 dofs; 
+add node # 34 at (1.600000*m,0.500000*m,0.000000*m) with 3 dofs; 
+add node # 35 at (2.400000*m,0.500000*m,0.000000*m) with 3 dofs; 
+add node # 36 at (3.200000*m,0.500000*m,0.000000*m) with 3 dofs; 
+add node # 37 at (0.800000*m,0.000000*m,0.500000*m) with 3 dofs; 
+add node # 38 at (1.600000*m,0.000000*m,0.500000*m) with 3 dofs; 
+add node # 39 at (2.400000*m,0.000000*m,0.500000*m) with 3 dofs; 
+add node # 40 at (3.200000*m,0.000000*m,0.500000*m) with 3 dofs; 
+add node # 41 at (4.000000*m,0.500000*m,0.500000*m) with 3 dofs; 
+add node # 42 at (0.800000*m,1.000000*m,0.500000*m) with 3 dofs; 
+add node # 43 at (1.600000*m,1.000000*m,0.500000*m) with 3 dofs; 
+add node # 44 at (2.400000*m,1.000000*m,0.500000*m) with 3 dofs; 
+add node # 45 at (3.200000*m,1.000000*m,0.500000*m) with 3 dofs; 
+add node # 46 at (0.000000*m,0.500000*m,0.500000*m) with 3 dofs; 
+add node # 47 at (0.800000*m,0.500000*m,1.000000*m) with 3 dofs; 
+add node # 48 at (1.600000*m,0.500000*m,1.000000*m) with 3 dofs; 
+add node # 49 at (2.400000*m,0.500000*m,1.000000*m) with 3 dofs; 
+add node # 50 at (3.200000*m,0.500000*m,1.000000*m) with 3 dofs; 
+add node # 51 at (0.800000*m,0.500000*m,0.500000*m) with 3 dofs; 
+add node # 52 at (1.600000*m,0.500000*m,0.500000*m) with 3 dofs; 
+add node # 53 at (2.400000*m,0.500000*m,0.500000*m) with 3 dofs; 
+add node # 54 at (3.200000*m,0.500000*m,0.500000*m) with 3 dofs; 
+
+//*************************************************************************************************************************
+//							Add_All_Node{Unit:= m, NumDofs:= 3}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Add_8NodeBrick{Physical_Group#All_Volumes, material_no:= 1}Starts
+//*************************************************************************************************************************
+
+add element # 1 type 8NodeBrick with nodes (51, 46, 29, 37, 33, 17, 1, 9) use material # 1; 
+add element # 2 type 8NodeBrick with nodes (47, 28, 5, 19, 51, 46, 29, 37) use material # 1; 
+add element # 3 type 8NodeBrick with nodes (42, 32, 46, 51, 13, 3, 17, 33) use material # 1; 
+add element # 4 type 8NodeBrick with nodes (27, 8, 28, 47, 42, 32, 46, 51) use material # 1; 
+add element # 5 type 8NodeBrick with nodes (52, 51, 37, 38, 34, 33, 9, 10) use material # 1; 
+add element # 6 type 8NodeBrick with nodes (48, 47, 19, 20, 52, 51, 37, 38) use material # 1; 
+add element # 7 type 8NodeBrick with nodes (43, 42, 51, 52, 14, 13, 33, 34) use material # 1; 
+add element # 8 type 8NodeBrick with nodes (26, 27, 47, 48, 43, 42, 51, 52) use material # 1; 
+add element # 9 type 8NodeBrick with nodes (53, 52, 38, 39, 35, 34, 10, 11) use material # 1; 
+add element # 10 type 8NodeBrick with nodes (49, 48, 20, 21, 53, 52, 38, 39) use material # 1; 
+add element # 11 type 8NodeBrick with nodes (44, 43, 52, 53, 15, 14, 34, 35) use material # 1; 
+add element # 12 type 8NodeBrick with nodes (25, 26, 48, 49, 44, 43, 52, 53) use material # 1; 
+add element # 13 type 8NodeBrick with nodes (54, 53, 39, 40, 36, 35, 11, 12) use material # 1; 
+add element # 14 type 8NodeBrick with nodes (50, 49, 21, 22, 54, 53, 39, 40) use material # 1; 
+add element # 15 type 8NodeBrick with nodes (45, 44, 53, 54, 16, 15, 35, 36) use material # 1; 
+add element # 16 type 8NodeBrick with nodes (24, 25, 49, 50, 45, 44, 53, 54) use material # 1; 
+add element # 17 type 8NodeBrick with nodes (41, 54, 40, 30, 18, 36, 12, 2) use material # 1; 
+add element # 18 type 8NodeBrick with nodes (23, 50, 22, 6, 41, 54, 40, 30) use material # 1; 
+add element # 19 type 8NodeBrick with nodes (31, 45, 54, 41, 4, 16, 36, 18) use material # 1; 
+add element # 20 type 8NodeBrick with nodes (7, 24, 50, 23, 31, 45, 54, 41) use material # 1; 
+
+//*************************************************************************************************************************
+//							Add_8NodeBrick{Physical_Group#All_Volumes, material_no:= 1}Ends
+//*************************************************************************************************************************
+

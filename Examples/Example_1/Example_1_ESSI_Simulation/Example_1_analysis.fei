@@ -1,0 +1,31 @@
+// My new model
+model name "Soil_Block"; 
+
+
+// Adding Material layer wise and also assigning it to elements
+add material # 1 type linear_elastic_isotropic_3d mass_density = 1703.000000*kg/m^3 elastic_modulus = 30330000000.000000*Pa poisson_ratio = 0.3; 
+add material # 2 type linear_elastic_isotropic_3d mass_density = 1700.000000*kg/m^3 elastic_modulus = 30000000000.000000*Pa poisson_ratio = 0.3; 
+add material # 3 type linear_elastic_isotropic_3d mass_density = 1696.000000*kg/m^3 elastic_modulus = 29670000000.000000*Pa poisson_ratio = 0.3; 
+
+// Applying Fixities
+
+include "Example_1_geometry.fei"; 
+
+new loading stage "Stage1_Surface_Loading"; 
+
+
+add acceleration field # 1 ax = 0*g ay = 0*g az = -1*g ; 
+
+include "Example_1_load.fei"; 
+
+ // Starting the simulation; 
+
+define algorithm With_no_convergence_check; 
+define solver UMFPack; 
+define load factor increment 1; 
+simulate 10 steps using static algorithm; 
+
+
+ bye; 
+
+
