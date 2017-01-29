@@ -64,6 +64,11 @@ class gmESSITranslator{
         vector<PhysicalGroup> PhysicalGroupList;
         OctParser Evaluate = OctParser();
 
+        int PhytonScriptPhysicalGroupIndex=-1;
+        
+        int addNode(Node node);
+        int addElement(Element ele);
+
     private:
 
         void AddNodeCommand(const int&i, const int& j);
@@ -98,7 +103,6 @@ class gmESSITranslator{
         set<string> EssiTagList;
         map<string,Semantics>::iterator FunctionIter;
         map<string,int> MaterialTag;
-        int PhytonScriptPhysicalGroupIndex = -1;
         
         vector<string> CommandList;
         vector< vector <string> > VariableList;

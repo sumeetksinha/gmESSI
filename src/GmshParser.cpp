@@ -75,7 +75,9 @@ vector<Element> GmshParser::getElementList(){
 }
 
 void GmshParser::addElement(Element elm){
-	return this->ElementList.push_back(elm);	
+	this->ElementList.push_back(elm);	
+	if(elm.getId()>=this->newElement)
+		this->newElement = elm.getId()+1;
 }
 
 vector<PhysicalGroup> GmshParser::getPhysicalGroupList(){
@@ -91,6 +93,17 @@ int GmshParser::getNewPhysicalGroup(){
 int GmshParser::getNewNode(){
 
 	return this->newNode;
+}
+
+void GmshParser::addNode(Node NewNode){
+
+	NodeMap[NewNode.getId()] = NewNode ;
+	NodeList.push_back(NewNode);
+	if(NewNode.getId()>=this->newNode)
+		this->newNode = NewNode.getId()+1;
+
+
+
 }
 
 int GmshParser::getNewElement(){

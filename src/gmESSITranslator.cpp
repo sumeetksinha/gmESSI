@@ -261,8 +261,9 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
                 this->TempVariable.push(NewNodeNo);
                 this->NodeNoMap.find(it->second.getId())->second = stoi(NewNodeNo);nofRun++;
             }
-            else
+            else{
                 this->TempVariable.push(to_string(this->NodeNoMap.find(it->second.getId())->second));nofRun++;
+            }
             /****************************************************************************************************/
         
             // this->TempVariable.push(to_string(it->second.getId()));nofRun++;
@@ -301,8 +302,9 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
             this->TempVariable.push(NewNodeNo);
             this->NodeNoMap.find(it->second)->second = stoi(NewNodeNo);
         }
-        else
+        else{
             this->TempVariable.push(to_string(this->NodeNoMap.find(it->second)->second));
+        }
         /****************************************************************************************************/
 
         // this->TempVariable.push(to_string(it->second));
@@ -808,8 +810,11 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
 
     for(map<int,int>::iterator It1 = Iterator1Begin; It1!=Iterator1End ;++It1){
 
-        NodeMap1 = this->NodeMap.find(It1->second);
+        NodeMap1 =this->NodeMap.find(It1->second);
         NofNodesCreated++;
+
+        // cout << "vec_x " << vec_x << " vect_y " << vec_y << " vec_z " << vec_z << endl;
+        // cout << "length " << length << endl;
 
         for(int i=1 ; i<NofLayers; i++){
 
@@ -817,11 +822,23 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
             double node1_y = NodeMap1->second.getYcord()+length*(vec_y);
             double node1_z = NodeMap1->second.getZcord()+length*(vec_z);
 
+            // cout << "NodeMap1->second.getXcord() " << NodeMap1->second.getXcord() << endl; 
+            // cout << "NodeMap1->second.getYcord() " << NodeMap1->second.getYcord() << endl; 
+            // cout << "NodeMap1->second.getZcord() " << NodeMap1->second.getZcord() << endl; 
+
+
             if(!algo.compare("create")){
-        
-                string str = "node";
-                Node newNode = Node(stoi(getVariable(str)), node1_x, node1_y, node1_z );
-                this->NodeMap.insert(pair<int,Node>(newNode.getId(),newNode)); str = "element";
+                
+                Node newNode = Node(this->GmshParse.getNewNode(), node1_x, node1_y, node1_z );
+                this->GmshParse.addNode(newNode);
+                
+                this->NodeMap.insert(pair<int,Node>(newNode.getId(),newNode)); string str = "element";
+
+                // Check if the new node exists else add to NodeNoMap list
+                if ( NodeNoMap.find(newNode.getId()) == NodeNoMap.end() ) {
+                  this->NodeNoMap[newNode.getId()] = 0;
+                }
+                
                 Node1=NodeMap1->first;
                 Node2=newNode.getId(); 
                 NofNodesCreated++;
@@ -829,14 +846,14 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 // cout << endl << newNode.getId() << " " << node1_x << " " << node1_y << " " << node1_z;
                 // cout << " New Nodes and Elements Created" << endl;
                 NofElementsCreated+=1; 
-                string ElementDesc = to_string(this->GmshParse.getElementList().size()+1) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
+                string ElementDesc = to_string(this->GmshParse.getNewElement()) + " 1 2 "  + to_string(newPhysicalGroupTag) + " " + to_string(EntityNo) + " " + to_string(Node1) + " " + to_string(Node2);
                 // cout << endl << ElementDesc;
                 Element newElement = Element(ElementDesc);
                 this->GmshParse.addElement(newElement);
                 this->ElementNoMap.insert(pair<int,int>(newElement.getId(),0));
                 newNodeElement.ElementList.push_back(newElement);
-                newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
-                newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
+                newNodeElement.NodeList.insert(pair<int,int>(Node1,Node1));
+                newNodeElement.NodeList.insert(pair<int,int>(Node2,Node2));
                 NodeMap1 = this->NodeMap.find(newNode.getId());
             }
             else if (!algo.compare("find")){
@@ -864,8 +881,8 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                         this->GmshParse.addElement(newElement);
                         this->ElementNoMap.insert(pair<int,int>(newElement.getId(),0));
                         newNodeElement.ElementList.push_back(newElement);
-                        newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
-                        newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
+                        newNodeElement.NodeList.insert(pair<int,int>(Node1,Node1));
+                        newNodeElement.NodeList.insert(pair<int,int>(Node2,Node2));
                         UniqueNodes++;
                         NodeMap1 = NodeMap2;
                         
@@ -913,10 +930,10 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 this->GmshParse.addElement(newElement);
                 this->ElementNoMap.insert(pair<int,int>(newElement.getId(),0));
                 newNodeElement.ElementList.push_back(newElement);
-                newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
-                newNodeElement.NodeList.insert(pair<int,int>(Node1,Node2));
+                newNodeElement.NodeList.insert(pair<int,int>(Node1,Node1));
+                newNodeElement.NodeList.insert(pair<int,int>(Node2,Node2));
                 UniqueNodes++;
-                
+
                 if(UniqueNodes>1){ string str =  "\n \t \033[1;31mERROR:: More than one node inside tolerence \033[0m\n"; throw str.c_str();}
             }
         }
@@ -931,7 +948,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
     }
 
     this->PhysicalGroupMap.insert(pair<int,NodeElement>(newPhysicalGroupTag,newNodeElement));
-    string PhysicDes = "1 "+ to_string(newPhysicalGroupTag)+  " \"$" + newPhysicalGroupName +  "$\""; 
+    string PhysicDes = "1 "+ to_string(newPhysicalGroupTag)+  " \"" + newPhysicalGroupName +  "\""; 
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
     this->PhysicalGroupList.push_back(newPhysicalGroup);
     this->PhysicalStringNameToIdMap.insert(pair<string,int>(newPhysicalGroup.getPhysicTag(),newPhysicalGroup.getId()));
@@ -2127,6 +2144,35 @@ void gmESSITranslator::Generate_Make_File(){
     Makefile << "\t rm *.feioutput "<< endl << endl; 
 
     return;
+}
+
+int gmESSITranslator::addNode(Node node){
+
+    int nodeId = node.getId();
+
+    if(NodeNoMap.find(nodeId)!=NodeNoMap.end())
+        return -1; // Node no already exists
+
+    this->GmshParse.addNode(node);
+    NodeMap.insert(pair<int,Node>(nodeId,node));
+    this->NodeNoMap[nodeId]=0;
+
+    return 0;
+
+
+}
+
+int gmESSITranslator::addElement(Element ele){
+
+    int eleId = ele.getId();
+
+    if(ElementNoMap.find(eleId)!=ElementNoMap.end())
+        return -1; // Element no already exists
+
+    this->GmshParse.addElement(ele);
+    this->ElementNoMap[eleId]=0;
+
+    return 0;
 }
 
 

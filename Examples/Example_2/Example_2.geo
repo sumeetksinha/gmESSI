@@ -4,13 +4,13 @@
 // #  GMESSI :: Translator for The Real ESSI (Real Earthquake-Soil-Structure Interaction) Simulator                          #
 // #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                      #
 // #                                                                                                                         #
-// #  Example_1 : Modelling of Cantilever Beam With Uniformly Distributed Load                                                  #
+// #  Example_1 : Modelling of Cantilever Beam With Uniformly Distributed Load                                               #
 // #                                                                                                                         #
 // #  GITHUB:: https://github.com/SumeetSinha/gmESSI.git                                                                     #
 // #                                                                                                                         #
-// #  *** gmsh geometry file  for this example ***                                                                                #
+// #  *** gmsh geometry file  for this example ***                                                                           #
 // #                                                                                                                         #
-// #  Sumeet Kumar Sinha (Decmbere,2016)                                                                                    #
+// #  Sumeet Kumar Sinha (Decmbere,2016)                                                                                     #
 // #  Computational Geomechanics Group                                                                                       #
 // #  University of California, Davis                                                                                        #
 // #  s u m e e t k s i n h a . c o m                                                                                        #

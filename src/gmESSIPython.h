@@ -61,7 +61,13 @@ class gmESSIPython{
 		void setNodeNoMap(map<int,int> NodeNoMap);
 		void setElementNoMap(map<int,int> ElementNoMap);
 		/*********************************************************************************************/
-		
+
+		int addNode(Node node);
+		int addElement(Element ele);
+		int getGmshTag(const string& EssiTag);
+		int getNewPhysicalGroupTag();
+		int getNewEntityTag();
+
 		void CreatePhysicalGroup (string Name,vector<Node> NodeList, vector<Element> ElementList);
 		string GmshFile="", pwd="", GeometryFile="", MainFile="", LoadFile="";
 

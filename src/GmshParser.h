@@ -50,6 +50,7 @@ class GmshParser{
 		vector<PhysicalGroup> getPhysicalGroupList();
 		int getNewPhysicalGroup();
 		int getNewNode();
+		void addNode(Node NewNode); 
 		int getNewElement();
 		int getNewEntity();
 

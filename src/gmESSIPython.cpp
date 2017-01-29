@@ -20,6 +20,7 @@
 #include <cmath>
 #include "gmESSIPython.h"
 #include "Node.h"
+#include "Element.h"
 
 #ifdef _WIN32 
     #include <direct.h>
@@ -80,6 +81,19 @@ int gmESSIPython::getEssiTag(const string& EssiTag){
 	string Tag = EssiTag;
 	string newNumber = Translator.getVariable(Tag);
 	return stoi(newNumber);
+}
+
+
+int gmESSIPython::getGmshTag(const string& GmshTag){
+
+	if(GmshTag.compare("node")==0)
+		return Translator.GmshParse.getNewNode();
+
+	else if (GmshTag.compare("element")==0)
+		return Translator.GmshParse.getNewElement();
+
+	return -1;
+
 }
 
 void gmESSIPython::DisplayNewTagNumbering(){
@@ -307,6 +321,9 @@ void gmESSIPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vecto
 	map<int,int> NodeNumberNodeMap; 
 	int ElementListSize=ElementList.size(), EntityNo=this->Translator.NewEntity++, NodelistSize=NodeList.size(), newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size()+1;
 
+    if(Translator.PhytonScriptPhysicalGroupIndex==-1) newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size()+1;
+    else newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size();
+
 	for(int i=0 ; i<ElementListSize ;i++){
 		ElementList.at(i).setPhysicalTag(newPhysicalGroupTag);
 		ElementList.at(i).setEntityTag(EntityNo);
@@ -322,8 +339,8 @@ void gmESSIPython::CreatePhysicalGroup (string Name,vector<Node> NodeList, vecto
 	newNodeElement.NodeList = NodeNumberNodeMap;
 
     this->Translator.PhysicalGroupMap.insert(pair<int,NodeElement>(newPhysicalGroupTag,newNodeElement));
-    string PhysicDes = "3 "+ to_string(newPhysicalGroupTag)+  " \"$" + Name +  "$\"";
-    cout << "\033[1;36mNew Physical Group " << newPhysicalGroupTag << " with name \"$" << Name << "$\" created "  << "\033[0m\n";
+    string PhysicDes = "3 "+ to_string(newPhysicalGroupTag)+  " \"" + Name +  "\"";
+    cout << "\033[1;36mNew Physical Group " << newPhysicalGroupTag << " with name \"" << Name << "\" created "  << "\033[0m\n";
     PhysicalGroup newPhysicalGroup = PhysicalGroup(PhysicDes);
     this->Translator.PhysicalGroupList.push_back(newPhysicalGroup);
     this->Translator.PhysicalStringNameToIdMap.insert(pair<string,int>(newPhysicalGroup.getPhysicTag(),newPhysicalGroup.getId()));
@@ -361,6 +378,31 @@ void gmESSIPython::setNodeNoMap(map<int,int> NodeNoMap){
 void gmESSIPython::setElementNoMap(map<int,int> ElementNoMap){
 
 	Translator.ElementNoMap = ElementNoMap;
+}
+
+int gmESSIPython::addNode(Node node){
+
+	return Translator.addNode(node);
+}
+
+int gmESSIPython::addElement(Element ele){
+
+	return Translator.addElement(ele);
+}
+
+int gmESSIPython::getNewPhysicalGroupTag(){
+
+ 	int newPhysicalGroupTag = 0;
+	if(this->Translator.PhytonScriptPhysicalGroupIndex==-1) newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size()+1;
+	else newPhysicalGroupTag = this->Translator.PhysicalGroupMap.size();
+
+	return newPhysicalGroupTag;
+}
+
+
+int gmESSIPython::getNewEntityTag(){
+
+ 	return  this->Translator.NewEntity++;
 }
 
 
@@ -553,6 +595,7 @@ BOOST_PYTHON_MODULE(gmessi)
 	    .def_readonly("ElementList",&SelectionData::ElementList);
 
     class_<Element>("Element")
+    	.def(init<const std::string&>())
     	.def("setElement",&Element::setElement)
     	.def("getId",&Element::getId)
     	.def("getType",&Element::getType)
@@ -561,6 +604,8 @@ BOOST_PYTHON_MODULE(gmessi)
     	.def("getNodeList",&Element::getNodeList);
 
     class_<Node>("Node")
+    	.def(init<>())
+    	.def(init<const std::string&>())
     	.def("getId",&Node::getId)
     	.def("getXcord",&Node::getXcord)
     	.def("getYcord",&Node::getYcord) 
@@ -596,6 +641,7 @@ BOOST_PYTHON_MODULE(gmessi)
     	.def("loadMshFile",&gmESSIPython::loadMshFile2)
     	.def("Convert",&gmESSIPython::Convert) 
     	.def("getNewESSITag",&gmESSIPython::getEssiTag) 
+    	.def("getNewGmshTag",&gmESSIPython::getGmshTag) 
     	.def("getEntityGroupElements",&gmESSIPython::getEntityGroupElements)
     	.def("getEntityGroupNodes",&gmESSIPython::getEntityGroupNodes)
     	.def("getPhysicalGroupElements",&gmESSIPython::getPhysicalGroupElements)
@@ -612,5 +658,9 @@ BOOST_PYTHON_MODULE(gmessi)
     	.def("getNodeNoMap",&gmESSIPython::getNodeNoMap)
     	.def("getElementNoMap",&gmESSIPython::getElementNoMap)
     	.def("setNodeNoMap",&gmESSIPython::setNodeNoMap)
-    	.def("setElementNoMap",&gmESSIPython::setElementNoMap);
+    	.def("setElementNoMap",&gmESSIPython::setElementNoMap)
+    	.def("addNode",&gmESSIPython::addNode)
+    	.def("addElement",&gmESSIPython::addElement)
+    	.def("getNewPhysicalTag",&gmESSIPython::getNewPhysicalGroupTag)
+    	.def("getNewEntityTag",&gmESSIPython::getNewEntityTag);
 }
