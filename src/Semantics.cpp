@@ -25,6 +25,7 @@ Semantics::Semantics(){
 	this->EssiTagList.insert("element");this->EssiTagList.insert("damping");this->EssiTagList.insert("displacement");
 	this->EssiTagList.insert("field");this->EssiTagList.insert("load");this->EssiTagList.insert("material");
 	this->EssiTagList.insert("motion");this->EssiTagList.insert("node");this->EssiTagList.insert("nodes");
+	this->EssiTagList.insert("elements");
 }
 
 Semantics::Semantics(const string& Gmsh, const string& Essi){
@@ -32,6 +33,7 @@ Semantics::Semantics(const string& Gmsh, const string& Essi){
 	this->EssiTagList.insert("element");this->EssiTagList.insert("damping");this->EssiTagList.insert("displacement");
 	this->EssiTagList.insert("field");this->EssiTagList.insert("load");this->EssiTagList.insert("material");
 	this->EssiTagList.insert("motion");this->EssiTagList.insert("node");this->EssiTagList.insert("nodes");
+	this->EssiTagList.insert("elements");
 	this->setSemantics(Gmsh, Essi);
 
 }
@@ -41,6 +43,7 @@ Semantics::Semantics(const string& Gmsh, const string& Essi, const string& id){
 	this->EssiTagList.insert("element");this->EssiTagList.insert("damping");this->EssiTagList.insert("displacement");
 	this->EssiTagList.insert("field");this->EssiTagList.insert("load");this->EssiTagList.insert("material");
 	this->EssiTagList.insert("motion");this->EssiTagList.insert("node");this->EssiTagList.insert("nodes");
+	this->EssiTagList.insert("elements");
 	this->setSemantics(Gmsh, Essi);
 	this->setSemanticsId(id);
 }

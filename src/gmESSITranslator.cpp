@@ -655,8 +655,10 @@ void gmESSITranslator::GeneralElementalCommand(const int& i, const int& j){
             Tokenizer tknzr = Tokenizer(EssiVariables.at(l),"#");
             string var = tknzr.nextToken();
            
-            if(!var.compare("element")){
+            if(!var.compare("element") || !var.compare("elements")){
 
+                var = "element";
+                
                 /******************************** OPtimizing Elements for ESSI *****************************************/
 
                 if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
