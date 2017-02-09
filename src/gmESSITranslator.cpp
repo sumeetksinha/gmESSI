@@ -251,11 +251,19 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
     if(!(this->UserCommandList.at(j).substr(4,3).compare("All"))){
 
         map<int,Node> ::iterator AllNodeBegin = this->NodeMap.begin();
-        map<int,Node> ::iterator AllNodeEnd = this->NodeMap.end();
+        map<int,Node> ::iterator AllNodeEnd =   this->NodeMap.end();
 
         for(map<int,Node>::iterator it=AllNodeBegin; it!=AllNodeEnd; ++it){
 
-            /******************************** OPtimizing Nodes for ESSI *****************************************/
+            if(this->WhetherNodeAdded.find(it->second.getId())==this->WhetherNodeAdded.end()){
+                WhetherNodeAdded.insert ( std::pair<int,int>(it->second.getId(),1) );
+            } 
+            else{
+                cout << " Node no #" << this->NodeNoMap.find(it->second.getId())->second << " allready written " << endl;
+                continue;
+            }
+
+             /******************************** OPtimizing Nodes for ESSI *****************************************/
             if(this->NodeNoMap.find(it->second.getId())->second==0){
                 string NewNodeNo = this->getVariable(node);
                 this->TempVariable.push(NewNodeNo);
@@ -265,7 +273,7 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
                 this->TempVariable.push(to_string(this->NodeNoMap.find(it->second.getId())->second));nofRun++;
             }
             /****************************************************************************************************/
-        
+            
             // this->TempVariable.push(to_string(it->second.getId()));nofRun++;
             this->TempVariable.push(to_string(it->second.getXcord())+"*"+this->VariableList.at(j).at(0)); 
             this->TempVariable.push(to_string(it->second.getYcord())+"*"+this->VariableList.at(j).at(0));
@@ -273,6 +281,8 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
             this->TempVariable.push(this->VariableList.at(j).at(1)); 
 
             GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
+
+
         }
 
         GeometryFile << PrintEndConversion(nofRun,j);
@@ -295,6 +305,15 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
         
         int n = init; nofRun++;
         map<int,Node>::iterator NodeInfo = this->NodeMap.find(it->second);
+
+        if(this->WhetherNodeAdded.find(it->second)==this->WhetherNodeAdded.end()){
+            WhetherNodeAdded.insert ( std::pair<int,int>(it->second,1) );
+        } 
+        else{
+            cout << endl << "\t \t  Node no #" << this->NodeNoMap.find(it->second)->second << " allready written ";
+            continue;
+        }
+
 
         /******************************** OPtimizing Nodes for ESSI *****************************************/
         if(this->NodeNoMap.find(it->second)->second==0){

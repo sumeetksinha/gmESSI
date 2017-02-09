@@ -60,6 +60,7 @@ class gmESSITranslator{
         map<int,Node> NodeMap;
         map<int,int> ElementNoMap;
         map<int,int> NodeNoMap;
+        map<int,int> WhetherNodeAdded;        // Checks whether node has been added. Ensures, no repetition
         GmshParser GmshParse = GmshParser ();
         vector<PhysicalGroup> PhysicalGroupList;
         OctParser Evaluate = OctParser();
