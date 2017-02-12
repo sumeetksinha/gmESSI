@@ -4,8 +4,7 @@
 // #  GMESSI :: Translator for The Real ESSI (Real Earthquake-Soil-Structure Interaction) Simulator                          #
 // #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                      #
 // #                                                                                                                         #
-// #  Example_1 : Modelling of a concrete foundation on Soil connected by truss elements                                     #
-// #              (perfect contact) foundation and soil is always connected                                                  #
+// #  Example_4 : Modelling of a concrete foundation on Soil connected by contact elements                                   #
 // #                                                                                                                         #
 // #  GITHUB:: https://github.com/SumeetSinha/gmESSI.git                                                                     #
 // #                                                                                                                         #
@@ -58,5 +57,4 @@ Physical Volume  ("Foundation") = {2};
 
 Physical Surface("Fix_X") = {26, 53, 45, 18};
 Physical Surface("Fix_Y") = {22, 49, 14, 41};
-Physical Surface("6_Dofs") = { 27,28};
 Physical Volume("3_Dofs") = {1,2};

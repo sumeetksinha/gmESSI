@@ -4,7 +4,7 @@
 // #  GMESSI :: Translator for The Real ESSI (Real Earthquake-Soil-Structure Interaction) Simulator                          #
 // #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                      #
 // #                                                                                                                         #
-// #  Example_1 : Modelling of Cantilever Beam With Uniformly Distributed Load                                               #
+// #  Example_2 : Modelling of Cantilever Beam With Uniformly Distributed Load                                               #
 // #                                                                                                                         #
 // #  GITHUB:: https://github.com/SumeetSinha/gmESSI.git                                                                     #
 // #                                                                                                                         #

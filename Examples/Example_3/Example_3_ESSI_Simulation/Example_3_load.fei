@@ -1,0 +1,142 @@
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Soil_Base_Surface, DofTypes:= ux uy uz}Starts
+//*************************************************************************************************************************
+
+fix node # 7 dofs ux uy uz; 
+fix node # 8 dofs ux uy uz; 
+fix node # 9 dofs ux uy uz; 
+fix node # 10 dofs ux uy uz; 
+fix node # 15 dofs ux uy uz; 
+fix node # 16 dofs ux uy uz; 
+fix node # 17 dofs ux uy uz; 
+fix node # 18 dofs ux uy uz; 
+fix node # 19 dofs ux uy uz; 
+fix node # 20 dofs ux uy uz; 
+fix node # 21 dofs ux uy uz; 
+fix node # 22 dofs ux uy uz; 
+fix node # 23 dofs ux uy uz; 
+fix node # 24 dofs ux uy uz; 
+fix node # 25 dofs ux uy uz; 
+fix node # 26 dofs ux uy uz; 
+fix node # 27 dofs ux uy uz; 
+fix node # 28 dofs ux uy uz; 
+fix node # 29 dofs ux uy uz; 
+fix node # 30 dofs ux uy uz; 
+fix node # 31 dofs ux uy uz; 
+fix node # 32 dofs ux uy uz; 
+fix node # 33 dofs ux uy uz; 
+fix node # 34 dofs ux uy uz; 
+fix node # 35 dofs ux uy uz; 
+fix node # 36 dofs ux uy uz; 
+fix node # 37 dofs ux uy uz; 
+fix node # 38 dofs ux uy uz; 
+fix node # 39 dofs ux uy uz; 
+fix node # 40 dofs ux uy uz; 
+fix node # 41 dofs ux uy uz; 
+fix node # 42 dofs ux uy uz; 
+fix node # 43 dofs ux uy uz; 
+fix node # 44 dofs ux uy uz; 
+fix node # 45 dofs ux uy uz; 
+fix node # 46 dofs ux uy uz; 
+fix node # 47 dofs ux uy uz; 
+fix node # 48 dofs ux uy uz; 
+fix node # 49 dofs ux uy uz; 
+fix node # 50 dofs ux uy uz; 
+fix node # 123 dofs ux uy uz; 
+fix node # 124 dofs ux uy uz; 
+fix node # 125 dofs ux uy uz; 
+fix node # 126 dofs ux uy uz; 
+fix node # 127 dofs ux uy uz; 
+fix node # 128 dofs ux uy uz; 
+fix node # 129 dofs ux uy uz; 
+fix node # 130 dofs ux uy uz; 
+fix node # 131 dofs ux uy uz; 
+fix node # 132 dofs ux uy uz; 
+fix node # 133 dofs ux uy uz; 
+fix node # 134 dofs ux uy uz; 
+fix node # 135 dofs ux uy uz; 
+fix node # 136 dofs ux uy uz; 
+fix node # 137 dofs ux uy uz; 
+fix node # 138 dofs ux uy uz; 
+fix node # 139 dofs ux uy uz; 
+fix node # 140 dofs ux uy uz; 
+fix node # 141 dofs ux uy uz; 
+fix node # 142 dofs ux uy uz; 
+fix node # 143 dofs ux uy uz; 
+fix node # 144 dofs ux uy uz; 
+fix node # 145 dofs ux uy uz; 
+fix node # 146 dofs ux uy uz; 
+fix node # 147 dofs ux uy uz; 
+fix node # 148 dofs ux uy uz; 
+fix node # 149 dofs ux uy uz; 
+fix node # 150 dofs ux uy uz; 
+fix node # 151 dofs ux uy uz; 
+fix node # 152 dofs ux uy uz; 
+fix node # 153 dofs ux uy uz; 
+fix node # 154 dofs ux uy uz; 
+fix node # 155 dofs ux uy uz; 
+fix node # 156 dofs ux uy uz; 
+fix node # 157 dofs ux uy uz; 
+fix node # 158 dofs ux uy uz; 
+fix node # 159 dofs ux uy uz; 
+fix node # 160 dofs ux uy uz; 
+fix node # 161 dofs ux uy uz; 
+fix node # 162 dofs ux uy uz; 
+fix node # 163 dofs ux uy uz; 
+fix node # 164 dofs ux uy uz; 
+fix node # 165 dofs ux uy uz; 
+fix node # 166 dofs ux uy uz; 
+fix node # 167 dofs ux uy uz; 
+fix node # 168 dofs ux uy uz; 
+fix node # 169 dofs ux uy uz; 
+fix node # 170 dofs ux uy uz; 
+fix node # 171 dofs ux uy uz; 
+fix node # 172 dofs ux uy uz; 
+fix node # 173 dofs ux uy uz; 
+fix node # 174 dofs ux uy uz; 
+fix node # 175 dofs ux uy uz; 
+fix node # 176 dofs ux uy uz; 
+fix node # 177 dofs ux uy uz; 
+fix node # 178 dofs ux uy uz; 
+fix node # 179 dofs ux uy uz; 
+fix node # 180 dofs ux uy uz; 
+fix node # 181 dofs ux uy uz; 
+fix node # 182 dofs ux uy uz; 
+fix node # 183 dofs ux uy uz; 
+fix node # 184 dofs ux uy uz; 
+fix node # 185 dofs ux uy uz; 
+fix node # 186 dofs ux uy uz; 
+fix node # 187 dofs ux uy uz; 
+fix node # 188 dofs ux uy uz; 
+fix node # 189 dofs ux uy uz; 
+fix node # 190 dofs ux uy uz; 
+fix node # 191 dofs ux uy uz; 
+fix node # 192 dofs ux uy uz; 
+fix node # 193 dofs ux uy uz; 
+fix node # 194 dofs ux uy uz; 
+fix node # 195 dofs ux uy uz; 
+fix node # 196 dofs ux uy uz; 
+fix node # 197 dofs ux uy uz; 
+fix node # 198 dofs ux uy uz; 
+fix node # 199 dofs ux uy uz; 
+fix node # 200 dofs ux uy uz; 
+fix node # 201 dofs ux uy uz; 
+fix node # 202 dofs ux uy uz; 
+fix node # 203 dofs ux uy uz; 
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Soil_Base_Surface, DofTypes:= ux uy uz}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Add_Node_Load_Linear{Physical_Group#Tower, ForceType:= Fx, Mag:= 500*kN}Starts
+//*************************************************************************************************************************
+
+add load # 1 to node # 1 type linear Fx = 500*kN; 
+
+//*************************************************************************************************************************
+//							Add_Node_Load_Linear{Physical_Group#Tower, ForceType:= Fx, Mag:= 500*kN}Ends
+//*************************************************************************************************************************
+

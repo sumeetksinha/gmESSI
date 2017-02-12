@@ -1,0 +1,44 @@
+GmESSI.loadMshFile("Example_5.msh")
+
+/////////////////////////////////////////////////////////
+//2 2 "$Fixities$"
+//2 3 "$SurfaceLoad$"
+//3 1 "$SoilVolume$"
+/////////////////////////////////////////////////////////
+
+//Adding Model Name
+[Define_Model_Name{"Example_5"}]
+
+//Adding all nodes of the model
+[Add_All_Node{m,3}]
+
+//Defining and creating 8-noded brick elements with different material properties
+[Vary_Linear_Elastic_Isotropic_3D{Physical_Group#1,[Add_8NodeBrick{}],1600+10*(10-z)\ 0 \kg/m^3, 20e9+10e8*(10-z)\-8\Pa , 0.3}]
+
+//Applying Fixities to the model
+[Fix_Dofs{Physical_Group#2,all}]
+
+//Including the geometry file generated
+[Include{"Example_5_geometry.fei"}]
+
+
+//Adding new loading stage
+[New_Loading_Stage{"Stage1_Surface_Loading"}]
+
+// Adding surface load on the soil mass
+[Add_8NodeBrick_SurfaceLoad{Physical_Group#1,Physical_Group#3,10*kPa}]
+
+//Including the load file generated
+[Include{"Example_5_load.fei"}]
+
+// Just a comment inside the _analysis file.
+[Comment{Starting the simulation}] 
+
+// Defining algorithms for the model
+[Define_Algorithm{With_no_convergence_check}]
+[Define_Solver{SolverName:= UMFPack}]
+[Define_Load_Factor_Increment{Incr:= 1}]
+[Simulate_Using_Static_Algorithm{NumSteps:= 10}]
+
+// A nice good bye
+[Bye{}] 

@@ -4,7 +4,7 @@
 // #  GMESSI :: Translator for The Real ESSI (Real Earthquake-Soil-Structure Interaction) Simulator                          #
 // #  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                      #
 // #                                                                                                                         #
-// #  Example_1 : Modelling of Tower above thr ground Surface                                                                #
+// #  Example_3 : Modelling of Tower above thr ground Surface                                                                #
 // #                                                                                                                         #
 // #  GITHUB:: https://github.com/SumeetSinha/gmESSI.git                                                                     #
 // #                                                                                                                         #
@@ -32,7 +32,7 @@ Extrude{Size,0,0}{Point{1};Layers{Size/Mesh_Size};Recombine;}
 Extrude{0,Size,0}{Line{1};Layers{Size/Mesh_Size};Recombine;}
 Extrude{0,0,Size}{Surface{5};Layers{Size/Mesh_Size};Recombine;}
 
-// Make the tower located at height 3 m from the ground surface 
+// Make the tower located at height 6 m from the ground surface 
 Tower = newp;
 Point (Tower) = {0,0,Size/2+Height};
 

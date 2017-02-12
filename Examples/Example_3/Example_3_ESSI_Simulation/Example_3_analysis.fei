@@ -5,3 +5,23 @@ model name "Tower";
 
 
 
+add material # 1 type linear_elastic_isotropic_3d mass_density = 2000*kg/m^3 elastic_modulus = 2e7*Pa poisson_ratio = 0.3; 
+
+
+include "Example_3_geometry.fei"; 
+
+new loading stage "Stage1_Lateral_Load"; 
+
+
+include "Example_3_load.fei"; 
+
+ NSteps = 10; 
+
+define algorithm With_no_convergence_check; 
+define solver UMFPack; 
+define load factor increment 1/NSteps; 
+simulate NSteps steps using static algorithm; 
+
+ bye; 
+
+

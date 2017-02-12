@@ -7,12 +7,12 @@ $PhysicalNames
 2 2 "Soil_Base_Surface"
 2 3 "Soil_Top_Surface"
 3 1 "Soil"
-1 5 "Tower_Beam"
+1 5 "Tower_Beam_Above_Ground"
 3 6 "TowerBaseNode"
 1 7 "Tower_Embedded_Beam"
 $EndPhysicalNames
 $Nodes
-1336
+1334
 1 -5 -5 -5
 2 5 -5 -5
 3 -5 5 -5
@@ -1347,8 +1347,6 @@ $Nodes
 1332 4 4 4
 1333 0 0 9
 1334 0 0 7
-1335 0 0 3
-1336 0 0 1
 $EndNodes
 $Elements
 1208
@@ -2558,6 +2556,6 @@ $Elements
 1204 1 2 5 28 1334 563
 1205 15 2 6 29 563
 1206 15 2 6 30 563
-1207 1 2 7 31 563 1335
-1208 1 2 7 31 1335 1336
+1207 1 2 7 31 563 972
+1208 1 2 7 31 972 971
 $EndElements

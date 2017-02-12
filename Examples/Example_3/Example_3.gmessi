@@ -10,14 +10,14 @@ GmESSI.loadMshFile("Example_3.msh")
 [Define_Model_Name{ModelName:= "Tower"}]
 
 # Creating three beams of 2m each connecting to the tower
-[Connect{Physical_Group#Tower, Physical_Group#Soil_Top_Surface, Physical_Group#Soil_Top_Surface, dv1:= 0 \ 0 \ -1, mag:= 2, Tolerence:= 0, algo:= create, noT:= 3, PhysicalGroupName:= Tower_Beam}]
+[Connect{Physical_Group#Tower, Physical_Group#Soil_Top_Surface, Physical_Group#Soil_Top_Surface, dv1:= 0 \ 0 \ -1, mag:= 2, Tolerence:= 0, algo:= create, noT:= 3, PhysicalGroupName:= Tower_Beam_Above_Ground}]
 
 NewPhysicalTag = GmESSI.getNewPhysicalTag();
 NewEntityTag  =  GmESSI.getNewEntityTag();
 
 print(NewPhysicalTag);
 
-TowerPhysicalGroup = GmESSI.getPhysicalGroupElements('Tower_Beam');
+TowerPhysicalGroup = GmESSI.getPhysicalGroupElements('Tower_Beam_Above_Ground');
 NewElement = TowerPhysicalGroup[len(TowerPhysicalGroup)-1];
 Tower_Beam_node_on_Ground = (NewElement.getNodeList()[1]);
 
@@ -36,82 +36,48 @@ NodeList.append(NodeMap[Tower_Beam_node_on_Ground]);
 ElementList.append(NewElement);
 GmESSI.CreatePhysicalGroup('TowerBaseNode',NodeList,ElementList);
 
-[Connect{Physical_Group#TowerBaseNode, Physical_Group#Soil_Base_Surface, Physical_Group#Soil, dv1:= 0 \ 0 \ -1, mag:= 2, Tolerence:= 0, algo:= create, noT:= 3, PhysicalGroupName:= Tower_Embedded_Beam}]
+# 3 m embedded inside the ground with each beam length of 1m 
+[Connect{Physical_Group#TowerBaseNode, Physical_Group#Soil_Base_Surface, Physical_Group#Soil, dv1:= 0 \ 0 \ -1, mag:= 1, Tolerence:= 0, algo:= find, noT:= 3, PhysicalGroupName:= Tower_Embedded_Beam}]
 
-[Add_Node{Physical_Group#Tower_Beam, Unit:= m, NumDofs:= 6}]
+# Adding 6dofs nodes of beam
+[Add_Node{Physical_Group#Tower_Beam_Above_Ground, Unit:= m, NumDofs:= 6}]
 [Add_Node{Physical_Group#Tower_Embedded_Beam, Unit:= m, NumDofs:= 6}]
 
 # Adding 3dofs nodes of soil
 [Add_Node{Physical_Group#Soil, Unit:= m, NumDofs:= 3}]
 
-#[Add_Truss{Physical_Group#Tower_Beam, MaterialNo:= 1, CrossSectin:= 1, Density:= 1}]
+#Adding material
+[Add_Linear_Elastic_Isotropic_3D{MaterialNo:= 1, Density:= 2000*kg/m^3, ElasticModulus:= 2e7*Pa, PoissonRatio:= 0.3}]
 
-#[Connect{Physical_Group#Soil_Top_Surface, Physical_Group#Soil_Base_Surface, Physical_Group#Tower, dv1:= 0\0\1, mag:= 2, Tolerence:= 0.001, algo:= create, noT:= 1, PhysicalGroupName:= Tower_Beam}]
+#Adding elements
+[Add_8NodeBrick{Physical_Group#Soil, MaterialNo:= 1}]
+[Add_Beam_Elastic{Physical_Group#Tower_Beam_Above_Ground, CrossSection:= 1*m^2, ElasticModulus:= 200e9*Pa, ShearModulus:= 70e9*Pa, Jx:= 1.63*m^4, Iy:= 0.833*m^4, Iz:=  0.833*m^4, Density:= 6800*kg/m^3, XZPlnVect_x:= 0, XZPlnVect_y:= 1, XZPlnVect_z:= 0, J1_x:= 0*m, J1_y:= 0*m, J1_z:= 0*m, J2_x:= 0*m, J2_y:= 0*m, J2_z:= 0*m}]
+[Add_Beam_Elastic{Physical_Group#Tower_Embedded_Beam, CrossSection:= 1*m^2, ElasticModulus:= 200e9*Pa, ShearModulus:= 70e9*Pa, Jx:= 1.63*m^4, Iy:=  0.833*m^4, Iz:=  0.833*m^4, Density:= 6800*kg/m^3, XZPlnVect_x:= 0, XZPlnVect_y:= 1, XZPlnVect_z:= 0, J1_x:= 0*m, J1_y:= 0*m, J1_z:= 0*m, J2_x:= 0*m, J2_y:= 0*m, J2_z:= 0*m}]
 
-#[Add_All_Node{ unit:= m, nof_dofs:= 3}]
-##[Add_Node{Physical_Group#6_Dofs, Unit:= m, NumDofs:= 6}]
+# including geometry file
+[Include{"Example_3_geometry.fei"}]
 
-##[Add_Node{Physical_Group#3_Dofs, Unit:= m, NumDofs:= 3}]
+# start a new stage
+[New_Loading_Stage{StageName:= "Stage1_Lateral_Load"}]
 
-##[Add_Node{Physical_Group#3_Dofs, Unit:= m, NumDofs:= 3}]
+# Apply Fixities at the base of soil
+[Fix_Dofs{Physical_Group#Soil_Base_Surface, DofTypes:= ux uy uz}]
+# Apply lateral load to tower
+[Add_Node_Load_Linear{Physical_Group#Tower, ForceType:= Fx, Mag:= 500*kN}]
 
-#// Adding Material
+# include the load file
+[Include{"Example_3_load.fei"}]
 
-#// soil material 
-#[Add_Linear_Elastic_Isotropic_3D{material_no:= 1, mass_density:= 2000*kg/m^3, elastic_modulus:= 200*MPa, poisson_ratio:= 0.3}]
-#[Add_8NodeBrick{Physical_Group#Soil, material_no:= 1}]
-#[Add_Node{Physical_Group#Tower, Unit:= m, NumDofs:= 6}]
+#Starting the simulation
 
-##[Vary_Linear_elastic_isotropic_3d{Physical_Group#1,[Add_8NodeBrickLT{}],1600+10*(10-z)\ 0 \kg/m^3, 20e9+10e8*(10-z)\-8\Pa , 0.3}]
+[Var{variable:= NSteps, value:= 10}]
 
-# #foundation material 
-#[Add_Linear_Elastic_Isotropic_3D{material_no:= 2, mass_density:= 2400*kg/m^3, elastic_modulus:= 41000*MPa, poisson_ratio:= 0.2}]
-#[Add_8NodeBrick{Physical_Group#Foundation, material_no:= 1}]
-##[Vary_Linear_elastic_isotropic_3d{Physical_Group#1,[Add_8NodeBrickLT{}],1600+10*(10-z)\ 0 \kg/m^3, 20e9+10e8*(10-z)\-8\Pa , 0.3}]
-
-#// creating truss elements connecting between the soil and foundation using connect command
-#[Connect{Physical_Group#Soil_Top_Surface, Physical_Group#Foundation_Base_Surface, Physical_Group#Foundation_Base_Surface, dv1:= 0\0\1, mag:= 0, Tolerence:= 0.001, algo:= create, noT:= 1, PhysicalGroupName:= Contact_Elements}]
-
-##// truss material
-#[Add_Uniaxial_Elastic1D{MaterialNo:= 3, ElasticModulus:= 1e9*Pa, ViscoElasticModulus:= 0*Pa*s}]
-
-##[Add_Beam_Elastic{Physical_Group#Contact_Elements, CrossSection:= 1*m^2, ElasticModulus:= 1e15*Pa, ShearModulus:= 1e12*Pa, Jx:= 100*m^4, Iy:= 0.5*m^4, Iz:= 0.5*m^4, Density:= 1650*kg/m^3, XZPlnVect_x:= 0, XZPlnVect_y:= 1, XZPlnVect_z:= 0, J1_x:= 0*m, J1_y:= 0*m, J1_z:= 0*m, J2_x:= 0*m, J2_y:= 0*m, J2_z:= 0*m}]
-
-##[Add_Truss{Physical_Group#Contact_Elements, MaterialNo:= 3, CrossSectin:= 1*m^2, Density:= 6850*kg/m^3}]
-
-#[Add_HardContact{Physical_Group#Contact_Elements, NormalStiffness:= 1e12*N/m, TangentialStiffness:= 1e9*N/m, NormalDamping:= 0*N/m*s, TangentialDamping:= 0*N/m*s, FrictionRatio:= 0.2, NormVect_x:= 0, NormVect_y:= 0, NormVect_z:= 1}]
-#// Applying Fixities
-#[Fix_Dofs{Physical_Group#Soil_Base_Surface, all}]
-#[Fix_Dofs{Physical_Group#Foundation_Base_Surface, ux uy}]
-#[Fix_Dofs{Physical_Group#Soil_Top_Surface, ux uy}]
-
-##[Fix_Dofs{Physical_Group#6_Dofs, ux uy  rx ry rz}]
-
-#[Fix_Dofs{Physical_Group#Fix_X, ux}]
-#[Fix_Dofs{Physical_Group#Fix_Y, uy}]
-
-#[Include{"Example_4_geometry.fei"}]
-
-#[New_Loading_Stage{StageName:= "Stage1_Surface_Loading"}]
-
-
-## Adding imposed motion
-#[Add_Node_Load_Imposed_Motion_Time_Series{Physical_Group#Foundation_Top_Surface, DofType:= uz, TimeStep:= 0.1*s, DispScale:= -1e-3*m, DispFile:= "../Disp.txt", VelScale:= -1e-3*m/s, VelFile:= "../Vel.txt", AccScl:= -1e-3*m/s^2, AccFile:= "../Acc.txt"}]
-
-#[Include{"Example_4_load.fei"}]
-
-#[Comment{Starting the simulation}] 
-
-
-#[Define_Convergence_Test{TestType:= Norm_Displacement_Increment, Tol:= 1e-4, MaxItr:= 100, VrbLevl:= 5}]
-#[Define_Algorithm{Newton}]
-#[Define_Solver{SolverName:= UMFPack}]
-##[Define_Load_Factor_Increment{Incr:= 0.1}]
-#[Define_Dynamic_Newmark_Integrator{Gamma:= 0.5, Beta:= 0.25}]
-#[Simulate_Using_Transient_Algorithm{NumSteps:= 500, TimeIncr:= 0.01*s}]
-##[Simulate_Using_Static_Algorithm{NumSteps:= 200}]
+[Define_Algorithm{AlgoType:= With_no_convergence_check}]
+[Define_Solver{SolverName:= UMFPack}]
+[Define_Load_Factor_Increment{Incr:= 1/NSteps}]
+[Simulate_Using_Static_Algorithm{NumSteps:= NSteps}]
 
 ##[Write_Data{ Physical_Group#Top_Surface,filename:= SurfaceLoad}]
-#[Bye{}] 
+[Bye{}] 
 
 

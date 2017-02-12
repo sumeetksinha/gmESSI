@@ -1,0 +1,317 @@
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Soil_Base_Surface, all}Starts
+//*************************************************************************************************************************
+
+fix node # 1 dofs all; 
+fix node # 2 dofs all; 
+fix node # 3 dofs all; 
+fix node # 4 dofs all; 
+fix node # 17 dofs all; 
+fix node # 18 dofs all; 
+fix node # 19 dofs all; 
+fix node # 20 dofs all; 
+fix node # 21 dofs all; 
+fix node # 22 dofs all; 
+fix node # 23 dofs all; 
+fix node # 24 dofs all; 
+fix node # 25 dofs all; 
+fix node # 26 dofs all; 
+fix node # 27 dofs all; 
+fix node # 28 dofs all; 
+fix node # 29 dofs all; 
+fix node # 30 dofs all; 
+fix node # 31 dofs all; 
+fix node # 32 dofs all; 
+fix node # 101 dofs all; 
+fix node # 102 dofs all; 
+fix node # 103 dofs all; 
+fix node # 104 dofs all; 
+fix node # 105 dofs all; 
+fix node # 106 dofs all; 
+fix node # 107 dofs all; 
+fix node # 108 dofs all; 
+fix node # 109 dofs all; 
+fix node # 110 dofs all; 
+fix node # 111 dofs all; 
+fix node # 112 dofs all; 
+fix node # 113 dofs all; 
+fix node # 114 dofs all; 
+fix node # 115 dofs all; 
+fix node # 116 dofs all; 
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Soil_Base_Surface, all}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Fix_X, ux}Starts
+//*************************************************************************************************************************
+
+fix node # 1 dofs ux; 
+fix node # 2 dofs ux; 
+fix node # 3 dofs ux; 
+fix node # 4 dofs ux; 
+fix node # 5 dofs ux; 
+fix node # 6 dofs ux; 
+fix node # 7 dofs ux; 
+fix node # 8 dofs ux; 
+fix node # 9 dofs ux; 
+fix node # 10 dofs ux; 
+fix node # 11 dofs ux; 
+fix node # 12 dofs ux; 
+fix node # 13 dofs ux; 
+fix node # 14 dofs ux; 
+fix node # 15 dofs ux; 
+fix node # 16 dofs ux; 
+fix node # 25 dofs ux; 
+fix node # 26 dofs ux; 
+fix node # 27 dofs ux; 
+fix node # 28 dofs ux; 
+fix node # 29 dofs ux; 
+fix node # 30 dofs ux; 
+fix node # 31 dofs ux; 
+fix node # 32 dofs ux; 
+fix node # 37 dofs ux; 
+fix node # 38 dofs ux; 
+fix node # 39 dofs ux; 
+fix node # 40 dofs ux; 
+fix node # 45 dofs ux; 
+fix node # 46 dofs ux; 
+fix node # 47 dofs ux; 
+fix node # 48 dofs ux; 
+fix node # 49 dofs ux; 
+fix node # 50 dofs ux; 
+fix node # 51 dofs ux; 
+fix node # 52 dofs ux; 
+fix node # 53 dofs ux; 
+fix node # 54 dofs ux; 
+fix node # 55 dofs ux; 
+fix node # 56 dofs ux; 
+fix node # 57 dofs ux; 
+fix node # 58 dofs ux; 
+fix node # 59 dofs ux; 
+fix node # 60 dofs ux; 
+fix node # 61 dofs ux; 
+fix node # 62 dofs ux; 
+fix node # 63 dofs ux; 
+fix node # 64 dofs ux; 
+fix node # 69 dofs ux; 
+fix node # 70 dofs ux; 
+fix node # 71 dofs ux; 
+fix node # 72 dofs ux; 
+fix node # 77 dofs ux; 
+fix node # 78 dofs ux; 
+fix node # 79 dofs ux; 
+fix node # 80 dofs ux; 
+fix node # 85 dofs ux; 
+fix node # 86 dofs ux; 
+fix node # 87 dofs ux; 
+fix node # 88 dofs ux; 
+fix node # 93 dofs ux; 
+fix node # 94 dofs ux; 
+fix node # 95 dofs ux; 
+fix node # 96 dofs ux; 
+fix node # 97 dofs ux; 
+fix node # 98 dofs ux; 
+fix node # 99 dofs ux; 
+fix node # 100 dofs ux; 
+fix node # 133 dofs ux; 
+fix node # 134 dofs ux; 
+fix node # 135 dofs ux; 
+fix node # 136 dofs ux; 
+fix node # 137 dofs ux; 
+fix node # 138 dofs ux; 
+fix node # 139 dofs ux; 
+fix node # 140 dofs ux; 
+fix node # 141 dofs ux; 
+fix node # 142 dofs ux; 
+fix node # 143 dofs ux; 
+fix node # 144 dofs ux; 
+fix node # 145 dofs ux; 
+fix node # 146 dofs ux; 
+fix node # 147 dofs ux; 
+fix node # 148 dofs ux; 
+fix node # 165 dofs ux; 
+fix node # 166 dofs ux; 
+fix node # 167 dofs ux; 
+fix node # 168 dofs ux; 
+fix node # 169 dofs ux; 
+fix node # 170 dofs ux; 
+fix node # 171 dofs ux; 
+fix node # 172 dofs ux; 
+fix node # 173 dofs ux; 
+fix node # 174 dofs ux; 
+fix node # 175 dofs ux; 
+fix node # 176 dofs ux; 
+fix node # 177 dofs ux; 
+fix node # 178 dofs ux; 
+fix node # 179 dofs ux; 
+fix node # 180 dofs ux; 
+fix node # 217 dofs ux; 
+fix node # 218 dofs ux; 
+fix node # 219 dofs ux; 
+fix node # 220 dofs ux; 
+fix node # 225 dofs ux; 
+fix node # 226 dofs ux; 
+fix node # 227 dofs ux; 
+fix node # 228 dofs ux; 
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Fix_X, ux}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Fix_Y, uy}Starts
+//*************************************************************************************************************************
+
+fix node # 1 dofs uy; 
+fix node # 2 dofs uy; 
+fix node # 3 dofs uy; 
+fix node # 4 dofs uy; 
+fix node # 5 dofs uy; 
+fix node # 6 dofs uy; 
+fix node # 7 dofs uy; 
+fix node # 8 dofs uy; 
+fix node # 9 dofs uy; 
+fix node # 10 dofs uy; 
+fix node # 11 dofs uy; 
+fix node # 12 dofs uy; 
+fix node # 13 dofs uy; 
+fix node # 14 dofs uy; 
+fix node # 15 dofs uy; 
+fix node # 16 dofs uy; 
+fix node # 17 dofs uy; 
+fix node # 18 dofs uy; 
+fix node # 19 dofs uy; 
+fix node # 20 dofs uy; 
+fix node # 21 dofs uy; 
+fix node # 22 dofs uy; 
+fix node # 23 dofs uy; 
+fix node # 24 dofs uy; 
+fix node # 33 dofs uy; 
+fix node # 34 dofs uy; 
+fix node # 35 dofs uy; 
+fix node # 36 dofs uy; 
+fix node # 41 dofs uy; 
+fix node # 42 dofs uy; 
+fix node # 43 dofs uy; 
+fix node # 44 dofs uy; 
+fix node # 49 dofs uy; 
+fix node # 50 dofs uy; 
+fix node # 51 dofs uy; 
+fix node # 52 dofs uy; 
+fix node # 53 dofs uy; 
+fix node # 54 dofs uy; 
+fix node # 55 dofs uy; 
+fix node # 56 dofs uy; 
+fix node # 57 dofs uy; 
+fix node # 58 dofs uy; 
+fix node # 59 dofs uy; 
+fix node # 60 dofs uy; 
+fix node # 61 dofs uy; 
+fix node # 62 dofs uy; 
+fix node # 63 dofs uy; 
+fix node # 64 dofs uy; 
+fix node # 65 dofs uy; 
+fix node # 66 dofs uy; 
+fix node # 67 dofs uy; 
+fix node # 68 dofs uy; 
+fix node # 73 dofs uy; 
+fix node # 74 dofs uy; 
+fix node # 75 dofs uy; 
+fix node # 76 dofs uy; 
+fix node # 81 dofs uy; 
+fix node # 82 dofs uy; 
+fix node # 83 dofs uy; 
+fix node # 84 dofs uy; 
+fix node # 89 dofs uy; 
+fix node # 90 dofs uy; 
+fix node # 91 dofs uy; 
+fix node # 92 dofs uy; 
+fix node # 97 dofs uy; 
+fix node # 98 dofs uy; 
+fix node # 99 dofs uy; 
+fix node # 100 dofs uy; 
+fix node # 117 dofs uy; 
+fix node # 118 dofs uy; 
+fix node # 119 dofs uy; 
+fix node # 120 dofs uy; 
+fix node # 121 dofs uy; 
+fix node # 122 dofs uy; 
+fix node # 123 dofs uy; 
+fix node # 124 dofs uy; 
+fix node # 125 dofs uy; 
+fix node # 126 dofs uy; 
+fix node # 127 dofs uy; 
+fix node # 128 dofs uy; 
+fix node # 129 dofs uy; 
+fix node # 130 dofs uy; 
+fix node # 131 dofs uy; 
+fix node # 132 dofs uy; 
+fix node # 149 dofs uy; 
+fix node # 150 dofs uy; 
+fix node # 151 dofs uy; 
+fix node # 152 dofs uy; 
+fix node # 153 dofs uy; 
+fix node # 154 dofs uy; 
+fix node # 155 dofs uy; 
+fix node # 156 dofs uy; 
+fix node # 157 dofs uy; 
+fix node # 158 dofs uy; 
+fix node # 159 dofs uy; 
+fix node # 160 dofs uy; 
+fix node # 161 dofs uy; 
+fix node # 162 dofs uy; 
+fix node # 163 dofs uy; 
+fix node # 164 dofs uy; 
+fix node # 213 dofs uy; 
+fix node # 214 dofs uy; 
+fix node # 215 dofs uy; 
+fix node # 216 dofs uy; 
+fix node # 221 dofs uy; 
+fix node # 222 dofs uy; 
+fix node # 223 dofs uy; 
+fix node # 224 dofs uy; 
+
+//*************************************************************************************************************************
+//							Fix_Dofs{Physical_Group#Fix_Y, uy}Ends
+//*************************************************************************************************************************
+
+
+//*************************************************************************************************************************
+//							Add_8NodeBrick_SurfaceLoad{Physical_Group#Foundation, Physical_Group#Foundation_Top_Surface, Pressure:= -100*kPa}Starts
+//*************************************************************************************************************************
+
+add load # 1 to element # 127 type surface at nodes (229 , 96 , 13 , 81) with magnitude -100*kPa; 
+add load # 2 to element # 129 type surface at nodes (230 , 95 , 96 , 229) with magnitude -100*kPa; 
+add load # 3 to element # 131 type surface at nodes (231 , 94 , 95 , 230) with magnitude -100*kPa; 
+add load # 4 to element # 133 type surface at nodes (232 , 93 , 94 , 231) with magnitude -100*kPa; 
+add load # 5 to element # 135 type surface at nodes (92 , 16 , 93 , 232) with magnitude -100*kPa; 
+add load # 6 to element # 137 type surface at nodes (233 , 229 , 81 , 82) with magnitude -100*kPa; 
+add load # 7 to element # 139 type surface at nodes (234 , 230 , 229 , 233) with magnitude -100*kPa; 
+add load # 8 to element # 141 type surface at nodes (235 , 231 , 230 , 234) with magnitude -100*kPa; 
+add load # 9 to element # 143 type surface at nodes (236 , 232 , 231 , 235) with magnitude -100*kPa; 
+add load # 10 to element # 145 type surface at nodes (91 , 92 , 232 , 236) with magnitude -100*kPa; 
+add load # 11 to element # 147 type surface at nodes (237 , 233 , 82 , 83) with magnitude -100*kPa; 
+add load # 12 to element # 149 type surface at nodes (238 , 234 , 233 , 237) with magnitude -100*kPa; 
+add load # 13 to element # 151 type surface at nodes (239 , 235 , 234 , 238) with magnitude -100*kPa; 
+add load # 14 to element # 153 type surface at nodes (240 , 236 , 235 , 239) with magnitude -100*kPa; 
+add load # 15 to element # 155 type surface at nodes (90 , 91 , 236 , 240) with magnitude -100*kPa; 
+add load # 16 to element # 157 type surface at nodes (241 , 237 , 83 , 84) with magnitude -100*kPa; 
+add load # 17 to element # 159 type surface at nodes (242 , 238 , 237 , 241) with magnitude -100*kPa; 
+add load # 18 to element # 161 type surface at nodes (243 , 239 , 238 , 242) with magnitude -100*kPa; 
+add load # 19 to element # 163 type surface at nodes (244 , 240 , 239 , 243) with magnitude -100*kPa; 
+add load # 20 to element # 165 type surface at nodes (89 , 90 , 240 , 244) with magnitude -100*kPa; 
+add load # 21 to element # 167 type surface at nodes (85 , 241 , 84 , 14) with magnitude -100*kPa; 
+add load # 22 to element # 169 type surface at nodes (86 , 242 , 241 , 85) with magnitude -100*kPa; 
+add load # 23 to element # 171 type surface at nodes (87 , 243 , 242 , 86) with magnitude -100*kPa; 
+add load # 24 to element # 173 type surface at nodes (88 , 244 , 243 , 87) with magnitude -100*kPa; 
+add load # 25 to element # 175 type surface at nodes (15 , 89 , 244 , 88) with magnitude -100*kPa; 
+
+//*************************************************************************************************************************
+//							Add_8NodeBrick_SurfaceLoad{Physical_Group#Foundation, Physical_Group#Foundation_Top_Surface, Pressure:= -100*kPa}Ends
+//*************************************************************************************************************************
+

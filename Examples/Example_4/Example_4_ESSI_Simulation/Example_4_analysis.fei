@@ -1,0 +1,53 @@
+model name "Soil_Block_With_Foundation"; 
+
+
+// Adding Material
+add material # 1 type linear_elastic_isotropic_3d mass_density = 1704.000000*kg/m^3 elastic_modulus = 30400000000.000000*Pa poisson_ratio = 0.3; 
+add material # 2 type linear_elastic_isotropic_3d mass_density = 1702.000000*kg/m^3 elastic_modulus = 30200000000.000000*Pa poisson_ratio = 0.3; 
+add material # 3 type linear_elastic_isotropic_3d mass_density = 1700.000000*kg/m^3 elastic_modulus = 30000000000.000000*Pa poisson_ratio = 0.3; 
+add material # 4 type linear_elastic_isotropic_3d mass_density = 1698.000000*kg/m^3 elastic_modulus = 29800000000.000000*Pa poisson_ratio = 0.3; 
+add material # 5 type linear_elastic_isotropic_3d mass_density = 1696.000000*kg/m^3 elastic_modulus = 29600000000.000000*Pa poisson_ratio = 0.3; 
+
+add material # 12 type linear_elastic_isotropic_3d mass_density = 2400*kg/m^3 elastic_modulus = 41000*MPa poisson_ratio = 0.2; 
+
+
+
+
+ kn = 1e10*N/m; 
+ kt = 1e7*N/m; 
+ cn = 0*N/m*s; 
+ ct = 0*N/m*s; 
+ nu = 0.3; 
+
+
+include "Example_4_geometry.fei"; 
+
+new loading stage "Normal_Surface_Load"; 
+
+
+
+
+
+include "Example_4_load.fei"; 
+
+
+// Starting Simulation
+
+ NSteps = 10; 
+
+define convergence test Norm_Unbalance tolerance = 1e-3 maximum_iterations = 1000 verbose_level = 3; 
+
+define algorithm Newton; 
+
+define solver UMFPack; 
+define load factor increment 1/NSteps; 
+simulate NSteps steps using static algorithm; 
+
+
+
+ bye; 
+
+
+
+
+
