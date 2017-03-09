@@ -76,7 +76,7 @@ class gmESSIPython{
 		string getFilePath();
 		int setTypeIter(map<int,NodeElement>::iterator &TypeIter,const string& variable);
 		string delSpaces(string str);
-		string trim(const string& str, const string& delimiters = " []\f\n\r\t\v" );
+		string trim(const string& str, const string& delimiters = " \f\n\r\t\v" );
 
 };
 

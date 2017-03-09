@@ -153,6 +153,8 @@ void gmESSITranslator::GmshToEssi(){
         this->VariableList = this->PhysicalGroupList.at(i).getVariableList();
         this->NofVariablesList = this->PhysicalGroupList.at(i).getNofVariables();
         this->UserCommandList = this->PhysicalGroupList.at(i).getUserCommandList();
+        this->UserCommentList = this->PhysicalGroupList.at(i).getUserCommentList();
+
         int CommandListSize = CommandList.size();
 
         for (int j=0; j<CommandListSize; j++){
@@ -1814,7 +1816,7 @@ string gmESSITranslator::PrintEssiCommand(string Command, int NofEssiVariables, 
         TempVariable.pop();
     }
     
-    Ecommand <<inpString.nextToken() << setw(0) <<"\n";
+    Ecommand <<inpString.nextToken() << setw(0) << this->UserCommentList.at(j) << "\n";
     return Ecommand.str();
 }
 
@@ -2064,6 +2066,8 @@ void gmESSITranslator::Convert(const string& GmssiCommand){
     this->VariableList = this->PhysicalGroupList.at(i).getVariableList();
     this->NofVariablesList = this->PhysicalGroupList.at(i).getNofVariables();
     this->UserCommandList = this->PhysicalGroupList.at(i).getUserCommandList();
+    this->UserCommentList = this->PhysicalGroupList.at(i).getUserCommentList();
+
     int j = CommandList.size()-1;     
     this->FunctionIter = this->FunctionMap.find(this->CommandList.at(j));
 

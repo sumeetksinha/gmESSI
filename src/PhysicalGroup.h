@@ -35,6 +35,7 @@ class PhysicalGroup{
 		string getPhysicDes();
 		vector<string> getCommandList();
 		vector<string> getUserCommandList();
+		vector<string> getUserCommentList();
 		vector<vector<string>> getVariableList();
 		vector<int> getNofVariables();
 
@@ -49,6 +50,7 @@ class PhysicalGroup{
 		vector<string> UserCommandList;
 		vector<string> CommandList;
 		vector<vector<string>> VariableList;
+		vector<string> UserCommentList;
 		vector<int> NofVariables;
 };
 

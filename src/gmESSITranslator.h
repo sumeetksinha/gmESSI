@@ -109,6 +109,7 @@ class gmESSITranslator{
         vector< vector <string> > VariableList;
         vector<int> NofVariablesList;
         vector<string> UserCommandList;
+        vector<string> UserCommentList;
         map<string,int> EssiTagVariableMap;
         queue<string> TempVariable;
 
