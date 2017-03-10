@@ -46,6 +46,7 @@ gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& newDir)
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
     loadFile = newDir + tknzr.currToken() + "_load.fei";
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
+    BaseFileName = newDir + tknzr.currToken();
 }
 
 gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
@@ -58,6 +59,7 @@ gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& mapping
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
     loadFile = newDir + tknzr.currToken() + "_load.fei";
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
+    BaseFileName = newDir + tknzr.currToken();
 }
 
 gmESSITranslator::~gmESSITranslator(){ }
@@ -75,6 +77,7 @@ void gmESSITranslator::setGmshFile(const string& gmshFile, const string& newDir)
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
     loadFile = newDir + tknzr.currToken() + "_load.fei";
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
+    BaseFileName = newDir + tknzr.currToken();
     return;
 }
 
@@ -164,6 +167,7 @@ void gmESSITranslator::GmshToEssi(){
 
             if (this->FunctionIter != this->FunctionMap.end()){
                 
+                cout << "this->CommandList.at(j) " << this->CommandList.at(j) << endl;
                 cout<< left << setw(15) << "\t \t Found!!";
 
                 if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("c")))
@@ -250,7 +254,7 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
     ofstream GeometryFile(geometryFile,ios::app); int init=0;int nofRun=0;
     GeometryFile << PrintStartConversion(j);  string node = "node";
 
-    if(!(this->UserCommandList.at(j).substr(4,3).compare("All"))){
+    if(!(this->UserCommandList.at(j).substr(5,3).compare("All"))){
 
         map<int,Node> ::iterator AllNodeBegin = this->NodeMap.begin();
         map<int,Node> ::iterator AllNodeEnd =   this->NodeMap.end();
@@ -2074,7 +2078,7 @@ void gmESSITranslator::Convert(const string& GmssiCommand){
     cout << "\n" << this->UserCommandList.at(j) ;
 
     if (this->FunctionIter != this->FunctionMap.end()){
-        
+      
         cout<< "\n \t "<< "Found!!";
 
         if(this->FunctionIter->second.getMatchMode() && !(this->FunctionIter->second.getSemanticsId().compare("c")))

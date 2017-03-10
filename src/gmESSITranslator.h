@@ -66,6 +66,7 @@ class gmESSITranslator{
         OctParser Evaluate = OctParser();
 
         int PhytonScriptPhysicalGroupIndex=-1;
+        string BaseFileName;                 // BaseFileName of mesh file.
         
         int addNode(Node node);
         int addElement(Element ele);
@@ -112,7 +113,6 @@ class gmESSITranslator{
         vector<string> UserCommentList;
         map<string,int> EssiTagVariableMap;
         queue<string> TempVariable;
-
         // int GMSH_to_ESSI_NODE_CONNECTIVITY[18][28]; 
 };
 

@@ -21,6 +21,8 @@
 #include "gmESSIPython.h"
 #include "Node.h"
 #include "Element.h"
+#include "GlobalHeader.h"
+#include <stdio.h>
 
 #ifdef _WIN32 
     #include <direct.h>
@@ -39,7 +41,6 @@
 gmESSIPython::gmESSIPython(){}
 
 gmESSIPython::gmESSIPython(const string& mshFile, int overwrite){
-
 	ConvertFile(mshFile,overwrite);
 }
 
@@ -47,6 +48,7 @@ gmESSIPython::~gmESSIPython(){
 
 	this->Translator.DisplayNewTagNumbering();
 	this->Translator.UpdateGmshFile();
+	cerr.rdbuf(old_cerr);
 	this->Translator.Evaluate.exit();
 }
 
@@ -57,6 +59,7 @@ gmESSIPython::~gmESSIPython(){
 void gmESSIPython::loadMshFile(const string& mshFile,int overwrite){
 
 	ConvertFile(mshFile,overwrite);
+
 	return;
 }
 
@@ -458,7 +461,13 @@ void gmESSIPython::ConvertFile(const string& mshFile,int overwrite){
 	    newDirectory  =newDirectory +slash;
 
 	   	Translator = gmESSITranslator(gmshFile, newDirectory);
+	   		
+	   	string LogFile =  this->Translator.BaseFileName+"_Log.txt";
+	    out = new FileTee(std::cout, LogFile.c_str()); // generate log and terminal output
+		err = new FileTee(std::cerr, LogFile.c_str()); // generate log and terminal output
+
 	    Translator.Convert();
+
 
 	    this->GmshFile = this->Translator.GmshFile;
 	    this->GeometryFile = this->Translator.geometryFile;
