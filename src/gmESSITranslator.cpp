@@ -28,13 +28,25 @@
 
 using namespace::std;
 
+#include <sstream>
+#include <iomanip>
+
+template <typename T>
+std::string to_string_with_precision(const T a_value, const int n = 6)
+{
+    std::ostringstream out;
+    out << std::setprecision(n) << a_value;
+    return out.str();
+}
+
+
 int GMSH_to_ESSI_NODE_CONNECTIVITY[18][28];
 
 /******************************************************************************
 ****************************** Constructor ************************************
 ******************************************************************************/
 
-gmESSITranslator::gmESSITranslator(){}
+gmESSITranslator::gmESSITranslator(){ Precision =6;}
 
 gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& newDir){
 
@@ -46,6 +58,7 @@ gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& newDir)
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
     loadFile = newDir + tknzr.currToken() + "_load.fei";
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
+    Precision =6;
 }
 
 gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& mappingFile, const string& newDir){
@@ -58,6 +71,7 @@ gmESSITranslator::gmESSITranslator(const string& gmshFile, const string& mapping
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
     loadFile = newDir + tknzr.currToken() + "_load.fei";
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
+    Precision =6;
 }
 
 gmESSITranslator::~gmESSITranslator(){ }
@@ -75,6 +89,7 @@ void gmESSITranslator::setGmshFile(const string& gmshFile, const string& newDir)
     geometryFile = newDir + tknzr.currToken() + "_geometry.fei";
     loadFile = newDir + tknzr.currToken() + "_load.fei";
     mainFile = newDir + tknzr.currToken() + "_analysis.fei";
+    Precision =6;
     return;
 }
 
@@ -82,6 +97,10 @@ void gmESSITranslator::Convert(){
 
     this->GmshToEssi();
     return;
+}
+
+void gmESSITranslator::setPrecision(int n){
+    this->Precision = n;
 }
 
 string gmESSITranslator::getFileName(){
@@ -270,19 +289,17 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
                 this->NodeNoMap.find(it->second.getId())->second = stoi(NewNodeNo);nofRun++;
             }
             else{
-                this->TempVariable.push(to_string(this->NodeNoMap.find(it->second.getId())->second));nofRun++;
+                this->TempVariable.push(to_string_with_precision(this->NodeNoMap.find(it->second.getId())->second));nofRun++;
             }
             /****************************************************************************************************/
             
             // this->TempVariable.push(to_string(it->second.getId()));nofRun++;
-            this->TempVariable.push(to_string(it->second.getXcord())+"*"+this->VariableList.at(j).at(0)); 
-            this->TempVariable.push(to_string(it->second.getYcord())+"*"+this->VariableList.at(j).at(0));
-            this->TempVariable.push(to_string(it->second.getZcord())+"*"+this->VariableList.at(j).at(0)); 
+            this->TempVariable.push(to_string_with_precision(it->second.getXcord(),Precision)+"*"+this->VariableList.at(j).at(0)); 
+            this->TempVariable.push(to_string_with_precision(it->second.getYcord(),Precision)+"*"+this->VariableList.at(j).at(0));
+            this->TempVariable.push(to_string_with_precision(it->second.getZcord(),Precision)+"*"+this->VariableList.at(j).at(0)); 
             this->TempVariable.push(this->VariableList.at(j).at(1)); 
 
             GeometryFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
-
-
         }
 
         GeometryFile << PrintEndConversion(nofRun,j);
@@ -1789,6 +1806,17 @@ string gmESSITranslator::getVariable(string& var){
         map<string,int>::iterator FindIter = this->EssiTagVariableMap.find("nodes");
         FindIter->second++;
     }
+    else if(!var.compare("motion")){
+
+        map<string,int>::iterator FindIter = this->EssiTagVariableMap.find("load");
+        FindIter->second++;
+    }
+    else if(!var.compare("load")){
+
+        map<string,int>::iterator FindIter = this->EssiTagVariableMap.find("motion");
+        FindIter->second++;
+    }
+
 
     return  to_string(EssiTagIter->second++);
 }

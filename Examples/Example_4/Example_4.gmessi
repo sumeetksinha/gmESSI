@@ -1,4 +1,5 @@
 GmESSI.loadMshFile("Example_4.msh")
+GmESSI.setPrecision(6)
 
 #2 2 "Soil_Base_Surface"
 #2 3 "Soil_Top_Surface"
@@ -38,6 +39,7 @@ GmESSI.loadMshFile("Example_4.msh")
 
 # Adding contact elements
 [Add_HardContact{Physical_Group#Contact_Elements, NormalStiffness:= kn, TangentialStiffness:= kt, NormalDamping:= cn, TangentialDamping:= ct, FrictionRatio:= nu, NormVect_x:= 0, NormVect_y:= 0, NormVect_z:= 1}]
+
 
 # Including geometry 
 [Include{FileName:= "Example_4_geometry.fei"}]

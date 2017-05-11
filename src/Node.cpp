@@ -28,6 +28,7 @@ Node::Node(const int& id, const double& X_cord, const double& Y_cord, const doub
 	this->Xcord = X_cord;
 	this->Ycord = Y_cord;
 	this->Zcord = Z_cord;
+
 }
 
 Node::Node(const string GmshNodeRep){
@@ -78,14 +79,16 @@ void Node::setNode(const int& id,const double& X_cord, const double& Y_cord, con
 
 void Node::setNode(const string GmshNodeRep){
 
+  	std::cout.precision(16);
+
 	try{
 
 		Tokenizer str = Tokenizer(GmshNodeRep," ");
 		this->Id = stoi(str.nextToken()); 
 		this->Xcord = stod(str.nextToken()); 
 		this->Ycord = stod(str.nextToken()); 
-		this->Zcord = stod(str.nextToken()); 
-		
+		this->Zcord = stod(str.nextToken());
+	
 	} catch(exception& e) { throw "\033[1;31mERROR:: Gmsh File has invalid symbols in Node Section. Unable to convert string to integer in Gmsh File\033[0m\n" ;}
 }
 

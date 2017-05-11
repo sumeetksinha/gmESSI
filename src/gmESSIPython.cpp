@@ -360,6 +360,11 @@ void gmESSIPython::UpdateGmshFile(){
 	return;
 }
 
+void gmESSIPython::setPrecision(int n){
+	Translator.setPrecision(n);
+	return;
+}
+
 map<int,int> gmESSIPython::getNodeNoMap(){
 
 	return Translator.NodeNoMap;
@@ -652,6 +657,7 @@ BOOST_PYTHON_MODULE(gmessi)
     	.def("getSphereSelectionData",&gmESSIPython::SphereSelectionData)
     	.def("CreatePhysicalGroup",&gmESSIPython::CreatePhysicalGroup)
     	.def("UpdateGmshFile",&gmESSIPython::UpdateGmshFile)
+       	.def("setPrecision",&gmESSIPython::setPrecision)
     	.def("BoxSelectionData",&gmESSIPython::BoxSelectionData)
     	.def("getGroupData",&gmESSIPython::getGroupData)
     	.def("DisplayNewTagNumbering",&gmESSIPython::DisplayNewTagNumbering)

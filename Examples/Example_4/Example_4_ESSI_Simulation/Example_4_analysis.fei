@@ -20,6 +20,7 @@ add material # 12 type linear_elastic_isotropic_3d mass_density = 2400*kg/m^3 el
  nu = 0.3; 
 
 
+
 include "Example_4_geometry.fei"; 
 
 new loading stage "Normal_Surface_Load"; 

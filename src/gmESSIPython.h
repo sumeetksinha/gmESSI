@@ -47,6 +47,7 @@ class gmESSIPython{
 		map<int,Node> getNodeMap();
 		void ConvertFile(const string& mshFile,int overwrite);
 		void UpdateGmshFile();
+		void setPrecision(int n);
 		gmESSITranslator Translator = gmESSITranslator();
 		SelectionData getGroupData(const string& PhysEntyTag);
 		SelectionData BoxSelectionData(string PhysEntyTag, double x1,double x2,double y1,double y2,double z1,double z2);

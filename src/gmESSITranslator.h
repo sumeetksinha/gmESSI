@@ -49,6 +49,7 @@ class gmESSITranslator{
         void GmshToEssi();
         string getVariable(string& var);
         void UpdateGmshFile();
+        void setPrecision(int n);
         void Convert(const string& GmssiCommand);
         void DisplayNewTagNumbering();
 
@@ -111,6 +112,8 @@ class gmESSITranslator{
         vector<string> UserCommandList;
         map<string,int> EssiTagVariableMap;
         queue<string> TempVariable;
+
+        int Precision;
 
         // int GMSH_to_ESSI_NODE_CONNECTIVITY[18][28]; 
 };
