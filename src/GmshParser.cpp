@@ -82,7 +82,17 @@ void GmshParser::addElement(Element elm){
 
 vector<PhysicalGroup> GmshParser::getPhysicalGroupList(){
 
-	return this->PhysicalGroupList;
+
+	vector<PhysicalGroup> NewPhysicalGroupList(MaxPhysicalGroupId+1);
+	for (std::vector<PhysicalGroup>::iterator it = PhysicalGroupList.begin() ; it != PhysicalGroupList.end(); ++it){
+		NewPhysicalGroupList[it->getId()]=*it;
+	}
+
+	cout << "MaxPhysicalGroupId +1 " << MaxPhysicalGroupId +1 ; 
+
+	return NewPhysicalGroupList;
+
+	// return this->PhysicalGroupList;
 }
 
 int GmshParser::getNewPhysicalGroup(){
@@ -173,6 +183,9 @@ void GmshParser::parseGmshFile(){
 		this->PhysicalGroupList.push_back(PhyGroup);
 		this->PhysicalStringNameToIdMap.insert(pair<string,int>(PhyGroup.getPhysicTag(),PhyGroup.getId()));
 		this->PhysicalStringNameToIdMap.insert(pair<string,int>(to_string(PhyGroup.getId()),PhyGroup.getId()));
+
+		if(MaxPhysicalGroupId<PhyGroup.getId())
+			MaxPhysicalGroupId = PhyGroup.getId();
 	}
 
 	if(parseFile.eof()) return; 

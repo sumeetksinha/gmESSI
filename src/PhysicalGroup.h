@@ -42,7 +42,7 @@ class PhysicalGroup{
 
 		void setContents(const string& PhysicDes);
 		string delSpaces( string str);
-		int Id;
+		int Id=-1;
 		int Type;
 		string PhysicDes;
 		string PhysicTag;

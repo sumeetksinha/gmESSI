@@ -31,6 +31,8 @@ using namespace::std;
 #include <sstream>
 #include <iomanip>
 
+#define MaxPrecision 16
+
 template <typename T>
 std::string to_string_with_precision(const T a_value, const int n = 6)
 {
@@ -780,8 +782,8 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
     ofstream GeometryFile(geometryFile,ios::app);
     vector<string> Variables = VariableList.at(j);
     int newPhysicalGroupTag = 0;
-    if(PhytonScriptPhysicalGroupIndex==-1) newPhysicalGroupTag = this->PhysicalGroupMap.size()+1;
-    else newPhysicalGroupTag = this->PhysicalGroupMap.size();
+    if(PhytonScriptPhysicalGroupIndex==-1) newPhysicalGroupTag = this->PhysicalGroupList.size()+1;
+    else newPhysicalGroupTag = this->PhysicalGroupList.size();
 
     // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator Iterator1;
@@ -1074,12 +1076,12 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
                 Sum_x_cord = Sum_x_cord + x_cord;
                 Sum_y_cord = Sum_y_cord + y_cord;
                 Sum_z_cord = Sum_z_cord + z_cord;
-                ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,Precision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,Precision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,Precision) + ";";
+                ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,MaxPrecision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,MaxPrecision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,MaxPrecision) + ";";
 
             }
 
             x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
-            ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
+            ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,MaxPrecision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,MaxPrecision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,MaxPrecision) + ";";
 
             string Material=this->FunctionIter->second.getEssiCommand();
 
@@ -1243,7 +1245,7 @@ void gmESSITranslator::NodalVariationalCommand(const int&i, const int& j){
         x_cord = NodeMap.find(it->second)->second.getXcord();
         y_cord = NodeMap.find(it->second)->second.getYcord();
         z_cord = NodeMap.find(it->second)->second.getZcord();
-        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+        string ScriptVariables = "x =" + to_string_with_precision(x_cord,MaxPrecision) + ";" +  "y =" +   to_string_with_precision(y_cord,MaxPrecision) + ";" + "z =" + to_string_with_precision(z_cord,MaxPrecision) + ";";
 
         for(int l=0 ; l<NofEssiVariables ;l++ ){
 
@@ -1348,11 +1350,11 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
             Sum_x_cord = Sum_x_cord + x_cord;
             Sum_y_cord = Sum_y_cord + y_cord;
             Sum_z_cord = Sum_z_cord + z_cord;
-            ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,Precision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,Precision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,Precision) + ";";
+            ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,MaxPrecision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,MaxPrecision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,MaxPrecision) + ";";
         }
 
         x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
-        ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
+        ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,MaxPrecision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,MaxPrecision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,MaxPrecision) + ";";
 
 
         for(int l=0 ; l<NofEssiVariables ;l++ ){
@@ -1464,16 +1466,16 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
             x_cord = NodeInfo->second.getXcord();
             y_cord = NodeInfo->second.getYcord();
             z_cord = NodeInfo->second.getZcord();
-            cout << "x_cord " << x_cord << endl;
+            // cout << "x_cord " << x_cord << endl;
             Sum_x_cord = Sum_x_cord + x_cord;
             Sum_y_cord = Sum_y_cord + y_cord;
             Sum_z_cord = Sum_z_cord + z_cord;
-            ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,Precision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,Precision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,Precision) + ";";
+            ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,MaxPrecision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,MaxPrecision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,MaxPrecision) + ";";
 
         }
 
         x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
-        ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
+        ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,MaxPrecision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,MaxPrecision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,MaxPrecision) + ";";
 
         if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
 

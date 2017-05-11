@@ -66,6 +66,7 @@ class GmshParser{
 		vector<Node> NodeList;
 		vector<Element> ElementList;
 		vector<PhysicalGroup> PhysicalGroupList;
+		int MaxPhysicalGroupId=0;
 		int newNode=1, newElement=1, newPhysicalGroup=1;
 };
 
