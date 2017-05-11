@@ -37,10 +37,12 @@ GmESSI.setPrecision(6)
 [Var{variable:= ct, value:= 0*N/m*s}]
 [Var{variable:= nu, value:= 0.3}]
 
+GmESSI.setPrecision(16);
+
 # Adding contact elements
 [Add_HardContact{Physical_Group#Contact_Elements, NormalStiffness:= kn, TangentialStiffness:= kt, NormalDamping:= cn, TangentialDamping:= ct, FrictionRatio:= nu, NormVect_x:= 0, NormVect_y:= 0, NormVect_z:= 1}]
 
-
+[Vary_HardContact{Physical_Group#Contact_Elements, NormalStiffness:= "kn", TangentialStiffness:= "kt", NormalDamping:= "cn", TangentialDamping:= "ct", FrictionRatio:= "nu", NormVect_x:= (x2-x1)/sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2), NormVect_y:= (y2-y1)/sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2), NormVect_z:= (z2-z1)/sqrt((x2-x1)^2+(y2-y1)^2+(z2-z1)^2)}]
 # Including geometry 
 [Include{FileName:= "Example_4_geometry.fei"}]
 

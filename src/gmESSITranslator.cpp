@@ -1062,17 +1062,24 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
 
             int ElemNodeSize = ElementList.at(k).getNodeList().size();
             double x_cord=0, y_cord=0, z_cord=0;
+            double Sum_x_cord=0, Sum_y_cord=0, Sum_z_cord=0;
+            string ScriptVariables = "";
 
             for(int z=0 ; z<ElemNodeSize ;z++ ){
 
                 map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
-                x_cord = x_cord + NodeInfo->second.getXcord();
-                y_cord = y_cord + NodeInfo->second.getYcord();
-                z_cord = z_cord + NodeInfo->second.getZcord();
+                x_cord = NodeInfo->second.getXcord();
+                y_cord = NodeInfo->second.getYcord();
+                z_cord = NodeInfo->second.getZcord();
+                Sum_x_cord = Sum_x_cord + x_cord;
+                Sum_y_cord = Sum_y_cord + y_cord;
+                Sum_z_cord = Sum_z_cord + z_cord;
+                ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,Precision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,Precision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,Precision) + ";";
+
             }
 
             x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
-            string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+            ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
 
             string Material=this->FunctionIter->second.getEssiCommand();
 
@@ -1329,17 +1336,24 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
 
         int m =0, n=init, ElemNodeSize = ElementList.at(k).getNodeList().size();
         double x_cord=0, y_cord=0, z_cord=0;
+        double Sum_x_cord=0, Sum_y_cord=0, Sum_z_cord=0;
+        string ScriptVariables = "";
 
         for(int z=0 ; z<ElemNodeSize ;z++ ){
 
             map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
-            x_cord = x_cord + NodeInfo->second.getXcord();
-            y_cord = y_cord + NodeInfo->second.getYcord();
-            z_cord = z_cord + NodeInfo->second.getZcord();
+            x_cord = NodeInfo->second.getXcord();
+            y_cord = NodeInfo->second.getYcord();
+            z_cord = NodeInfo->second.getZcord();
+            Sum_x_cord = Sum_x_cord + x_cord;
+            Sum_y_cord = Sum_y_cord + y_cord;
+            Sum_z_cord = Sum_z_cord + z_cord;
+            ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,Precision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,Precision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,Precision) + ";";
         }
 
         x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
-        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+        ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
+
 
         for(int l=0 ; l<NofEssiVariables ;l++ ){
 
@@ -1441,17 +1455,25 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
 
         int m =0,n=init , ElemNodeSize = ElementList.at(k).getNodeList().size();
         double x_cord=0, y_cord=0, z_cord=0;
+        double Sum_x_cord=0, Sum_y_cord=0, Sum_z_cord=0;
+        string ScriptVariables = "";
 
         for(int z=0 ; z<ElemNodeSize ;z++ ){
 
             map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
-            x_cord = x_cord + NodeInfo->second.getXcord();
-            y_cord = y_cord + NodeInfo->second.getYcord();
-            z_cord = z_cord + NodeInfo->second.getZcord();
+            x_cord = NodeInfo->second.getXcord();
+            y_cord = NodeInfo->second.getYcord();
+            z_cord = NodeInfo->second.getZcord();
+            cout << "x_cord " << x_cord << endl;
+            Sum_x_cord = Sum_x_cord + x_cord;
+            Sum_y_cord = Sum_y_cord + y_cord;
+            Sum_z_cord = Sum_z_cord + z_cord;
+            ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,Precision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,Precision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,Precision) + ";";
+
         }
 
         x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
-        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+        ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
 
         if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
 
@@ -1500,6 +1522,7 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
 	                    function = ScriptVariables + ScriptFunction + ";";
 	                    // cout << "function " << function << endl;
 	                    value = this->Evaluate.eval(function);
+                        // cout << value << endl;
 	                    if(tknzr.hasMoreTokens()){
 	                        string temp = delSpaces(tknzr.nextToken()); 
 	                        if (temp.compare("")) prec = temp ;
@@ -1573,17 +1596,24 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
 
         int m =0, n=init+1 , ElemNodeSize = ElementList.at(k).getNodeList().size();
         double x_cord=0, y_cord=0, z_cord=0;
+        double Sum_x_cord=0, Sum_y_cord=0, Sum_z_cord=0;
+        string ScriptVariables = "";
 
         for(int z=0 ; z<ElemNodeSize ;z++ ){
 
             map<int,Node>::iterator NodeInfo = this->NodeMap.find(ElementList.at(k).getNodeList().at(z));
-            x_cord = x_cord + NodeInfo->second.getXcord();
-            y_cord = y_cord + NodeInfo->second.getYcord();
-            z_cord = z_cord + NodeInfo->second.getZcord();
+            x_cord = NodeInfo->second.getXcord();
+            y_cord = NodeInfo->second.getYcord();
+            z_cord = NodeInfo->second.getZcord();
+            Sum_x_cord = Sum_x_cord + x_cord;
+            Sum_y_cord = Sum_y_cord + y_cord;
+            Sum_z_cord = Sum_z_cord + z_cord;
+            ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,Precision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,Precision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,Precision) + ";";
+
         }
 
         x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
-        string ScriptVariables = "x =" + to_string(x_cord) + ";" +  "y =" +   to_string(y_cord) + ";" + "z =" + to_string(z_cord) + ";";
+        ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
 
         if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
 
