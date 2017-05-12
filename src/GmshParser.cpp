@@ -88,7 +88,7 @@ vector<PhysicalGroup> GmshParser::getPhysicalGroupList(){
 		NewPhysicalGroupList[it->getId()]=*it;
 	}
 
-	cout << "MaxPhysicalGroupId +1 " << MaxPhysicalGroupId +1 ; 
+	// cout << "MaxPhysicalGroupId +1 " << MaxPhysicalGroupId +1 ; 
 
 	return NewPhysicalGroupList;
 
