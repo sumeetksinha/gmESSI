@@ -926,7 +926,9 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                         UniqueNodes++;
                         NodeMap1 = NodeMap2;
                         
-                        if(UniqueNodes>1){ string str =  "\n \t \033[1;31mERROR:: More than one node inside tolerence \033[0m\n"; throw str.c_str();}
+                        if(UniqueNodes>1){
+                            cout << "\n \t \033[1;31mERROR:: More than one node inside tolerence \033[0m for node " <<  NodeMap1->second.getId() << " -> also found node " << NodeMap2->second.getId() << endl;
+                        }
                     }
                 }
 
@@ -974,9 +976,12 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 newNodeElement.NodeList.insert(pair<int,int>(Node2,Node2));
                 UniqueNodes++;
 
-                if(UniqueNodes>1){ string str =  "\n \t \033[1;31mERROR:: More than one node inside tolerence \033[0m\n"; throw str.c_str();}
+                if(UniqueNodes>1){ 
+                    cout << "\n \t \033[1;31mERROR:: More than one node inside tolerence \033[0m for node " <<  NodeMap1->second.getId() << " -> also found node " << NodeMap2->second.getId() << endl;
+                }
             }
         }
+
     }
 
     cout << "\n \t Sucessfully Converted" << endl;
