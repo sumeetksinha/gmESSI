@@ -431,7 +431,7 @@ void gmESSITranslator::ElementalCommand(const int& i, const int& j){
                 }
                 else {string newVar = Variables.at(n++);
                     this->TempVariable.push(newVar);
-                    UpdateEssiTags(newVar,l);
+                    // UpdateEssiTags(newVar,l);
                 }
             }
 
@@ -1085,7 +1085,7 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
 
             }
 
-            x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+            Sum_x_cord = Sum_x_cord/ElemNodeSize; Sum_y_cord = Sum_y_cord/ElemNodeSize; Sum_z_cord = Sum_z_cord/ElemNodeSize;
             ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,MaxPrecision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,MaxPrecision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,MaxPrecision) + ";";
 
             string Material=this->FunctionIter->second.getEssiCommand();
@@ -1358,7 +1358,7 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
             ScriptVariables = ScriptVariables + " x"+to_string(z+1)+" =" + to_string_with_precision(x_cord,MaxPrecision) + ";" +  "y"+to_string(z+1)+" =" +   to_string_with_precision(y_cord,MaxPrecision) + ";" + "z"+to_string(z+1)+" =" + to_string_with_precision(z_cord,MaxPrecision) + ";";
         }
 
-        x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+        Sum_x_cord = Sum_x_cord/ElemNodeSize; Sum_y_cord = Sum_y_cord/ElemNodeSize; Sum_z_cord = Sum_z_cord/ElemNodeSize;
         ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,MaxPrecision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,MaxPrecision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,MaxPrecision) + ";";
 
 
@@ -1479,7 +1479,7 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
 
         }
 
-        x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+        Sum_x_cord = Sum_x_cord/ElemNodeSize; Sum_y_cord = Sum_y_cord/ElemNodeSize; Sum_z_cord = Sum_z_cord/ElemNodeSize;
         ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,MaxPrecision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,MaxPrecision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,MaxPrecision) + ";";
 
         if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
@@ -1619,7 +1619,7 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
 
         }
 
-        x_cord = x_cord/ElemNodeSize; y_cord = y_cord/ElemNodeSize; z_cord = z_cord/ElemNodeSize;
+        Sum_x_cord = Sum_x_cord/ElemNodeSize; Sum_y_cord = Sum_y_cord/ElemNodeSize; Sum_z_cord = Sum_z_cord/ElemNodeSize;
         ScriptVariables = ScriptVariables + " x =" + to_string_with_precision(Sum_x_cord,Precision) + ";" +  "y =" +   to_string_with_precision(Sum_y_cord,Precision) + ";" + "z =" + to_string_with_precision(Sum_z_cord,Precision) + ";";
 
         if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
