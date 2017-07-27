@@ -25,6 +25,7 @@
 #include <sstream>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
+#include <set>
 
 using namespace::std;
 
@@ -41,6 +42,27 @@ std::string to_string_with_precision(const T a_value, const int n = 6)
     return out.str();
 }
 
+bool IsSubset(std::vector<int> A, std::vector<int> B)
+{
+    std::sort(A.begin(), A.end());
+    std::sort(B.begin(), B.end());
+
+    std::set<int> myUniqueSet;
+
+    int sum = 0;
+    for (std::vector<int>::iterator it = A.begin(); it!=A.end(); ++it) {
+        myUniqueSet.insert(*it);
+    }
+
+    for (std::vector<int>::iterator it = B.begin(); it!=B.end(); ++it) {
+        myUniqueSet.insert(*it);
+    }
+
+    if(myUniqueSet.size()==B.size())
+        return true;
+
+    return false; 
+}
 
 int GMSH_to_ESSI_NODE_CONNECTIVITY[18][28];
 
@@ -485,15 +507,21 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
 
     vector<Element> ElementList =TypeIter->second.ElementList;
     map<int,int>  NodeList =TypeIter->second.NodeList;
+
+    // Retrieving Surface Node and Element List
+    vector<Element> SurfaceElementList =SurfaceIter->second.ElementList;
+    map<int,int>  SurfaceNodeList =SurfaceIter->second.NodeList;
+    int Surface_Element_List_Size = SurfaceElementList.size(); // size of element list for surface physical group
+
     int ElementListSize = ElementList.size();
 
     int nofRun=0;
 
-    for(int k =0;k<ElementListSize ; k++){
+    for(int k =0;k<Surface_Element_List_Size ; k++){
 
         int m =0, n=init+1;
 
-        if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
+        // if( !(this->FunctionIter->second.getElementId().compare(to_string(ElementList.at(k).getType()) ))){
 
             nofRun++;
 
@@ -503,57 +531,50 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                 string var = tknzr.nextToken();
              
                 if(!var.compare("element")){
+
+                    // all nodes of a surface
+                    vector<int> IndividualSurfaceNodeIds = SurfaceElementList.at(k).getNodeList();
+
+                    int element_number=-1;
+                    int z=0;
+                    for(; z<ElementListSize;z++)
+                    {
+                        vector<int> IndividualElementNodeIds = ElementList.at(z).getNodeList();
+                        if(IsSubset(IndividualSurfaceNodeIds,IndividualElementNodeIds)){
+                            element_number = ElementList.at(z).getId();
+                            break;
+                        }
+                    }
+
+                    if(element_number==-1){
+                        cout << "Error :: Element Does not Exist \n ";
+                    }
+                    if( (this->FunctionIter->second.getElementId().compare(to_string( ElementList.at(z).getType()) ))){
+                        cout << " Wrong Element Type \n ";
+                    }
+
                     /******************************** OPtimizing Elements for ESSI *****************************************/
-                    if(this->ElementNoMap.find(ElementList.at(k).getId())->second==0){
+                    if(this->ElementNoMap.find(element_number)->second==0){
                     	string NewElementNo = this->getVariable(var);
                     	this->TempVariable.push(NewElementNo);
-                    	this->ElementNoMap.find(ElementList.at(k).getId())->second = stoi(NewElementNo);
+                    	this->ElementNoMap.find(element_number)->second = stoi(NewElementNo);
                     }
                     else
-                    	this->TempVariable.push(to_string(this->ElementNoMap.find(ElementList.at(k).getId())->second));
+                    	this->TempVariable.push(to_string(this->ElementNoMap.find(element_number)->second));
                     /******************************************************************************************************/
                 }
                 else if(!var.compare("node") || !var.compare("nodes")){
 
-                    bool loop=true; int loopMax =  ElementList.at(k).getNodeList().size();
-
-                    while(loop && m<loopMax){
-                         
-                        if(SurfaceIter==this->PhysicalGroupMap.end()||SurfaceIter==this->EntityMap.end()){
-
-                            string msg = "\n \t \033[1;31mERROR:: The command failed to convert as there is no such Physical/Entity Group\033[0m\n";
-                            throw msg.c_str(); 
-                        }
-
-                        map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1));
-
-                        // map<int,int>::iterator NodeIter = SurfaceIter->second.NodeList.find(ElementList.at(k).getNodeList().at(m));
-                        map<int,int>::iterator NodeIterEnd = SurfaceIter->second.NodeList.end();
-
-                        // if(NodeIter==SurfaceIter->second.NodeList.end()){
-
-                        //     string msg = "\n \t \033[1;33mWARNING:: The command could not find any nodes/elements on which it operates\033[0m\n" ; 
-                        //     cout <<  msg;   
-                        // }
-
-                        if(NodeIter!= NodeIterEnd){
-
-                            /******************************** OPtimizing Nodes for ESSI *****************************************/
-                            if(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second==0){
-                                string NewNodeNo = this->getVariable(var);
-                                this->TempVariable.push(NewNodeNo);
-                                this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second = stoi(NewNodeNo);
-                            }
-                            else
-                                this->TempVariable.push(to_string(this->NodeNoMap.find(ElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[ElementList.at(k).getType()][m+1]-1))->second));
-                            /*********************************************************************************************/
-                            // this->TempVariable.push(to_string(ElementList.at(k).getNodeList().at(m)));
-                            loop = false;
-                        }
-
-                        m++;
-                    
+                    /******************************** OPtimizing for ESSI *****************************************/
+                    m=m+1;if(this->NodeNoMap.find(SurfaceElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[SurfaceElementList.at(k).getType()][m]-1))->second==0){
+                        string NewNodeNo = this->getVariable(var);
+                        this->TempVariable.push(NewNodeNo);
+                        this->NodeNoMap.find(SurfaceElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[SurfaceElementList.at(k).getType()][m]-1))->second = stoi(NewNodeNo);
                     }
+                    else
+                        this->TempVariable.push(to_string(this->NodeNoMap.find(SurfaceElementList.at(k).getNodeList().at(GMSH_to_ESSI_NODE_CONNECTIVITY[SurfaceElementList.at(k).getType()][m]-1))->second));
+                    /*********************************************************************************************/
+
                 }
                 else if (this->EssiTagVariableMap.find(var) != this->EssiTagVariableMap.end()){ 
                     this->TempVariable.push(this->getVariable(var)); 
@@ -586,7 +607,7 @@ void gmESSITranslator::ElementalCompoundCommand(const int& i, const int& j){
                 }
 
             }
-        }
+        // }
     }
 
     LoadFile << PrintEndConversion(nofRun,j);
