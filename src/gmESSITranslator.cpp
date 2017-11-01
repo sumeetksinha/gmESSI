@@ -237,7 +237,7 @@ void gmESSITranslator::GmshToEssi(){
             else{
                 
                 cout << "\n \t \033[1;31mNot Found!!" << "\033[0m";
-                cout << "\n \t \033[1;33mWARNING:: Execuation of the command escaped. The gmessi command could not be found" << " \033[0m\n\n" ; 
+                cout << "\n \t \033[1;33mWARNING:: Execution of the command escaped. The gmessi command could not be found" << " \033[0m\n\n" ; 
             }
         }
     } 
@@ -302,7 +302,7 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
                 WhetherNodeAdded.insert ( std::pair<int,int>(it->second.getId(),1) );
             } 
             else{
-                cout << " Node no #" << this->NodeNoMap.find(it->second.getId())->second << " allready written " << endl;
+                cout << " Node no #" << this->NodeNoMap.find(it->second.getId())->second << " already written " << endl;
                 continue;
             }
 
@@ -331,7 +331,7 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
         return;
     }
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -351,7 +351,7 @@ void gmESSITranslator::AddNodeCommand(const int&i, const int& j){
             WhetherNodeAdded.insert ( std::pair<int,int>(it->second,1) );
         } 
         else{
-            cout << endl << "\t \t  Node no #" << this->NodeNoMap.find(it->second)->second << " allready written ";
+            cout << endl << "\t \t  Node no #" << this->NodeNoMap.find(it->second)->second << " already written ";
             continue;
         }
 
@@ -393,7 +393,7 @@ void gmESSITranslator::ElementalCommand(const int& i, const int& j){
     ofstream GeometryFile(geometryFile, ios::app); int init=0;
     GeometryFile << PrintStartConversion(j);
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -620,7 +620,7 @@ void gmESSITranslator::NodalCommand(const int& i, const int& j){
     ofstream LoadFile(loadFile,ios::app); int init =0;
     LoadFile<< PrintStartConversion(j);
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -689,7 +689,7 @@ void gmESSITranslator::GeneralElementalCommand(const int& i, const int& j){
     ofstream LoadFile(loadFile,ios::app); int init=0;
     LoadFile<< PrintStartConversion(j);
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -793,7 +793,7 @@ void gmESSITranslator::SingularCommand(const int& i, const int& j){
 
     MainFile << this->PrintEssiCommand(this->FunctionIter->second.getEssiCommand(),this->FunctionIter->second.getNofEssiVariables(),j);
 
-    cout << "\n \t Sucessfully Converted" << endl;
+    cout << "\n \t Successfully Converted" << endl;
     MainFile.close();
     return;
 }
@@ -806,7 +806,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
     if(PhytonScriptPhysicalGroupIndex==-1) newPhysicalGroupTag = this->PhysicalGroupList.size()+1;
     else newPhysicalGroupTag = this->PhysicalGroupList.size();
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator Iterator1;
     if( setTypeIter(Iterator1,Variables.at(0))<0)
         return;
@@ -814,7 +814,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
     map<int,int>::iterator Iterator1Begin = Iterator1->second.NodeList.begin();
     map<int,int>::iterator Iterator1End = Iterator1->second.NodeList.end();
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator Iterator2;
     if( setTypeIter(Iterator2,Variables.at(1))<0)
         return;
@@ -822,7 +822,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
     map<int,int>::iterator Iterator2Begin = Iterator2->second.NodeList.begin();
     map<int,int>::iterator Iterator2End = Iterator2->second.NodeList.end();
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator Iterator3;
     if( setTypeIter(Iterator3,Variables.at(2))<0)
         return;
@@ -851,10 +851,10 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
     double length = stof(this->delSpaces(Variables.at(4))); // Magnitude of vector
     int NofLayers = stoi(this->delSpaces(Variables.at(7))); // Number of layers
     string algo = this->delSpaces(Variables.at(6));      // Algo 
-    double tolerence = stof(this->delSpaces(Variables.at(5))); // Tolerence 
+    double tolerance = stof(this->delSpaces(Variables.at(5))); // tolerance 
     string newPhysicalGroupName = this->delSpaces(Variables.at(8)); //new PhysicalGroupName specified by the usrer
 
-    // cout << "Length= " << length << " NofLayers= " << NofLayers << "algo= " << algo << " tolerence= " << tolerence << endl;
+    // cout << "Length= " << length << " NofLayers= " << NofLayers << "algo= " << algo << " tolerance= " << tolerance << endl;
     // cout << (Variables.at(5)) << endl;
 
     if(Iterator1==this->EntityMap.end()||Iterator2==this->EntityMap.end()||(Iterator3==this->EntityMap.end() && algo!=("find"))||Iterator1==this->PhysicalGroupMap.end()||Iterator2==this->PhysicalGroupMap.end()||(Iterator3==this->PhysicalGroupMap.end() && algo!=("find"))){
@@ -929,7 +929,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                     double mody = abs(node1_y-NodeMap2->second.getYcord());
                     double modz = abs(node1_z-NodeMap2->second.getZcord());
 
-                    if(sqrt(modx*modx+ mody*mody +modz*modz)<=tolerence){
+                    if(sqrt(modx*modx+ mody*mody +modz*modz)<=tolerance){
 
                         Node1=NodeMap1->first;
                         Node2=It3->second; string str = "element";
@@ -948,7 +948,7 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                         NodeMap1 = NodeMap2;
                         
                         if(UniqueNodes>1){
-                            cout << "\n \t \033[1;31mERROR:: More than one node inside tolerence \033[0m for node " <<  NodeMap1->second.getId() << " -> also found node " << NodeMap2->second.getId() << endl;
+                            cout << "\n \t \033[1;31mERROR:: More than one node inside tolerance \033[0m for node " <<  NodeMap1->second.getId() << " -> also found node " << NodeMap2->second.getId() << endl;
                         }
                     }
                 }
@@ -970,7 +970,13 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
         double node1_z = NodeMap1->second.getZcord()+length*(vec_z);
         int UniqueNodes = 0;
 
-        // cout << "I am here" << endl;
+        // cout << "============================================" << endl;
+        // cout << "Node No " << It1->second << endl;
+        // cout << "length " << length << endl;;
+        // cout << "node1_x " << node1_x << endl;;
+        // cout << "node1_y " << node1_y << endl;;
+        // cout << "node1_z " << node1_z << endl;;
+        // cout << "============================================" << endl;
 
         for(map<int,int>::iterator It2 = Iterator2Begin; It2!=Iterator2End ;++It2){
 
@@ -978,11 +984,15 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
             double modx = abs(node1_x-NodeMap2->second.getXcord());
             double mody = abs(node1_y-NodeMap2->second.getYcord());
             double modz = abs(node1_z-NodeMap2->second.getZcord());
+                // cout << "node no " << It2->second << endl;
+                // cout << "\t node1_x " << NodeMap2->second.getXcord() << endl;;
+                // cout << "\t node1_y " << NodeMap2->second.getYcord() << endl;;
+                // cout << "\t node1_z " << NodeMap2->second.getZcord() << endl << endl;;;
 
             // cout << "modx " << modx << " mody " << mody << " modz " << modz << endl;
-            // cout << "Tolerence " << sqrt(modx*modx+ mody*mody +modz*modz) << endl;
-            // cout << "Tolerence by user " << tolerence << endl;
-            if(sqrt(modx*modx+ mody*mody +modz*modz)<=tolerence){
+            // cout << "tolerance " << sqrt(modx*modx+ mody*mody +modz*modz) << endl;
+            // cout << "tolerance by user " << tolerance << endl;
+            if(sqrt(modx*modx+ mody*mody +modz*modz)<=tolerance){
                     
                 Node1=NodeMap1->first; NofElementsCreated+=1;NofNodesCreated++;                   
                 Node2=It2->second; string str = "element";
@@ -998,14 +1008,16 @@ void gmESSITranslator::ConnectCommand(const int&i, const int& j){
                 UniqueNodes++;
 
                 if(UniqueNodes>1){ 
-                    cout << "\n \t \033[1;31mERROR:: More than one node inside tolerence \033[0m for node " <<  NodeMap1->second.getId() << " -> also found node " << NodeMap2->second.getId() << endl;
+                    cout << "\n \t \033[1;31mERROR:: More than one node inside tolerance \033[0m for node " <<  NodeMap1->second.getId() << " -> also found node " << NodeMap2->second.getId() << endl;
                 }
+
+                // cout << "Created Element with nodes " << Node1 << " " << Node2 << endl;;
             }
         }
 
     }
 
-    cout << "\n \t Sucessfully Converted" << endl;
+    cout << "\n \t Successfully Converted" << endl;
 
     if (NofElementsCreated ==0){
 
@@ -1031,7 +1043,7 @@ void gmESSITranslator::MaterialVariationalCommand(const int&i, const int& j){
     ofstream MainFile(mainFile, ios::app);
     GeometryFile << PrintStartConversion(j);
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -1250,7 +1262,7 @@ void gmESSITranslator::NodalVariationalCommand(const int&i, const int& j){
     ofstream LoadFile(loadFile,ios::app); int init =0;
     LoadFile<< PrintStartConversion(j);
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -1346,7 +1358,7 @@ void gmESSITranslator::GeneralElementalVariationalCommand(const int&i, const int
 
     // cout << "I am in General Element Variational Command" << endl;
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -1464,7 +1476,7 @@ void gmESSITranslator::ElementalVariationalCommand(const int&i, const int& j){
 
     // cout << "I am in Elemental Variational Command" << endl;
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter;
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -1765,7 +1777,7 @@ void gmESSITranslator::ElementalCompoundVariationalCommand(const int&i, const in
 
 void gmESSITranslator::WriteCommand(const int&i, const int& j){
 
-    // Checking the tags and initiallizing whether Phy or Enty Tag or nothing
+    // Checking the tags and initializing whether Phy or Enty Tag or nothing
     map<int,NodeElement>::iterator TypeIter; int init=0; string node = "node", element="element"; 
     if( setTypeIter(TypeIter,this->VariableList.at(j),i,j,init)<0)
         return;
@@ -1844,7 +1856,7 @@ void gmESSITranslator::WriteCommand(const int&i, const int& j){
         return;        
     }
 
-    cout << "\n \t Sucessfully Converted" << endl;
+    cout << "\n \t Successfully Converted" << endl;
     NodesFile.close();
     ElementsFile.close();
 }
@@ -2118,7 +2130,7 @@ string gmESSITranslator::PrintEndConversion(const int& nofRun, const int& j){
         cout << msg;     
     }
 
-    cout << "\n \t Sucessfully Converted" << endl;
+    cout << "\n \t Successfully Converted" << endl;
 
     string str = "\n//*************************************************************************************************************************\n";
     str = str + "//\t\t\t\t\t\t\t" +  this->UserCommandList.at(j) + "Ends\n";
@@ -2189,7 +2201,7 @@ void gmESSITranslator::Convert(const string& GmssiCommand){
     else{
         
         cout << "\n \t \033[1;31mNot Found!!" << "\033[0m";
-        cout << "\n \t \033[1;33mWARNING:: Execuation of the command escaped. The gmessi command could not be found" << " \033[0m\n" ; 
+        cout << "\n \t \033[1;33mWARNING:: Execution of the command escaped. The gmessi command could not be found" << " \033[0m\n" ; 
     }
 
     return;
