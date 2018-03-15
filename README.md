@@ -5,7 +5,7 @@ gmESSI
 
 gmESSI is a finite element translator from [gmsh](http://gmsh.info/) (a three-dimensional finite element mesh generator with built-in pre- and post-procESSIng facilities) to [REAL ESSI](http://sokocalo.engr.ucdavis.edu/~jeremic/Real_ESSI_Simulator/)(UC Davis Earthquake-Soil-Structure-Interaction Simmulator). The translator has been developed in C++ language and generates the ```.fei``` files required by ESSI. This translator provides an easy, handy and powerfool pre-procESSIng tool to develop FEA models and interface with various ESSI functionalities. The gmESSI Translator Package consist of the Translator, Python module, a Sublime plugin and its manual. More detailed information about the translator can be read at [gmESSI-Manual](./gmESSI_Manual.pdf)
 
-**The translator is made so general that any other FEM program can use it with little tweaks to have their own conversion tool.**
+****The translator is made very general, so that any other FEM program can use it with little tweaks to have their own conversion tool.****
 
 ### Installation
 
